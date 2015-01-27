@@ -18,7 +18,6 @@
 		ABADD36C1A77758600397031 /* RZAssemblageTableViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */; };
 		ABADD36D1A77758600397031 /* RZAssemblageTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */; };
 		ABADD36F1A77808100397031 /* RZAssemblage+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD36E1A77808100397031 /* RZAssemblage+Private.h */; };
-		ABADD3711A77898100397031 /* Readme.md in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3701A77898100397031 /* Readme.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +45,7 @@
 		ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableViewDataSource.h; sourceTree = "<group>"; };
 		ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewDataSource.m; sourceTree = "<group>"; };
 		ABADD36E1A77808100397031 /* RZAssemblage+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RZAssemblage+Private.h"; sourceTree = "<group>"; };
-		ABADD3701A77898100397031 /* Readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
+		ABADD3721A77DF9200397031 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +70,7 @@
 		ABADD3381A776C7C00397031 = {
 			isa = PBXGroup;
 			children = (
+				ABADD3721A77DF9200397031 /* README.md */,
 				ABADD3441A776C7C00397031 /* RZAssemblage */,
 				ABADD3511A776C7C00397031 /* RZAssemblageTests */,
 				ABADD3431A776C7C00397031 /* Products */,
@@ -99,7 +99,6 @@
 				ABADD3631A776E2600397031 /* RZMutableAssemblage.m */,
 				ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */,
 				ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */,
-				ABADD3701A77898100397031 /* Readme.md */,
 			);
 			path = RZAssemblage;
 			sourceTree = "<group>";
@@ -243,7 +242,6 @@
 			files = (
 				ABADD36D1A77758600397031 /* RZAssemblageTableViewDataSource.m in Sources */,
 				ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */,
-				ABADD3711A77898100397031 /* Readme.md in Sources */,
 				ABADD3651A776E2600397031 /* RZMutableAssemblage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
