@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "RZAssemblage.h"
+#import "RZMutableAssemblage.h"
 
 @interface RZAssemblageTests : XCTestCase
 
@@ -25,9 +27,21 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    XCTAssert(YES, @"Pass");
+- (void)testComposition
+{
+    RZAssemblage *staticValues = [[RZAssemblage alloc] initWithArray:@[@1, @2, @3]];
+    XCTAssertEqual([staticValues numberOfChildrenAtIndexPath:nil], 3);
+    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]], @1);
+    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:1]], @2);
+    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:2]], @3);
+    RZAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    XCTAssertEqual([mutableValues numberOfChildrenAtIndexPath:nil], 0);
+
+    RZAssemblage *sectioned = [[RZAssemblage alloc] initWithArray:@[staticValues, mutableValues]];
+
+    XCTAssertEqual([sectioned numberOfChildrenAtIndexPath:nil], 2);
+    XCTAssertEqual([sectioned numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:0]], 3);
+    XCTAssertEqual([sectioned numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:1]], 0);
 }
 
 - (void)testPerformanceExample {

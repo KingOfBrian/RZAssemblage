@@ -11,6 +11,8 @@
 
 @interface RZAssemblage : NSObject <RZAssemblageAccess>
 
+- (id)initWithArray:(NSArray *)array;
+
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
 @end

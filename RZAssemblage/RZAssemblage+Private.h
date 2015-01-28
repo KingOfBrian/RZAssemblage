@@ -8,7 +8,12 @@
 
 #import "RZAssemblage.h"
 
-@interface RZAssemblage() <RZAssemblageDelegate>
+@interface RZAssemblage() <RZAssemblageDelegate> {
+@protected
+    NSArray *_store;
+}
+
+@property (copy, nonatomic) NSArray *store;
 
 @property (assign, nonatomic) NSUInteger updateCount;
 

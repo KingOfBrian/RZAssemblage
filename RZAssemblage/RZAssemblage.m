@@ -8,27 +8,52 @@
 
 #import "RZAssemblage+Private.h"
 
-#define RZ_MUST_OVERRIDE [NSException raise:NSInvalidArgumentException format:@"Subclass must over-ride %@", NSStringFromSelector(_cmd)]
-
 @implementation RZAssemblage
+
+- (id)initWithArray:(NSArray *)array
+{
+    self = [super init];
+    if ( self ) {
+        _store = [array copy];
+    }
+    return self;
+}
 
 - (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
 {
-    RZ_MUST_OVERRIDE;
-    return NSNotFound;
+    NSUInteger count = NSNotFound;
+    NSUInteger length = [indexPath length];
+
+    if ( length == 0 ) {
+        count = self.store.count;
+    }
+    else {
+        NSUInteger lastIndex = [indexPath indexAtPosition:length - 1];
+        id<RZAssemblageAccess>assemblage = self.store[lastIndex];
+        NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblageAccess)], @"Invalid Index Path");
+        count = [assemblage numberOfChildrenAtIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    }
+    return count;
 }
 
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath
 {
-    RZ_MUST_OVERRIDE;
-    return nil;
+    NSUInteger length = [indexPath length];
+    NSUInteger lastIndex = [indexPath indexAtPosition:length - 1];
+    id object = self.store[lastIndex];
+    if ( length > 1 ) {
+        id<RZAssemblageAccess>assemblage = object;
+        NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblageAccess)], @"Invalid Index Path");
+        return [assemblage objectAtIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    }
+    return object;
 }
 
 - (NSUInteger)indexForObject:(id)object
 {
-    RZ_MUST_OVERRIDE;
-    return NSNotFound;
+    return [self.store indexOfObject:object];
 }
+
 
 - (NSIndexPath *)appendIndexPath:(NSIndexPath *)indexPath forAssemblage:(id<RZAssemblageAccess>)assemblage
 {

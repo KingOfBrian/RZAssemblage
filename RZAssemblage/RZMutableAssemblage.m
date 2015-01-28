@@ -11,7 +11,7 @@
 
 @interface RZMutableAssemblage()
 
-@property (strong, nonatomic) NSMutableArray *store;
+@property (copy, nonatomic) NSMutableArray *store;
 
 @end
 
@@ -24,29 +24,6 @@
         _store = [array mutableCopy];
     }
     return self;
-}
-
-- (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
-{
-    return self.store.count;
-}
-
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSUInteger length = [indexPath length];
-    NSUInteger lastIndex = [indexPath indexAtPosition:length - 1];
-    id object = self.store[lastIndex];
-    if ( length > 1 ) {
-        id<RZAssemblageAccess>assemblage = object;
-        NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblageAccess)], @"Invalid Index Path");
-        return [assemblage objectAtIndexPath:[indexPath indexPathByRemovingLastIndex]];
-    }
-    return object;
-}
-
-- (NSUInteger)indexForObject:(id)object
-{
-    return [self.store indexOfObject:object];
 }
 
 - (void)beginUpdateAndEndUpdateNextRunloop
