@@ -8,6 +8,8 @@
 
 #import "MasterViewController.h"
 
+#import "MutatableAssemblageTableViewController.h"
+
 #import "RZAssemblage.h"
 #import "RZAssemblageTableViewDataSource.h"
 
@@ -27,8 +29,11 @@
     UIViewController *blue = [[UIViewController alloc] initWithNibName:nil bundle:nil];
     blue.view.backgroundColor = [UIColor blueColor];
     blue.title = @"Blue View Controller";
+
+    UIViewController *mutable = [[MutatableAssemblageTableViewController alloc] init];
+
     self.assemblage = [[RZAssemblage alloc] initWithArray:@[
-                                                            [[RZAssemblage alloc] initWithArray:@[red, blue]],
+                                                            [[RZAssemblage alloc] initWithArray:@[red, blue, mutable]],
                                                             [[RZAssemblage alloc] initWithArray:@[@"String Value A", @"String Value B"]],
                                                             ]];
     self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage

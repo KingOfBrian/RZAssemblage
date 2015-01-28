@@ -63,12 +63,12 @@
 
 #pragma mark - RZAssemblageDelegate
 
-- (void)willBeginUpdatesForAssemblage:(id<RZAssemblageAccess>)assemblage
+- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
 {
     [self.tableView beginUpdates];
 }
 
-- (void)assemblage:(id<RZAssemblageAccess>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+- (void)assemblage:(RZAssemblage *)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
     if ( [self.class isSectionIndexPath:indexPath] ) {
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
@@ -79,7 +79,7 @@
     }
 }
 
-- (void)assemblage:(id<RZAssemblageAccess>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+- (void)assemblage:(RZAssemblage *)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
     if ( [self.class isSectionIndexPath:indexPath] ) {
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
@@ -91,7 +91,7 @@
     }
 }
 
-- (void)assemblage:(id<RZAssemblageAccess>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+- (void)assemblage:(RZAssemblage *)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
     NSAssert([self.class isSectionIndexPath:indexPath] == NO, @"Do not know what to do for a section update");
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
@@ -101,7 +101,7 @@
                    atIndexPath:indexPath];
 }
 
-- (void)assemblage:(id<RZAssemblageAccess>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+- (void)assemblage:(RZAssemblage *)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
     if ( [self.class isSectionIndexPath:fromIndexPath] ) {
         [self.tableView moveSection:[fromIndexPath indexAtPosition:0]
@@ -112,7 +112,7 @@
     }
 }
 
-- (void)didEndUpdatesForEnsemble:(id<RZAssemblageAccess>)assemblage
+- (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
 {
     [self.tableView endUpdates];
 }

@@ -8,6 +8,14 @@
 
 #import "RZAssemblage.h"
 
+@interface NSIndexPath(RZAssemblage)
+
+- (NSIndexPath *)rz_indexPathByRemovingFirstIndex;
+- (NSUInteger)rz_lastIndex;
+
+@end
+
+
 @interface RZAssemblage() <RZAssemblageDelegate> {
 @protected
     NSArray *_store;
@@ -18,5 +26,7 @@
 @property (assign, nonatomic) NSUInteger updateCount;
 
 - (void)assignDelegateIfObjectIsAssemblage:(id)anObject;
+
+- (NSUInteger)indexForObject:(id)object;
 
 @end

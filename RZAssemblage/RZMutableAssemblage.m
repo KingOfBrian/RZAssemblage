@@ -30,6 +30,8 @@
     return self;
 }
 
+#pragma mark - Batch Updating
+
 - (void)beginUpdateAndEndUpdateNextRunloop
 {
     [self willBeginUpdatesForAssemblage:self];
@@ -45,6 +47,8 @@
 {
     [self didEndUpdatesForEnsemble:self];
 }
+
+#pragma mark - Basic Mutation
 
 - (void)addObject:(id)anObject
 {
@@ -105,6 +109,30 @@
     [self willBeginUpdatesForAssemblage:self];
     [self.delegate assemblage:self didUpdateObject:anObject atIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self didEndUpdatesForEnsemble:self];
+}
+
+#pragma mark - Index Path Mutation
+
+- (RZMutableAssemblage *)mutableAssemblageHoldingIndexPath:(NSIndexPath *)indexPath
+{
+    NSIndexPath *containerIndexPath = [indexPath indexPathByRemovingLastIndex];
+    id object = [self objectAtIndexPath:containerIndexPath];
+    if ( [object isKindOfClass:[RZMutableAssemblage class]] == NO ) {
+        [NSException raise:NSInvalidArgumentException format:@"Index Path %@ did not lead to a %@, but %@", indexPath, [RZMutableAssemblage class], object];
+    }
+    return object;
+}
+
+- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
+{
+    RZMutableAssemblage *container = [self mutableAssemblageHoldingIndexPath:indexPath];
+    [container insertObject:anObject atIndex:[indexPath rz_lastIndex]];
+}
+
+- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
+{
+    RZMutableAssemblage *container = [self mutableAssemblageHoldingIndexPath:indexPath];
+    [container removeObjectAtIndex:[indexPath rz_lastIndex]];
 }
 
 @end

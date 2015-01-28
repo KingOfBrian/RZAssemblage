@@ -51,33 +51,33 @@ event.delegateSelector = _cmd; \
     self.delegateEvents = nil;
 }
 
-- (void)willBeginUpdatesForAssemblage:(id<RZAssemblageAccess>)assemblage
+- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
 {
     TRACE_DELEGATE_EVENT
 }
 
-- (void)assemblage:(id<RZAssemblageAccess>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    TRACE_DELEGATE_EVENT
-    event.object = object;
-    event.indexPath = indexPath;
-}
-
-- (void)assemblage:(id<RZAssemblageAccess>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+- (void)assemblage:(RZAssemblage *)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
     TRACE_DELEGATE_EVENT
     event.object = object;
     event.indexPath = indexPath;
 }
 
-- (void)assemblage:(id<RZAssemblageAccess>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+- (void)assemblage:(RZAssemblage *)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
     TRACE_DELEGATE_EVENT
     event.object = object;
     event.indexPath = indexPath;
 }
 
-- (void)assemblage:(id<RZAssemblageAccess>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+- (void)assemblage:(RZAssemblage *)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+{
+    TRACE_DELEGATE_EVENT
+    event.object = object;
+    event.indexPath = indexPath;
+}
+
+- (void)assemblage:(RZAssemblage *)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
     TRACE_DELEGATE_EVENT
     event.object = object;
@@ -85,7 +85,7 @@ event.delegateSelector = _cmd; \
     event.toIndexPath = toIndexPath;
 }
 
-- (void)didEndUpdatesForEnsemble:(id<RZAssemblageAccess>)assemblage
+- (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
 {
     TRACE_DELEGATE_EVENT
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB0279061A789FA600AF66DB /* MutatableAssemblageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */; };
 		ABADD3481A776C7C00397031 /* RZAssemblagePublic.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABADD34E1A776C7C00397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 		ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3541A776C7C00397031 /* RZAssemblageTests.m */; };
@@ -46,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AB0279041A789FA600AF66DB /* MutatableAssemblageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MutatableAssemblageTableViewController.h; sourceTree = "<group>"; };
+		AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MutatableAssemblageTableViewController.m; sourceTree = "<group>"; };
 		ABADD3421A776C7C00397031 /* RZAssemblage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RZAssemblage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABADD3461A776C7C00397031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RZAssemblagePublic.h; sourceTree = "<group>"; };
@@ -171,6 +174,8 @@
 				ABADD3AE1A787F1900397031 /* AppDelegate.m */,
 				ABADD3B31A787F1900397031 /* MasterViewController.h */,
 				ABADD3B41A787F1900397031 /* MasterViewController.m */,
+				AB0279041A789FA600AF66DB /* MutatableAssemblageTableViewController.h */,
+				AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */,
 				ABADD3B91A787F1900397031 /* Main.storyboard */,
 				ABADD3BC1A787F1900397031 /* Images.xcassets */,
 				ABADD3BE1A787F1900397031 /* LaunchScreen.xib */,
@@ -353,6 +358,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */,
+				AB0279061A789FA600AF66DB /* MutatableAssemblageTableViewController.m in Sources */,
 				ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */,
 				ABADD3B21A787F1900397031 /* RZAssemblageDemo.xcdatamodeld in Sources */,
 				ABADD3AC1A787F1900397031 /* main.m in Sources */,
@@ -599,6 +605,7 @@
 				ABADD3CE1A787F1900397031 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
