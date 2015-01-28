@@ -20,7 +20,7 @@
 - (instancetype)initWithArray:(NSArray *)array
 {
     NSParameterAssert(array);
-    self = [super init];
+    self = [super initWithArray:@[]];
     if ( self ) {
         _store = [array mutableCopy];
         for ( id object in _store ) {

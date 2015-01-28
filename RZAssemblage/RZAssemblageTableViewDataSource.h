@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RZAssemblageProtocols.h"
+#import "RZAssemblage.h"
 
 @protocol RZAssemblageTableViewDataSourceProxy <NSObject>
 
@@ -29,11 +29,11 @@
 
 @interface RZAssemblageTableViewDataSource : NSObject <UITableViewDataSource>
 
-- (id)initWithAssemblage:(id<RZAssemblageAccess>)assemblage
+- (id)initWithAssemblage:(RZAssemblage *)assemblage
             forTableView:(UITableView *)tableView
           withDataSource:(id<RZAssemblageTableViewDataSourceProxy>)dataSource;
 
-@property (strong, nonatomic, readonly) id<RZAssemblageAccess>assemblage;
+@property (strong, nonatomic, readonly) RZAssemblage *assemblage;
 
 @property (weak, nonatomic, readonly) UITableView *tableView;
 
@@ -64,5 +64,7 @@
  *  @note Defaults to UITableViewRowAnimationFade.
  */
 @property (nonatomic, assign) UITableViewRowAnimation updateObjectAnimation;
+
+- (id)init __attribute__((unavailable));
 
 @end

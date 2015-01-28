@@ -7,7 +7,8 @@
 //
 
 #import "RZAssemblageTableViewDataSource.h"
-@interface RZAssemblageTableViewDataSource() <UITableViewDataSource>
+
+@interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
 
 @property (weak, nonatomic, readonly) NSObject<RZAssemblageTableViewDataSourceProxy> *dataSource;
 
@@ -20,14 +21,16 @@
     return indexPath.length == 1;
 }
 
-- (id)initWithAssemblage:(id<RZAssemblageAccess>)assemblage
+- (id)initWithAssemblage:(RZAssemblage *)assemblage
             forTableView:(UITableView *)tableView
           withDataSource:(id<RZAssemblageTableViewDataSourceProxy>)dataSource
 {
     self = [super init];
     if ( self ) {
         _assemblage = assemblage;
+        _assemblage.delegate = self;
         _tableView = tableView;
+        _tableView.dataSource = self;
         _dataSource = dataSource;
         _addSectionAnimation = UITableViewRowAnimationFade;
         _removeSectionAnimation = UITableViewRowAnimationFade;
@@ -37,6 +40,8 @@
     }
     return self;
 }
+
+#pragma mark - Required UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -51,23 +56,12 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id object = [self.assemblage objectAtIndexPath:indexPath];
-    return [self.dataSource tableView:tableView cellForObject:object atIndexPath:indexPath];
+    UITableViewCell *cell = [self.dataSource tableView:tableView cellForObject:object atIndexPath:indexPath];
+    [self.dataSource tableView:tableView updateCell:cell forObject:object atIndexPath:indexPath];
+    return cell;
 }
 
-// We could have relay code, but it's of little value.   Forward it along instead.
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
-{
-    NSMethodSignature *signature = [self.dataSource methodSignatureForSelector:aSelector];
-    if ( signature ) {
-        return signature;
-    }
-    return [super methodSignatureForSelector:aSelector];
-}
-
-- (void)forwardInvocation:(NSInvocation *)anInvocation
-{
-    [anInvocation invokeWithTarget:self.dataSource];
-}
+#pragma mark - RZAssemblageDelegate
 
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblageAccess>)assemblage
 {
@@ -123,5 +117,48 @@
     [self.tableView endUpdates];
 }
 
+#pragma - Relay Optional UITableViewDataSource
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView titleForHeaderInSection:section] : nil;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView titleForFooterInSection:section] : nil;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView canEditRowAtIndexPath:indexPath] : NO;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView canMoveRowAtIndexPath:indexPath] : NO;
+}
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource sectionIndexTitlesForTableView:tableView] : nil;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+{
+    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView
+                                                      sectionForSectionIndexTitle:title
+                                                                          atIndex:index] : index;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView commitEditingStyle:editingStyle forRowAtIndexPath:indexPath]:nil;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sIndexPath toIndexPath:(NSIndexPath *)dIndexPath
+{
+    [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView moveRowAtIndexPath:sIndexPath toIndexPath:dIndexPath]:nil;
+}
 
 @end

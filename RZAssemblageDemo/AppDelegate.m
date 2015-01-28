@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "DetailViewController.h"
 #import "MasterViewController.h"
 
 @interface AppDelegate ()

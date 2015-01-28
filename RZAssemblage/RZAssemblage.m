@@ -8,6 +8,26 @@
 
 #import "RZAssemblage+Private.h"
 
+@implementation NSIndexPath(RZAssemblage)
+
+- (NSIndexPath *)rz_indexPathByRemovingFirstIndex
+{
+    NSIndexPath *remainingIndexPath = nil;
+    if ( self.length > 0 ) {
+        NSUInteger remainder = self.length - 1;
+        NSUInteger *indexes = calloc(self.length, sizeof(NSUInteger));
+        [self getIndexes:indexes];
+        NSUInteger *newIndexes = indexes + 1;
+//        NSUInteger *newIndexes = calloc(self.length, sizeof(NSUInteger));
+//        memcpy(newIndexes, &indexes[1], sizeof(NSUInteger) * remainder);
+        remainingIndexPath = [NSIndexPath indexPathWithIndexes:newIndexes length:remainder];
+//        free(newIndexes);
+    }
+    return remainingIndexPath;
+}
+
+@end
+
 @implementation RZAssemblage
 
 - (id)initWithArray:(NSArray *)array
@@ -42,12 +62,15 @@
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger length = [indexPath length];
-    NSUInteger lastIndex = [indexPath indexAtPosition:length - 1];
-    id object = self.store[lastIndex];
-    if ( length > 1 ) {
-        id<RZAssemblageAccess>assemblage = object;
-        NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblageAccess)], @"Invalid Index Path");
-        return [assemblage objectAtIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    id object = nil;
+    if ( length > 0 ) {
+        NSUInteger lastIndex = [indexPath indexAtPosition:0];
+        object = self.store[lastIndex];
+        if ( length > 1 ) {
+            id<RZAssemblageAccess>assemblage = object;
+            NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblageAccess)], @"Invalid Index Path");
+            object = [assemblage objectAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        }
     }
     return object;
 }
@@ -64,11 +87,6 @@
     }
 }
 
-- (NSIndexPath *)appendIndexPath:(NSIndexPath *)indexPath forAssemblage:(id<RZAssemblageAccess>)assemblage
-{
-    return [indexPath indexPathByAddingIndex:[self indexForObject:assemblage]];
-}
-
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblageAccess>)assemblage
 {
     if ( self.updateCount == 0 ) {
@@ -79,26 +97,26 @@
 
 - (void)assemblage:(id<RZAssemblageAccess>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [self appendIndexPath:indexPath forAssemblage:assemblage];
+    NSIndexPath *newIndexPath = [indexPath indexPathByAddingIndex:[self indexForObject:assemblage]];
     [self.delegate assemblage:self didInsertObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblageAccess>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [self appendIndexPath:indexPath forAssemblage:assemblage];
+    NSIndexPath *newIndexPath = [indexPath indexPathByAddingIndex:[self indexForObject:assemblage]];
     [self.delegate assemblage:self didRemoveObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblageAccess>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [self appendIndexPath:indexPath forAssemblage:assemblage];
+    NSIndexPath *newIndexPath = [indexPath indexPathByAddingIndex:[self indexForObject:assemblage]];
     [self.delegate assemblage:self didUpdateObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblageAccess>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    NSIndexPath *newFromIndexPath = [self appendIndexPath:fromIndexPath forAssemblage:assemblage];
-    NSIndexPath *newToIndexPath = [self appendIndexPath:toIndexPath forAssemblage:assemblage];
+    NSIndexPath *newFromIndexPath = [fromIndexPath indexPathByAddingIndex:[self indexForObject:assemblage]];
+    NSIndexPath *newToIndexPath = [toIndexPath indexPathByAddingIndex:[self indexForObject:assemblage]];
     [self.delegate assemblage:self didMoveObject:object fromIndexPath:newFromIndexPath toIndexPath:newToIndexPath];
 }
 

@@ -22,14 +22,21 @@
 		ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3AE1A787F1900397031 /* AppDelegate.m */; };
 		ABADD3B21A787F1900397031 /* RZAssemblageDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B01A787F1900397031 /* RZAssemblageDemo.xcdatamodeld */; };
 		ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B41A787F1900397031 /* MasterViewController.m */; };
-		ABADD3B81A787F1900397031 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B71A787F1900397031 /* DetailViewController.m */; };
 		ABADD3BB1A787F1900397031 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3B91A787F1900397031 /* Main.storyboard */; };
 		ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BC1A787F1900397031 /* Images.xcassets */; };
 		ABADD3C01A787F1900397031 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BE1A787F1900397031 /* LaunchScreen.xib */; };
+		ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		ABADD34F1A776C7C00397031 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABADD3391A776C7C00397031 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ABADD3411A776C7C00397031;
+			remoteInfo = RZAssemblage;
+		};
+		ABADD3D31A7890DF00397031 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABADD3391A776C7C00397031 /* Project object */;
 			proxyType = 1;
@@ -62,8 +69,6 @@
 		ABADD3B11A787F1900397031 /* RZAssemblageDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RZAssemblageDemo.xcdatamodel; sourceTree = "<group>"; };
 		ABADD3B31A787F1900397031 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
 		ABADD3B41A787F1900397031 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		ABADD3B61A787F1900397031 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		ABADD3B71A787F1900397031 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		ABADD3BA1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		ABADD3BC1A787F1900397031 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		ABADD3BF1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -89,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,8 +171,6 @@
 				ABADD3AE1A787F1900397031 /* AppDelegate.m */,
 				ABADD3B31A787F1900397031 /* MasterViewController.h */,
 				ABADD3B41A787F1900397031 /* MasterViewController.m */,
-				ABADD3B61A787F1900397031 /* DetailViewController.h */,
-				ABADD3B71A787F1900397031 /* DetailViewController.m */,
 				ABADD3B91A787F1900397031 /* Main.storyboard */,
 				ABADD3BC1A787F1900397031 /* Images.xcassets */,
 				ABADD3BE1A787F1900397031 /* LaunchScreen.xib */,
@@ -251,6 +255,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				ABADD3D41A7890DF00397031 /* PBXTargetDependency */,
 			);
 			name = RZAssemblageDemo;
 			productName = RZAssemblageDemo;
@@ -347,7 +352,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABADD3B81A787F1900397031 /* DetailViewController.m in Sources */,
 				ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */,
 				ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */,
 				ABADD3B21A787F1900397031 /* RZAssemblageDemo.xcdatamodeld in Sources */,
@@ -362,6 +366,11 @@
 			isa = PBXTargetDependency;
 			target = ABADD3411A776C7C00397031 /* RZAssemblage */;
 			targetProxy = ABADD34F1A776C7C00397031 /* PBXContainerItemProxy */;
+		};
+		ABADD3D41A7890DF00397031 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ABADD3411A776C7C00397031 /* RZAssemblage */;
+			targetProxy = ABADD3D31A7890DF00397031 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

@@ -15,4 +15,6 @@
 
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
+- (id)init __attribute__((unavailable));
+
 @end
