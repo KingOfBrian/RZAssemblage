@@ -18,6 +18,14 @@
 		ABADD36C1A77758600397031 /* RZAssemblageTableViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */; };
 		ABADD36D1A77758600397031 /* RZAssemblageTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */; };
 		ABADD36F1A77808100397031 /* RZAssemblage+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD36E1A77808100397031 /* RZAssemblage+Private.h */; };
+		ABADD3AC1A787F1900397031 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3AB1A787F1900397031 /* main.m */; };
+		ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3AE1A787F1900397031 /* AppDelegate.m */; };
+		ABADD3B21A787F1900397031 /* RZAssemblageDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B01A787F1900397031 /* RZAssemblageDemo.xcdatamodeld */; };
+		ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B41A787F1900397031 /* MasterViewController.m */; };
+		ABADD3B81A787F1900397031 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B71A787F1900397031 /* DetailViewController.m */; };
+		ABADD3BB1A787F1900397031 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3B91A787F1900397031 /* Main.storyboard */; };
+		ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BC1A787F1900397031 /* Images.xcassets */; };
+		ABADD3C01A787F1900397031 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BE1A787F1900397031 /* LaunchScreen.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +54,19 @@
 		ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewDataSource.m; sourceTree = "<group>"; };
 		ABADD36E1A77808100397031 /* RZAssemblage+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RZAssemblage+Private.h"; sourceTree = "<group>"; };
 		ABADD3721A77DF9200397031 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		ABADD3A71A787F1900397031 /* RZAssemblageDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RZAssemblageDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABADD3AA1A787F1900397031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ABADD3AB1A787F1900397031 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		ABADD3AD1A787F1900397031 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		ABADD3AE1A787F1900397031 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		ABADD3B11A787F1900397031 /* RZAssemblageDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RZAssemblageDemo.xcdatamodel; sourceTree = "<group>"; };
+		ABADD3B31A787F1900397031 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
+		ABADD3B41A787F1900397031 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
+		ABADD3B61A787F1900397031 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		ABADD3B71A787F1900397031 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		ABADD3BA1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		ABADD3BC1A787F1900397031 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		ABADD3BF1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +85,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ABADD3A41A787F1900397031 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -73,6 +101,7 @@
 				ABADD3721A77DF9200397031 /* README.md */,
 				ABADD3441A776C7C00397031 /* RZAssemblage */,
 				ABADD3511A776C7C00397031 /* RZAssemblageTests */,
+				ABADD3A81A787F1900397031 /* RZAssemblageDemo */,
 				ABADD3431A776C7C00397031 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,6 +111,7 @@
 			children = (
 				ABADD3421A776C7C00397031 /* RZAssemblage.framework */,
 				ABADD34D1A776C7C00397031 /* RZAssemblageTests.xctest */,
+				ABADD3A71A787F1900397031 /* RZAssemblageDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,6 +154,33 @@
 			isa = PBXGroup;
 			children = (
 				ABADD3531A776C7C00397031 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		ABADD3A81A787F1900397031 /* RZAssemblageDemo */ = {
+			isa = PBXGroup;
+			children = (
+				ABADD3AD1A787F1900397031 /* AppDelegate.h */,
+				ABADD3AE1A787F1900397031 /* AppDelegate.m */,
+				ABADD3B31A787F1900397031 /* MasterViewController.h */,
+				ABADD3B41A787F1900397031 /* MasterViewController.m */,
+				ABADD3B61A787F1900397031 /* DetailViewController.h */,
+				ABADD3B71A787F1900397031 /* DetailViewController.m */,
+				ABADD3B91A787F1900397031 /* Main.storyboard */,
+				ABADD3BC1A787F1900397031 /* Images.xcassets */,
+				ABADD3BE1A787F1900397031 /* LaunchScreen.xib */,
+				ABADD3B01A787F1900397031 /* RZAssemblageDemo.xcdatamodeld */,
+				ABADD3A91A787F1900397031 /* Supporting Files */,
+			);
+			path = RZAssemblageDemo;
+			sourceTree = "<group>";
+		};
+		ABADD3A91A787F1900397031 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ABADD3AA1A787F1900397031 /* Info.plist */,
+				ABADD3AB1A787F1900397031 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -183,6 +240,23 @@
 			productReference = ABADD34D1A776C7C00397031 /* RZAssemblageTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		ABADD3A61A787F1900397031 /* RZAssemblageDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ABADD3D11A787F1900397031 /* Build configuration list for PBXNativeTarget "RZAssemblageDemo" */;
+			buildPhases = (
+				ABADD3A31A787F1900397031 /* Sources */,
+				ABADD3A41A787F1900397031 /* Frameworks */,
+				ABADD3A51A787F1900397031 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RZAssemblageDemo;
+			productName = RZAssemblageDemo;
+			productReference = ABADD3A71A787F1900397031 /* RZAssemblageDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -198,6 +272,9 @@
 					ABADD34C1A776C7C00397031 = {
 						CreatedOnToolsVersion = 6.1.1;
 					};
+					ABADD3A61A787F1900397031 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
 				};
 			};
 			buildConfigurationList = ABADD33C1A776C7C00397031 /* Build configuration list for PBXProject "RZAssemblage" */;
@@ -206,6 +283,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = ABADD3381A776C7C00397031;
 			productRefGroup = ABADD3431A776C7C00397031 /* Products */;
@@ -214,6 +292,7 @@
 			targets = (
 				ABADD3411A776C7C00397031 /* RZAssemblage */,
 				ABADD34C1A776C7C00397031 /* RZAssemblageTests */,
+				ABADD3A61A787F1900397031 /* RZAssemblageDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -230,6 +309,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ABADD3A51A787F1900397031 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABADD3BB1A787F1900397031 /* Main.storyboard in Resources */,
+				ABADD3C01A787F1900397031 /* LaunchScreen.xib in Resources */,
+				ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,6 +343,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ABADD3A31A787F1900397031 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABADD3B81A787F1900397031 /* DetailViewController.m in Sources */,
+				ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */,
+				ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */,
+				ABADD3B21A787F1900397031 /* RZAssemblageDemo.xcdatamodeld in Sources */,
+				ABADD3AC1A787F1900397031 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -263,6 +364,25 @@
 			targetProxy = ABADD34F1A776C7C00397031 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		ABADD3B91A787F1900397031 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ABADD3BA1A787F1900397031 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		ABADD3BE1A787F1900397031 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ABADD3BF1A787F1900397031 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		ABADD3561A776C7C00397031 /* Debug */ = {
@@ -409,6 +529,30 @@
 			};
 			name = Release;
 		};
+		ABADD3CD1A787F1900397031 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = RZAssemblageDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		ABADD3CE1A787F1900397031 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = RZAssemblageDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -428,6 +572,7 @@
 				ABADD35A1A776C7C00397031 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		ABADD35B1A776C7C00397031 /* Build configuration list for PBXNativeTarget "RZAssemblageTests" */ = {
 			isa = XCConfigurationList;
@@ -436,8 +581,30 @@
 				ABADD35D1A776C7C00397031 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ABADD3D11A787F1900397031 /* Build configuration list for PBXNativeTarget "RZAssemblageDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABADD3CD1A787F1900397031 /* Debug */,
+				ABADD3CE1A787F1900397031 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		ABADD3B01A787F1900397031 /* RZAssemblageDemo.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				ABADD3B11A787F1900397031 /* RZAssemblageDemo.xcdatamodel */,
+			);
+			currentVersion = ABADD3B11A787F1900397031 /* RZAssemblageDemo.xcdatamodel */;
+			path = RZAssemblageDemo.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = ABADD3391A776C7C00397031 /* Project object */;
 }
