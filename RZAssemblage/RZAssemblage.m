@@ -15,6 +15,9 @@
     self = [super init];
     if ( self ) {
         _store = [array copy];
+        for ( id object in _store ) {
+            [self assignDelegateIfObjectIsAssemblage:object];
+        }
     }
     return self;
 }
@@ -54,16 +57,16 @@
     return [self.store indexOfObject:object];
 }
 
+- (void)assignDelegateIfObjectIsAssemblage:(id)anObject
+{
+    if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
+        [(RZAssemblage *)anObject setDelegate:self];
+    }
+}
 
 - (NSIndexPath *)appendIndexPath:(NSIndexPath *)indexPath forAssemblage:(id<RZAssemblageAccess>)assemblage
 {
-    NSIndexPath *newIndexPath = [NSIndexPath indexPathWithIndex:[self indexForObject:assemblage]];
-    NSAssert(newIndexPath && newIndexPath.length == 1, @"");
-    for ( NSUInteger position = 0; position < indexPath.length; position++ ) {
-        NSUInteger index = [indexPath indexAtPosition:position];
-        newIndexPath = [newIndexPath indexPathByAddingIndex:index];
-    }
-    return newIndexPath;
+    return [indexPath indexPathByAddingIndex:[self indexForObject:assemblage]];
 }
 
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblageAccess>)assemblage

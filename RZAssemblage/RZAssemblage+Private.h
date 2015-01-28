@@ -17,4 +17,6 @@
 
 @property (assign, nonatomic) NSUInteger updateCount;
 
+- (void)assignDelegateIfObjectIsAssemblage:(id)anObject;
+
 @end

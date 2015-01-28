@@ -19,9 +19,13 @@
 
 - (instancetype)initWithArray:(NSArray *)array
 {
+    NSParameterAssert(array);
     self = [super init];
     if ( self ) {
         _store = [array mutableCopy];
+        for ( id object in _store ) {
+            [self assignDelegateIfObjectIsAssemblage:object];
+        }
     }
     return self;
 }
@@ -42,15 +46,9 @@
     [self didEndUpdatesForEnsemble:self];
 }
 
-- (void)assignDelegateIfObjectIsAssemblage:(id)anObject
-{
-    if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
-        [(RZAssemblage *)anObject setDelegate:self];
-    }
-}
-
 - (void)addObject:(id)anObject
 {
+    NSParameterAssert(anObject);
     [self assignDelegateIfObjectIsAssemblage:anObject];
     [self willBeginUpdatesForAssemblage:self];
     [self.store addObject:anObject];
@@ -61,6 +59,7 @@
 
 - (void)insertObject:(id)anObject atIndex:(NSUInteger)index
 {
+    NSParameterAssert(anObject);
     [self assignDelegateIfObjectIsAssemblage:anObject];
     [self willBeginUpdatesForAssemblage:self];
     [self.store insertObject:anObject atIndex:index];
@@ -98,12 +97,13 @@
     [self didEndUpdatesForEnsemble:self];
 }
 
-- (void)notifyObjectUpdate:(id)object
+- (void)notifyObjectUpdate:(id)anObject
 {
-    NSUInteger index = [self.store indexOfObject:object];
+    NSParameterAssert(anObject);
+    NSUInteger index = [self.store indexOfObject:anObject];
     NSAssert(index != NSNotFound, @"Object is not part of assemblage");
     [self willBeginUpdatesForAssemblage:self];
-    [self.delegate assemblage:self didUpdateObject:object atIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self.delegate assemblage:self didUpdateObject:anObject atIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self didEndUpdatesForEnsemble:self];
 }
 
