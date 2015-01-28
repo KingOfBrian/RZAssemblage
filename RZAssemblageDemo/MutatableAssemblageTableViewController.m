@@ -39,13 +39,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[
+                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4"]],
+                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"5", @"6"]],
+                                                                   ]];
     self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
                                                                      forTableView:self.tableView
                                                                    withDataSource:self];
 
     self.navigationItem.rightBarButtonItems = @[
-
+                                                self.editButtonItem,
                                                 [[UIBarButtonItem alloc] initWithTitle:@"+" style:UIBarButtonItemStyleDone target:self action:@selector(addItemToSection)],
                                                 [[UIBarButtonItem alloc] initWithTitle:@"N" style:UIBarButtonItemStyleDone target:self action:@selector(nextSection)],
                                                 ];
@@ -72,16 +75,32 @@
     return [NSString stringWithFormat:@"Section %@", @(section + 1)];
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [self.assemblage removeObjectAtIndexPath:indexPath];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+
     }
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
+    [self.assemblage beginUpdates];
+    id object = [self.assemblage objectAtIndexPath:fromIndexPath];
+    [self.assemblage insertObject:object atIndexPath:toIndexPath];
+    [self.assemblage removeObjectAtIndexPath:fromIndexPath];
+    [self.assemblage endUpdates];
 }
 
 
