@@ -60,4 +60,20 @@
     return [baseIndexPath rz_indexPathByPrependingIndex:index];
 }
 
+- (id<RZAssemblage>)assemblageHoldingIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger index = [indexPath indexAtPosition:0];
+    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+    NSUInteger offset = 0;
+    id object = nil;
+    for ( id<RZAssemblage>assemblage in self.store ) {
+        NSUInteger count = [assemblage numberOfChildrenAtIndexPath:nil];
+        if ( index - offset < count) {
+            object = assemblage;
+            break;
+        }
+        offset += count;
+    }
+    return object;
+}
 @end

@@ -95,12 +95,11 @@
 
 - (RZMutableAssemblage *)mutableAssemblageHoldingIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *containerIndexPath = [indexPath indexPathByRemovingLastIndex];
-    id object = [self objectAtIndexPath:containerIndexPath];
+    id<RZAssemblage> object = [self assemblageHoldingIndexPath:indexPath];
     if ( [object isKindOfClass:[RZMutableAssemblage class]] == NO ) {
         [NSException raise:NSInvalidArgumentException format:@"Index Path %@ did not lead to a %@, but %@", indexPath, [RZMutableAssemblage class], object];
     }
-    return object;
+    return (RZMutableAssemblage *)object;
 }
 
 - (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath

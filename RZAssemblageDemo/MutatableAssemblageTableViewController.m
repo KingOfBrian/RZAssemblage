@@ -15,6 +15,7 @@ _Pragma("clang diagnostic pop")                                         \
 #import "MutatableAssemblageTableViewController.h"
 #import "RZMutableAssemblage.h"
 #import "RZAssemblageTableViewDataSource.h"
+#import "RZFlatAssemblage.h"
 
 @interface MutatableAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
 
@@ -23,7 +24,7 @@ _Pragma("clang diagnostic pop")                                         \
 @property (strong, nonatomic) RZAssemblageTableViewDataSource *dataSource;
 
 @property (assign, nonatomic) NSUInteger index;
-
+@property (strong, nonatomic) NSArray *mutableAssemblages;
 @end
 
 @implementation MutatableAssemblageTableViewController
@@ -40,11 +41,16 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[
-                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]],
-                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]],
-                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]],
-                                                                   ]];
+    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]];
+    RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
+    RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
+    RZMutableAssemblage *m4 = [[RZMutableAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
+    
+    self.mutableAssemblages = @[m1, m2, m3, m4];
+
+    RZFlatAssemblage *f1 = [[RZFlatAssemblage alloc] initWithArray:@[m3, m4]];
+    self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[m1, m2, f1]];
+
     self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
                                                                      forTableView:self.tableView
                                                                    withDataSource:self];
@@ -138,19 +144,19 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)addRow
 {
     NSUInteger section = [self randomSectionIndex];
-    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndex:section];
+    RZMutableAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
     [assemblage addObject:[self nextValue]];
 }
 
 - (void)removeRow
 {
     NSUInteger section = [self randomSectionIndex];
-    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndex:section];
+    RZMutableAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
     [assemblage beginUpdates];
     [assemblage removeObjectAtIndex:row];
     if ( [assemblage numberOfChildren] == 0 ) {
-        [self.assemblage removeObjectAtIndex:section];
+        [assemblage addObject:@"Went Empty, Add an item"];
     }
     [assemblage endUpdates];
 }
@@ -176,8 +182,7 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)clear
 {
     [self.assemblage beginUpdates];
-    for ( NSUInteger i = 0; i < [self.assemblage numberOfChildren]; i++ ) {
-        RZMutableAssemblage *assemblage = [self.assemblage objectAtIndex:i];
+    for ( RZMutableAssemblage *assemblage in self.mutableAssemblages ) {
         while ( [assemblage numberOfChildren] > 2 ) {
             [assemblage removeLastObject];
         }

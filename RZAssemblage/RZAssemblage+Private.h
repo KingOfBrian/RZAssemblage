@@ -23,4 +23,7 @@
 
 - (NSIndexPath *)transformIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage;
 
+- (id<RZAssemblage>)assemblageHoldingIndexPath:(NSIndexPath *)indexPath;
+
+
 @end

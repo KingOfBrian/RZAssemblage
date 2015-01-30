@@ -17,6 +17,8 @@
 
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
+- (id<RZAssemblage>)assemblageHoldingIndexPath:(NSIndexPath *)indexPath;
+
 @end
 
 // This protocol is used by assemblage's to notify changes

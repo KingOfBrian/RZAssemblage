@@ -151,4 +151,10 @@
     [self.delegate didEndUpdatesForEnsemble:self];
 }
 
+- (id<RZAssemblage>)assemblageHoldingIndexPath:(NSIndexPath *)indexPath
+{
+    return nil;
+}
+
+
 @end

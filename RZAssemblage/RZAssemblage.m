@@ -77,6 +77,18 @@
     return [self.store indexOfObject:assemblage];
 }
 
+- (id<RZAssemblage>)assemblageHoldingIndexPath:(NSIndexPath *)indexPath
+{
+    id<RZAssemblage> assemblage = self;
+    if ( [indexPath length] > 1 ) {
+        NSIndexPath *nextIndex = [NSIndexPath indexPathWithIndex:[indexPath indexAtPosition:0]];
+        NSIndexPath *remainingIndexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+        assemblage = [self objectAtIndexPath:nextIndex];
+        assemblage = [assemblage assemblageHoldingIndexPath:remainingIndexPath];
+    }
+    return assemblage;
+}
+
 - (void)assignDelegateIfObjectIsAssemblage:(id)anObject
 {
     if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
