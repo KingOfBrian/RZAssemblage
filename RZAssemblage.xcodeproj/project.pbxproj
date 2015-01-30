@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		AB0279061A789FA600AF66DB /* MutatableAssemblageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */; };
+		AB05610D1A7B25D200B5C17E /* RZFRCAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB05610B1A7B25D200B5C17E /* RZFRCAssemblage.h */; };
+		AB05610E1A7B25D200B5C17E /* RZFRCAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */; };
+		ABAC82901A7B339F001CDC27 /* TestChildEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC828B1A7B339F001CDC27 /* TestChildEntity.m */; };
+		ABAC82911A7B339F001CDC27 /* TestChildEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC828B1A7B339F001CDC27 /* TestChildEntity.m */; };
+		ABAC82921A7B339F001CDC27 /* TestParentEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC828D1A7B339F001CDC27 /* TestParentEntity.m */; };
+		ABAC82931A7B339F001CDC27 /* TestParentEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC828D1A7B339F001CDC27 /* TestParentEntity.m */; };
+		ABAC82941A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABAC828E1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld */; };
+		ABAC82951A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABAC828E1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld */; };
 		ABADD3481A776C7C00397031 /* RZAssemblagePublic.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABADD34E1A776C7C00397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 		ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3541A776C7C00397031 /* RZAssemblageTests.m */; };
@@ -21,7 +29,6 @@
 		ABADD36F1A77808100397031 /* RZAssemblage+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD36E1A77808100397031 /* RZAssemblage+Private.h */; };
 		ABADD3AC1A787F1900397031 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3AB1A787F1900397031 /* main.m */; };
 		ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3AE1A787F1900397031 /* AppDelegate.m */; };
-		ABADD3B21A787F1900397031 /* RZAssemblageDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B01A787F1900397031 /* RZAssemblageDemo.xcdatamodeld */; };
 		ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B41A787F1900397031 /* MasterViewController.m */; };
 		ABADD3BB1A787F1900397031 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3B91A787F1900397031 /* Main.storyboard */; };
 		ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BC1A787F1900397031 /* Images.xcassets */; };
@@ -49,6 +56,13 @@
 /* Begin PBXFileReference section */
 		AB0279041A789FA600AF66DB /* MutatableAssemblageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MutatableAssemblageTableViewController.h; sourceTree = "<group>"; };
 		AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MutatableAssemblageTableViewController.m; sourceTree = "<group>"; };
+		AB05610B1A7B25D200B5C17E /* RZFRCAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFRCAssemblage.h; sourceTree = "<group>"; };
+		AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFRCAssemblage.m; sourceTree = "<group>"; };
+		ABAC828A1A7B339F001CDC27 /* TestChildEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestChildEntity.h; sourceTree = "<group>"; };
+		ABAC828B1A7B339F001CDC27 /* TestChildEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestChildEntity.m; sourceTree = "<group>"; };
+		ABAC828C1A7B339F001CDC27 /* TestParentEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestParentEntity.h; sourceTree = "<group>"; };
+		ABAC828D1A7B339F001CDC27 /* TestParentEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestParentEntity.m; sourceTree = "<group>"; };
+		ABAC828F1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RZAssemblageDemo.xcdatamodel; sourceTree = "<group>"; };
 		ABADD3421A776C7C00397031 /* RZAssemblage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RZAssemblage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABADD3461A776C7C00397031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RZAssemblagePublic.h; sourceTree = "<group>"; };
@@ -69,7 +83,6 @@
 		ABADD3AB1A787F1900397031 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		ABADD3AD1A787F1900397031 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		ABADD3AE1A787F1900397031 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		ABADD3B11A787F1900397031 /* RZAssemblageDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RZAssemblageDemo.xcdatamodel; sourceTree = "<group>"; };
 		ABADD3B31A787F1900397031 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
 		ABADD3B41A787F1900397031 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
 		ABADD3BA1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -138,6 +151,8 @@
 				ABADD3631A776E2600397031 /* RZMutableAssemblage.m */,
 				ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */,
 				ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */,
+				AB05610B1A7B25D200B5C17E /* RZFRCAssemblage.h */,
+				AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */,
 			);
 			path = RZAssemblage;
 			sourceTree = "<group>";
@@ -153,6 +168,11 @@
 		ABADD3511A776C7C00397031 /* RZAssemblageTests */ = {
 			isa = PBXGroup;
 			children = (
+				ABAC828A1A7B339F001CDC27 /* TestChildEntity.h */,
+				ABAC828B1A7B339F001CDC27 /* TestChildEntity.m */,
+				ABAC828C1A7B339F001CDC27 /* TestParentEntity.h */,
+				ABAC828D1A7B339F001CDC27 /* TestParentEntity.m */,
+				ABAC828E1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld */,
 				ABADD3541A776C7C00397031 /* RZAssemblageTests.m */,
 				ABADD3521A776C7C00397031 /* Supporting Files */,
 			);
@@ -179,7 +199,6 @@
 				ABADD3B91A787F1900397031 /* Main.storyboard */,
 				ABADD3BC1A787F1900397031 /* Images.xcassets */,
 				ABADD3BE1A787F1900397031 /* LaunchScreen.xib */,
-				ABADD3B01A787F1900397031 /* RZAssemblageDemo.xcdatamodeld */,
 				ABADD3A91A787F1900397031 /* Supporting Files */,
 			);
 			path = RZAssemblageDemo;
@@ -203,6 +222,7 @@
 			files = (
 				ABADD36C1A77758600397031 /* RZAssemblageTableViewDataSource.h in Headers */,
 				ABADD3601A776CBF00397031 /* RZAssemblageProtocols.h in Headers */,
+				AB05610D1A7B25D200B5C17E /* RZFRCAssemblage.h in Headers */,
 				ABADD3481A776C7C00397031 /* RZAssemblagePublic.h in Headers */,
 				ABADD3641A776E2600397031 /* RZMutableAssemblage.h in Headers */,
 				ABADD36F1A77808100397031 /* RZAssemblage+Private.h in Headers */,
@@ -342,6 +362,7 @@
 				ABADD36D1A77758600397031 /* RZAssemblageTableViewDataSource.m in Sources */,
 				ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */,
 				ABADD3651A776E2600397031 /* RZMutableAssemblage.m in Sources */,
+				AB05610E1A7B25D200B5C17E /* RZFRCAssemblage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,7 +370,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABAC82921A7B339F001CDC27 /* TestParentEntity.m in Sources */,
 				ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */,
+				ABAC82941A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld in Sources */,
+				ABAC82901A7B339F001CDC27 /* TestChildEntity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,9 +382,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */,
+				ABAC82931A7B339F001CDC27 /* TestParentEntity.m in Sources */,
+				ABAC82951A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld in Sources */,
 				AB0279061A789FA600AF66DB /* MutatableAssemblageTableViewController.m in Sources */,
 				ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */,
-				ABADD3B21A787F1900397031 /* RZAssemblageDemo.xcdatamodeld in Sources */,
+				ABAC82911A7B339F001CDC27 /* TestChildEntity.m in Sources */,
 				ABADD3AC1A787F1900397031 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -610,12 +636,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		ABADD3B01A787F1900397031 /* RZAssemblageDemo.xcdatamodeld */ = {
+		ABAC828E1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				ABADD3B11A787F1900397031 /* RZAssemblageDemo.xcdatamodel */,
+				ABAC828F1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodel */,
 			);
-			currentVersion = ABADD3B11A787F1900397031 /* RZAssemblageDemo.xcdatamodel */;
+			currentVersion = ABAC828F1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodel */;
 			path = RZAssemblageDemo.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

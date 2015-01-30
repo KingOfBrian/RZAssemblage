@@ -8,10 +8,11 @@
 
 #import "RZAssemblageTableViewDataSource.h"
 
-#define RZLogTrace1(arg1) NSLog(@"%@ - %@", NSStringFromSelector(_cmd), arg1)
-#define RZLogTrace2(arg1, arg2) NSLog(@"%@ - %@ %@", NSStringFromSelector(_cmd), arg1, arg2)
-#define RZLogTrace3(arg1, arg2, arg3) NSLog(@"%@ - %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3)
-#define RZLogTrace4(arg1, arg2, arg3, arg4) NSLog(@"%@ - %@ %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3, arg4);
+#define RZLog(format, ...) //NSLog(format, ##__VA_ARGS__)
+#define RZLogTrace1(arg1) RZLog(@"%@ - %@", NSStringFromSelector(_cmd), arg1)
+#define RZLogTrace2(arg1, arg2) RZLog(@"%@ - %@ %@", NSStringFromSelector(_cmd), arg1, arg2)
+#define RZLogTrace3(arg1, arg2, arg3) RZLog(@"%@ - %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3)
+#define RZLogTrace4(arg1, arg2, arg3, arg4) RZLog(@"%@ - %@ %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3, arg4);
 
 @interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
 
