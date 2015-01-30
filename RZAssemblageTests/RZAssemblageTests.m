@@ -10,6 +10,7 @@
 #import <XCTest/XCTest.h>
 #import "RZAssemblage.h"
 #import "RZMutableAssemblage.h"
+#import "RZFlatAssemblage.h"
 
 #define TRACE_DELEGATE_EVENT \
 RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \
@@ -117,7 +118,7 @@ event.delegateSelector = _cmd; \
     XCTAssertEqual([sectioned numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:1]], 0);
 }
 
-- (void)testFlatMutableDelegation
+- (void)testMutableDelegation
 {
     RZMutableAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
     mutableValues.delegate = self;
@@ -156,7 +157,7 @@ event.delegateSelector = _cmd; \
     [self.delegateEvents removeAllObjects];
 }
 
-- (void)testFlatGroupedMutableDelegation
+- (void)testGroupedMutableDelegation
 {
     RZMutableAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
     mutableValues.delegate = self;
@@ -206,9 +207,46 @@ event.delegateSelector = _cmd; \
     [self.delegateEvents removeAllObjects];
 }
 
-- (void)testGroupedMutableDelegation
+- (void)testFlatDelegation
 {
-    const NSUInteger firstPath[2] = {0, 1};
+    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    NSArray *assemblages = @[m1, m2, m3];
+    RZFlatAssemblage *assemblage = [[RZFlatAssemblage alloc] initWithArray:@[m1, m2, m3]];
+    assemblage.delegate = self;
+
+    [assemblage beginUpdates];
+    [self.delegateEvents removeAllObjects];
+
+    for ( RZMutableAssemblage *ma in assemblages ) {
+        [ma addObject:@1];
+        XCTAssert(self.delegateEvents.count == 1);
+        XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
+        XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:0]);
+        [self.delegateEvents removeAllObjects];
+
+        [ma removeLastObject];
+        XCTAssert(self.delegateEvents.count == 1);
+        XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didRemoveObject:atIndexPath:));
+        XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:0]);
+        [self.delegateEvents removeAllObjects];
+    }
+
+    for ( RZMutableAssemblage *ma in assemblages ) {
+        [ma addObject:@1];
+        XCTAssert(self.delegateEvents.count == 1);
+        XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
+        XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:[assemblages indexOfObject:ma]]);
+        [self.delegateEvents removeAllObjects];
+    }
+
+    [assemblage endUpdates];
+}
+
+- (void)testNestedGroupedMutableDelegation
+{
+    const NSUInteger firstPath[2] = {1, 0};
     const NSUInteger secondPath[2] = {1, 1};
     NSIndexPath *firstIndexPath = [NSIndexPath indexPathWithIndexes:firstPath length:2];
     NSIndexPath *secondIndexPath = [NSIndexPath indexPathWithIndexes:secondPath length:2];

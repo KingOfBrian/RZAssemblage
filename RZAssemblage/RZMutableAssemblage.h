@@ -13,11 +13,6 @@
 
 - (instancetype)initWithArray:(NSArray *)array;
 
-// Batch Updatingd
-- (void)beginUpdates;
-- (void)endUpdates;
-- (void)beginUpdateAndEndUpdateNextRunloop;
-
 // Basic mutation
 - (void)addObject:(id)anObject;
 - (void)insertObject:(id)anObject atIndex:(NSUInteger)index;

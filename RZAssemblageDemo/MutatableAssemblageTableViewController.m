@@ -117,14 +117,14 @@ _Pragma("clang diagnostic pop")                                         \
 
 - (NSUInteger)randomIndexForAssemblage:(RZAssemblage *)assemblage
 {
-    NSUInteger count = [assemblage numberOfChildrenAtIndexPath:nil];
+    NSUInteger count = [assemblage numberOfChildren];
     return arc4random() % count;
 }
 
 - (NSIndexPath *)randomExistingIndexPath
 {
     NSUInteger section = [self randomSectionIndex];
-    RZAssemblage *assemblage = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    RZAssemblage *assemblage = [self.assemblage objectAtIndex:section];
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
     return [NSIndexPath indexPathForRow:row inSection:section];
 }
@@ -138,14 +138,14 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)addRow
 {
     NSUInteger section = [self randomSectionIndex];
-    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndex:section];
     [assemblage addObject:[self nextValue]];
 }
 
 - (void)removeRow
 {
     NSUInteger section = [self randomSectionIndex];
-    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndex:section];
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
     [assemblage beginUpdates];
     [assemblage removeObjectAtIndex:row];

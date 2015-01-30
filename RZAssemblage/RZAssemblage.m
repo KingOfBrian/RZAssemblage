@@ -36,12 +36,11 @@
     NSUInteger length = [indexPath length];
 
     if ( length == 0 ) {
-        count = self.store.count;
+        count = [self numberOfChildren];
     }
     else {
-        NSUInteger index = [indexPath indexAtPosition:0];
-        RZAssemblage *assemblage = self.store[index];
-        NSAssert([assemblage isKindOfClass:[RZAssemblage class]], @"Invalid Index Path");
+        id<RZAssemblage> assemblage = [self objectAtIndex:[indexPath indexAtPosition:0]];
+        NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
         count = [assemblage numberOfChildrenAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return count;
@@ -51,14 +50,13 @@
 {
     NSUInteger length = [indexPath length];
     id object = nil;
-    if ( length > 0 ) {
-        NSUInteger lastIndex = [indexPath indexAtPosition:0];
-        object = self.store[lastIndex];
-        if ( length > 1 ) {
-            RZAssemblage *assemblage = object;
-            NSAssert([assemblage isKindOfClass:[RZAssemblage class]], @"Invalid Index Path");
-            object = [assemblage objectAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
-        }
+    if ( length == 1 ) {
+        object = [self objectAtIndex:[indexPath indexAtPosition:0]];
+    }
+    else if ( length > 1 ) {
+        id<RZAssemblage> assemblage = [self objectAtIndex:[indexPath indexAtPosition:0]];
+        NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
+        object = [assemblage objectAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return object;
 }
@@ -81,9 +79,24 @@
 
 - (void)assignDelegateIfObjectIsAssemblage:(id)anObject
 {
-    if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
-        [(RZAssemblage *)anObject setDelegate:self];
+    if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
+        [(id<RZAssemblage>)anObject setDelegate:self];
     }
+}
+
+- (NSIndexPath *)transformIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage
+{
+    return [indexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
+}
+
+- (void)beginUpdates
+{
+    [self willBeginUpdatesForAssemblage:self];
+}
+
+- (void)endUpdates
+{
+    [self didEndUpdatesForEnsemble:self];
 }
 
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
@@ -96,26 +109,26 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [indexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
+    NSIndexPath *newIndexPath = [self transformIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didInsertObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [indexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
+    NSIndexPath *newIndexPath = [self transformIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didRemoveObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [indexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
+    NSIndexPath *newIndexPath = [self transformIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didUpdateObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    NSIndexPath *newFromIndexPath = [fromIndexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
-    NSIndexPath *newToIndexPath = [toIndexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
+    NSIndexPath *newFromIndexPath = [self transformIndexPath:fromIndexPath fromAssemblage:assemblage];
+    NSIndexPath *newToIndexPath = [self transformIndexPath:toIndexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didMoveObject:object fromIndexPath:newFromIndexPath toIndexPath:newToIndexPath];
 }
 

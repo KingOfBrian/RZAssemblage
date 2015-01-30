@@ -8,8 +8,8 @@
 
 #import "RZFRCAssemblage.h"
 #import "NSIndexPath+RZAssemblage.h"
+#import "RZAssemblage+Private.h"
 
-#define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
 #define RZAssertIndexPathLength(indexPath, offset) RZRaize(indexPath.length <= ((self.hasSections ? 2 : 1) + offset), @"Index Path %@ has length of %lu, expected index <= %d", indexPath, indexPath.length, ((self.hasSections ? 2 : 1) + offset))
 #define RZAssertContainerIndexPath(indexPath) RZAssertIndexPathLength(indexPath, -1)
 #define RZAssertItemIndexPath(indexPath) RZAssertIndexPathLength(indexPath, 0)

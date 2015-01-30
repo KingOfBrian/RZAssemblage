@@ -22,4 +22,8 @@
 
 - (NSUInteger)numberOfChildren;
 
+- (void)beginUpdates;
+
+- (void)endUpdates;
+
 @end

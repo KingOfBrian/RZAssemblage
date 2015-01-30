@@ -18,6 +18,8 @@
 		ABAC82951A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABAC828E1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld */; };
 		ABAC82981A7B3737001CDC27 /* NSIndexPath+RZAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAC82961A7B3737001CDC27 /* NSIndexPath+RZAssemblage.h */; };
 		ABAC82991A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC82971A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m */; };
+		ABAC829C1A7B3CC0001CDC27 /* RZFlatAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAC829A1A7B3CC0001CDC27 /* RZFlatAssemblage.h */; };
+		ABAC829D1A7B3CC0001CDC27 /* RZFlatAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC829B1A7B3CC0001CDC27 /* RZFlatAssemblage.m */; };
 		ABADD3481A776C7C00397031 /* RZAssemblagePublic.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABADD34E1A776C7C00397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 		ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3541A776C7C00397031 /* RZAssemblageTests.m */; };
@@ -67,6 +69,8 @@
 		ABAC828F1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RZAssemblageDemo.xcdatamodel; sourceTree = "<group>"; };
 		ABAC82961A7B3737001CDC27 /* NSIndexPath+RZAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+RZAssemblage.h"; sourceTree = "<group>"; };
 		ABAC82971A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+RZAssemblage.m"; sourceTree = "<group>"; };
+		ABAC829A1A7B3CC0001CDC27 /* RZFlatAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFlatAssemblage.h; sourceTree = "<group>"; };
+		ABAC829B1A7B3CC0001CDC27 /* RZFlatAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFlatAssemblage.m; sourceTree = "<group>"; };
 		ABADD3421A776C7C00397031 /* RZAssemblage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RZAssemblage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABADD3461A776C7C00397031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RZAssemblagePublic.h; sourceTree = "<group>"; };
@@ -145,20 +149,22 @@
 		ABADD3441A776C7C00397031 /* RZAssemblage */ = {
 			isa = PBXGroup;
 			children = (
-				ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */,
 				ABADD3451A776C7C00397031 /* Supporting Files */,
+				ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */,
 				ABADD35E1A776CBF00397031 /* RZAssemblageProtocols.h */,
 				ABAC82961A7B3737001CDC27 /* NSIndexPath+RZAssemblage.h */,
 				ABAC82971A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m */,
 				ABADD3661A776EE100397031 /* RZAssemblage.h */,
 				ABADD36E1A77808100397031 /* RZAssemblage+Private.h */,
 				ABADD3671A776EE100397031 /* RZAssemblage.m */,
+				ABAC829A1A7B3CC0001CDC27 /* RZFlatAssemblage.h */,
+				ABAC829B1A7B3CC0001CDC27 /* RZFlatAssemblage.m */,
 				ABADD3621A776E2600397031 /* RZMutableAssemblage.h */,
 				ABADD3631A776E2600397031 /* RZMutableAssemblage.m */,
-				ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */,
-				ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */,
 				AB05610B1A7B25D200B5C17E /* RZFRCAssemblage.h */,
 				AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */,
+				ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */,
+				ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */,
 			);
 			path = RZAssemblage;
 			sourceTree = "<group>";
@@ -230,6 +236,7 @@
 				ABAC82981A7B3737001CDC27 /* NSIndexPath+RZAssemblage.h in Headers */,
 				ABADD3601A776CBF00397031 /* RZAssemblageProtocols.h in Headers */,
 				AB05610D1A7B25D200B5C17E /* RZFRCAssemblage.h in Headers */,
+				ABAC829C1A7B3CC0001CDC27 /* RZFlatAssemblage.h in Headers */,
 				ABADD3481A776C7C00397031 /* RZAssemblagePublic.h in Headers */,
 				ABADD3641A776E2600397031 /* RZMutableAssemblage.h in Headers */,
 				ABADD36F1A77808100397031 /* RZAssemblage+Private.h in Headers */,
@@ -368,6 +375,7 @@
 			files = (
 				ABAC82991A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m in Sources */,
 				ABADD36D1A77758600397031 /* RZAssemblageTableViewDataSource.m in Sources */,
+				ABAC829D1A7B3CC0001CDC27 /* RZFlatAssemblage.m in Sources */,
 				ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */,
 				ABADD3651A776E2600397031 /* RZMutableAssemblage.m in Sources */,
 				AB05610E1A7B25D200B5C17E /* RZFRCAssemblage.m in Sources */,

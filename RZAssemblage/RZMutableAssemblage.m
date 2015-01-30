@@ -21,32 +21,11 @@
 - (instancetype)initWithArray:(NSArray *)array
 {
     NSParameterAssert(array);
-    self = [super initWithArray:@[]];
+    self = [super initWithArray:array];
     if ( self ) {
         _store = [array mutableCopy];
-        for ( id object in _store ) {
-            [self assignDelegateIfObjectIsAssemblage:object];
-        }
     }
     return self;
-}
-
-#pragma mark - Batch Updating
-
-- (void)beginUpdateAndEndUpdateNextRunloop
-{
-    [self willBeginUpdatesForAssemblage:self];
-    [self performSelector:@selector(didEndUpdatesForEnsemble:) withObject:self afterDelay:0.0];
-}
-
-- (void)beginUpdates
-{
-    [self willBeginUpdatesForAssemblage:self];
-}
-
-- (void)endUpdates
-{
-    [self didEndUpdatesForEnsemble:self];
 }
 
 #pragma mark - Basic Mutation
