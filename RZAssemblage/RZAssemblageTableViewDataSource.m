@@ -8,6 +8,11 @@
 
 #import "RZAssemblageTableViewDataSource.h"
 
+#define RZLogTrace1(arg1) NSLog(@"%@ - %@", NSStringFromSelector(_cmd), arg1)
+#define RZLogTrace2(arg1, arg2) NSLog(@"%@ - %@ %@", NSStringFromSelector(_cmd), arg1, arg2)
+#define RZLogTrace3(arg1, arg2, arg3) NSLog(@"%@ - %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3)
+#define RZLogTrace4(arg1, arg2, arg3, arg4) NSLog(@"%@ - %@ %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3, arg4);
+
 @interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
 
 @property (weak, nonatomic, readonly) NSObject<RZAssemblageTableViewDataSourceProxy> *dataSource;
@@ -65,11 +70,13 @@
 
 - (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
 {
+    RZLogTrace1(assemblage);
     [self.tableView beginUpdates];
 }
 
 - (void)assemblage:(RZAssemblage *)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
     if ( [self.class isSectionIndexPath:indexPath] ) {
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
                       withRowAnimation:self.addSectionAnimation];
@@ -81,6 +88,7 @@
 
 - (void)assemblage:(RZAssemblage *)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
     if ( [self.class isSectionIndexPath:indexPath] ) {
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
                       withRowAnimation:self.removeSectionAnimation];
@@ -93,6 +101,7 @@
 
 - (void)assemblage:(RZAssemblage *)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
     NSAssert([self.class isSectionIndexPath:indexPath] == NO, @"Do not know what to do for a section update");
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     [self.dataSource tableView:self.tableView
@@ -103,6 +112,7 @@
 
 - (void)assemblage:(RZAssemblage *)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
+    RZLogTrace4(assemblage, object, fromIndexPath, toIndexPath);
     if ( [self.class isSectionIndexPath:fromIndexPath] ) {
         [self.tableView moveSection:[fromIndexPath indexAtPosition:0]
                           toSection:[toIndexPath indexAtPosition:0]];
@@ -114,6 +124,7 @@
 
 - (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
 {
+    RZLogTrace1(assemblage);
     [self.tableView endUpdates];
 }
 
@@ -136,6 +147,7 @@
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace2(tableView, indexPath);
     return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView canMoveRowAtIndexPath:indexPath] : NO;
 }
 
@@ -153,11 +165,13 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace2(tableView, indexPath);
     [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView commitEditingStyle:editingStyle forRowAtIndexPath:indexPath]:nil;
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sIndexPath toIndexPath:(NSIndexPath *)dIndexPath
 {
+    RZLogTrace3(tableView, sIndexPath, dIndexPath);
     [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView moveRowAtIndexPath:sIndexPath toIndexPath:dIndexPath]:nil;
 }
 

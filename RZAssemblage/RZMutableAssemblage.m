@@ -135,4 +135,14 @@
     [container removeObjectAtIndex:[indexPath rz_lastIndex]];
 }
 
+- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2
+{
+    [self beginUpdates];
+    id object = [self objectAtIndexPath:indexPath1];
+    [self removeObjectAtIndexPath:indexPath1];
+    [self insertObject:object atIndexPath:indexPath2];
+    [self endUpdates];
+
+}
+
 @end

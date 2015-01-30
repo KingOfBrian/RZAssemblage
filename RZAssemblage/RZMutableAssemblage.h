@@ -32,8 +32,6 @@
 // These methods will assert if the index path lands on a non-mutable assemblage.
 - (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath;
 - (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
-
-// This is more complicated.
-//- (void)exchangeObjectAtIndexPath:(NSIndexPath *)indexPath1 withObjectAtIndexPath:(NSIndexPath *)indexPath2;
+- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2;
 
 @end

@@ -6,18 +6,19 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
+#define SUPPRESS_PERFORM_SELECTOR_LEAK_WARNING(code)                        \
+_Pragma("clang diagnostic push")                                        \
+_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"")     \
+code;                                                                   \
+_Pragma("clang diagnostic pop")                                         \
+
 #import "MutatableAssemblageTableViewController.h"
 #import "RZMutableAssemblage.h"
 #import "RZAssemblageTableViewDataSource.h"
 
-// Use this for a hack
-#import "RZAssemblage+Private.h"
-
 @interface MutatableAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
 
 @property (strong, nonatomic) RZMutableAssemblage *assemblage;
-
-@property (strong, nonatomic) RZMutableAssemblage *section;
 
 @property (strong, nonatomic) RZAssemblageTableViewDataSource *dataSource;
 
@@ -40,8 +41,8 @@
     [super viewDidLoad];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[
-                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4"]],
-                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"5", @"6"]],
+                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]],
+                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]],
                                                                    ]];
     self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
                                                                      forTableView:self.tableView
@@ -49,8 +50,8 @@
 
     self.navigationItem.rightBarButtonItems = @[
                                                 self.editButtonItem,
-                                                [[UIBarButtonItem alloc] initWithTitle:@"+" style:UIBarButtonItemStyleDone target:self action:@selector(addItemToSection)],
-                                                [[UIBarButtonItem alloc] initWithTitle:@"N" style:UIBarButtonItemStyleDone target:self action:@selector(nextSection)],
+                                                [[UIBarButtonItem alloc] initWithTitle:@"R" style:UIBarButtonItemStyleDone target:self action:@selector(random)],
+                                                [[UIBarButtonItem alloc] initWithTitle:@"C" style:UIBarButtonItemStyleDone target:self action:@selector(clear)],
                                                 ];
 }
 
@@ -96,13 +97,11 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    [self.assemblage beginUpdates];
-    id object = [self.assemblage objectAtIndexPath:fromIndexPath];
-    [self.assemblage insertObject:object atIndexPath:toIndexPath];
-    [self.assemblage removeObjectAtIndexPath:fromIndexPath];
-    [self.assemblage endUpdates];
+    // Pause the delegate during the move, as the views have already moved.   The data just needs to be kept in sync.
+    self.assemblage.delegate = nil;
+    [self.assemblage moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
+    self.assemblage.delegate = self.dataSource;
 }
-
 
 - (NSString *)nextValue
 {
@@ -110,33 +109,76 @@
     return [NSString stringWithFormat:@"Item %@", @(self.index)];
 }
 
-- (void)addItemToSection
+- (NSUInteger)randomSectionIndex
 {
-    [self.section beginUpdateAndEndUpdateNextRunloop];
-    if ( self.section ) {
-        [self.section addObject:[self nextValue]];
-    }
-    else {
-        [self.assemblage addObject:[[RZMutableAssemblage alloc] initWithArray:@[]]];
-    }
+    return [self randomIndexForAssemblage:self.assemblage];
 }
 
-- (void)nextSection
+- (NSUInteger)randomIndexForAssemblage:(RZAssemblage *)assemblage
 {
-    [self.section beginUpdateAndEndUpdateNextRunloop];
-    NSArray *store = self.assemblage.store;
-    if ( self.section == nil ) {
-        self.section = store.firstObject;
-    }
-    else {
-        NSUInteger index = [self.assemblage indexForObject:self.section] + 1;
-        if ( index == store.count ) {
-            self.section = nil;
+    NSUInteger count = [assemblage numberOfChildrenAtIndexPath:nil];
+    return arc4random() % count;
+}
+
+- (NSIndexPath *)randomExistingIndexPath
+{
+    NSUInteger section = [self randomSectionIndex];
+    RZAssemblage *assemblage = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    NSUInteger row = [self randomIndexForAssemblage:assemblage];
+    return [NSIndexPath indexPathForRow:row inSection:section];
+}
+
+- (void)move
+{
+    [self.assemblage moveObjectAtIndexPath:[self randomExistingIndexPath]
+                               toIndexPath:[self randomExistingIndexPath]];
+}
+
+- (void)addRow
+{
+    NSUInteger section = [self randomSectionIndex];
+    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    [assemblage addObject:[self nextValue]];
+}
+
+- (void)removeRow
+{
+    NSUInteger section = [self randomSectionIndex];
+    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    NSUInteger row = [self randomIndexForAssemblage:assemblage];
+    [assemblage removeObjectAtIndex:row];
+}
+
+- (void)random
+{
+    NSArray *actions = @[
+                         [NSValue valueWithPointer:@selector(move)],
+                         [NSValue valueWithPointer:@selector(move)],
+                         [NSValue valueWithPointer:@selector(addRow)],
+                         [NSValue valueWithPointer:@selector(addRow)],
+                         [NSValue valueWithPointer:@selector(addRow)],
+                         [NSValue valueWithPointer:@selector(removeRow)], // Weight remove less
+                         ];
+
+    NSUInteger index = arc4random() % actions.count;
+    NSValue *boxedSelector = actions[index];
+    SEL selector = [boxedSelector pointerValue];
+
+    SUPPRESS_PERFORM_SELECTOR_LEAK_WARNING([self performSelector:selector]);
+}
+
+- (void)clear
+{
+    NSArray *a =  @[[self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]],
+                    [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:1]]];
+
+    [self.assemblage beginUpdates];
+    for ( RZMutableAssemblage *assemblage in a ) {
+        while ( [assemblage numberOfChildrenAtIndexPath:nil] > 2 ) {
+            [assemblage removeLastObject];
         }
-        else {
-            self.section = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-        }
     }
+    [self.assemblage endUpdates];
 }
 
 @end

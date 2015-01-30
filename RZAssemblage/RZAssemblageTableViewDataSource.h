@@ -27,7 +27,7 @@
 
 @end
 
-@interface RZAssemblageTableViewDataSource : NSObject <UITableViewDataSource>
+@interface RZAssemblageTableViewDataSource : NSObject <UITableViewDataSource, RZAssemblageDelegate>
 
 - (id)initWithAssemblage:(RZAssemblage *)assemblage
             forTableView:(UITableView *)tableView

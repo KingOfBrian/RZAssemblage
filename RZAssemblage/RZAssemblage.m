@@ -54,6 +54,11 @@
     return self;
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%@ - %@", super.description, self.store];
+}
+
 - (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
 {
     NSUInteger count = NSNotFound;
