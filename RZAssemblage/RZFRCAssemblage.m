@@ -7,6 +7,7 @@
 //
 
 #import "RZFRCAssemblage.h"
+#import "NSIndexPath+RZAssemblage.h"
 
 #define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
 #define RZAssertIndexPathLength(indexPath, offset) RZRaize(indexPath.length <= ((self.hasSections ? 2 : 1) + offset), @"Index Path %@ has length of %lu, expected index <= %d", indexPath, indexPath.length, ((self.hasSections ? 2 : 1) + offset))
@@ -21,6 +22,8 @@
 
 @implementation RZFRCAssemblage
 
+@synthesize delegate = _delegate;
+
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
 {
     NSAssert(fetchedResultsController.delegate == nil, @"The NSFetchedResultsController delegate is already configured");
@@ -29,7 +32,7 @@
         RZRaize(sortDescriptor && [sortDescriptor.key isEqualToString:fetchedResultsController.sectionNameKeyPath],
                 @"The first sort descriptor in the NSFetchRequest must match the sectionNameKeyPath or bad things happen.");
     }
-    self = [super initWithArray:@[]];
+    self = [super init];
     if ( self ) {
         _fetchedResultsController = fetchedResultsController;
     }
@@ -98,6 +101,10 @@
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
+    // If this NSFRC does not have sections, strip the section index path, which will always be 0.
+    indexPath = self.hasSections ? indexPath : [indexPath rz_indexPathByRemovingFirstIndex];
+    newIndexPath = self.hasSections ? newIndexPath : [newIndexPath rz_indexPathByRemovingFirstIndex];
+
     switch ( type ) {
         case NSFetchedResultsChangeInsert: {
             [self.delegate assemblage:self didInsertObject:anObject atIndexPath:indexPath];

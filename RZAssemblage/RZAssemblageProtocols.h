@@ -7,16 +7,26 @@
 //
 
 #import <Foundation/Foundation.h>
+@protocol RZAssemblageDelegate;
 
 // This protocol is the API used by data sources
-@protocol RZAssemblageAccess <NSObject>
+@protocol RZAssemblage <NSObject>
 
-@end
+- (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
+- (id)objectAtIndexPath:(NSIndexPath *)indexPath;
 
-// This protocol is used by assemblage's to implement nesting
-@protocol RZAssemblageNesting <RZAssemblageAccess>
-
+@property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
 @end
 
 // This protocol is used by assemblage's to notify changes
+@protocol RZAssemblageDelegate <NSObject>
+
+- (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage;
+- (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
+- (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
+- (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
+- (void)assemblage:(id<RZAssemblage>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
+- (void)didEndUpdatesForEnsemble:(id<RZAssemblage>)assemblage;
+
+@end

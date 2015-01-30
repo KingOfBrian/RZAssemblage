@@ -8,6 +8,7 @@
 
 #import "RZMutableAssemblage.h"
 #import "RZAssemblage+Private.h"
+#import "NSIndexPath+RZAssemblage.h"
 
 @interface RZMutableAssemblage()
 

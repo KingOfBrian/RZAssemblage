@@ -3,14 +3,14 @@
     <entity name="TestChildEntity" representedClassName="TestChildEntity" syncable="YES">
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="parent" optional="YES" minCount="1" maxCount="1" deletionRule="No Action" destinationEntity="TestParentEntity" inverseName="children" inverseEntity="TestParentEntity" syncable="YES"/>
+        <relationship name="parent" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="TestParentEntity" inverseName="children" inverseEntity="TestParentEntity" syncable="YES"/>
     </entity>
     <entity name="TestParentEntity" representedClassName="TestParentEntity" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="children" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="TestChildEntity" inverseName="parent" inverseEntity="TestChildEntity" syncable="YES"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TestChildEntity" inverseName="parent" inverseEntity="TestChildEntity" syncable="YES"/>
     </entity>
     <elements>
-        <element name="TestParentEntity" positionX="261" positionY="198" width="128" height="73"/>
-        <element name="TestChildEntity" positionX="270" positionY="207" width="128" height="88"/>
+        <element name="TestChildEntity" positionX="270" positionY="207" width="128" height="90"/>
+        <element name="TestParentEntity" positionX="261" positionY="198" width="128" height="75"/>
     </elements>
 </model>

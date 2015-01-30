@@ -8,28 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+#import "RZAssemblageProtocols.h"
+
 @protocol RZAssemblageDelegate;
 
-@interface RZAssemblage : NSObject
+@interface RZAssemblage : NSObject <RZAssemblage>
 
-- (id)initWithArray:(NSArray *)array;
+- (instancetype)init __attribute__((unavailable));
 
-- (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath;
+- (instancetype)initWithArray:(NSArray *)array;
 
-@property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
+- (id)objectAtIndex:(NSUInteger)index;
 
-- (id)init __attribute__((unavailable));
-
-@end
-
-@protocol RZAssemblageDelegate <NSObject>
-
-- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage;
-- (void)assemblage:(RZAssemblage *)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
-- (void)assemblage:(RZAssemblage *)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
-- (void)assemblage:(RZAssemblage *)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
-- (void)assemblage:(RZAssemblage *)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
-- (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage;
+- (NSUInteger)numberOfChildren;
 
 @end

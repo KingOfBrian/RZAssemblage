@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZAssemblage.h"
+#import "RZAssemblageProtocols.h"
 
 @import CoreData;
 
-@interface RZFRCAssemblage : RZAssemblage
+@interface RZFRCAssemblage : NSObject<RZAssemblage>
 
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
 
