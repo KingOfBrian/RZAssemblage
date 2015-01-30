@@ -43,6 +43,7 @@ _Pragma("clang diagnostic pop")                                         \
     self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[
                                                                    [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]],
                                                                    [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]],
+                                                                   [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]],
                                                                    ]];
     self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
                                                                      forTableView:self.tableView
@@ -146,7 +147,12 @@ _Pragma("clang diagnostic pop")                                         \
     NSUInteger section = [self randomSectionIndex];
     RZMutableAssemblage *assemblage = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
+    [assemblage beginUpdates];
     [assemblage removeObjectAtIndex:row];
+    if ( [assemblage numberOfChildren] == 0 ) {
+        [self.assemblage removeObjectAtIndex:section];
+    }
+    [assemblage endUpdates];
 }
 
 - (void)random
@@ -169,12 +175,10 @@ _Pragma("clang diagnostic pop")                                         \
 
 - (void)clear
 {
-    NSArray *a =  @[[self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]],
-                    [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:1]]];
-
     [self.assemblage beginUpdates];
-    for ( RZMutableAssemblage *assemblage in a ) {
-        while ( [assemblage numberOfChildrenAtIndexPath:nil] > 2 ) {
+    for ( NSUInteger i = 0; i < [self.assemblage numberOfChildren]; i++ ) {
+        RZMutableAssemblage *assemblage = [self.assemblage objectAtIndex:i];
+        while ( [assemblage numberOfChildren] > 2 ) {
             [assemblage removeLastObject];
         }
     }
