@@ -8,25 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "RZAssemblage.h"
+#import "RZAssemblageProtocols.h"
 
-@interface RZMutableAssemblage : RZAssemblage
+@interface RZMutableAssemblage : RZAssemblage <RZMutableAssemblageSupport>
 
 - (instancetype)initWithArray:(NSArray *)array;
 
-// Basic mutation
-- (void)addObject:(id)anObject;
-- (void)insertObject:(id)anObject atIndex:(NSUInteger)index;
-- (void)removeLastObject;
-- (void)removeObjectAtIndex:(NSUInteger)index;
-- (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2;
-
 // Remote change notification
 - (void)notifyObjectUpdate:(id)object;
-
-// Index Path mutation.
-// These methods will assert if the index path lands on a non-mutable assemblage.
-- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath;
-- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
-- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2;
+- (void)addObject:(id)anObject;
+- (void)removeLastObject;
 
 @end

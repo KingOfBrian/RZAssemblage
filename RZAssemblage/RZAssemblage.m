@@ -8,6 +8,11 @@
 
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
+#import "RZAssemblageProtocols.h"
+
+#define RZConformTraversal(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblageMutationTraversal)], @"Index Path attempted to traverse %@, which does not conform to RZAssemblageMutationTraversal", assemblage);
+#define RZConformMutationSupport(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZMutableAssemblageSupport)], @"Index Path landed on %@, which does not support mutation.", self);
+#define RZIndexPathWithLength(indexPath) RZRaize(indexPath.length > 0, @"Index Path is empty")
 
 @implementation RZAssemblage
 
@@ -77,18 +82,6 @@
     return [self.store indexOfObject:assemblage];
 }
 
-- (id<RZAssemblage>)assemblageHoldingIndexPath:(NSIndexPath *)indexPath
-{
-    id<RZAssemblage> assemblage = self;
-    if ( [indexPath length] > 1 ) {
-        NSIndexPath *nextIndex = [NSIndexPath indexPathWithIndex:[indexPath indexAtPosition:0]];
-        NSIndexPath *remainingIndexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-        assemblage = [self objectAtIndexPath:nextIndex];
-        assemblage = [assemblage assemblageHoldingIndexPath:remainingIndexPath];
-    }
-    return assemblage;
-}
-
 - (void)assignDelegateIfObjectIsAssemblage:(id)anObject
 {
     if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
@@ -96,14 +89,75 @@
     }
 }
 
-- (NSIndexPath *)transformIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage
+- (NSIndexPath *)indexPathFromChildIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage
 {
     return [indexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
+}
+
+- (NSIndexPath *)childIndexPathFromIndexPath:(NSIndexPath *)indexPath
+{
+    return [indexPath rz_indexPathByRemovingFirstIndex];
+}
+
+- (BOOL)leafNodeForIndexPath:(NSIndexPath *)indexPath
+{
+    return [indexPath length] == 1;
+}
+
+- (id<RZAssemblageMutationTraversal>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
+{
+    return [self objectAtIndex:[indexPath indexAtPosition:0]];
 }
 
 - (void)beginUpdates
 {
     [self willBeginUpdatesForAssemblage:self];
+}
+
+#pragma mark - Index Path Mutation
+
+
+- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
+{
+    RZIndexPathWithLength(indexPath);
+    NSUInteger index = [indexPath indexAtPosition:0];
+    if ( [self leafNodeForIndexPath:indexPath] ) {
+        RZConformMutationSupport(self);
+        id<RZMutableAssemblageSupport> assemblage = (id)self;
+        [assemblage insertObject:anObject atIndex:index];
+    }
+    else {
+        id<RZAssemblageMutationTraversal> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:YES];
+        RZConformTraversal(assemblage);
+        NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
+        [assemblage insertObject:anObject atIndexPath:childIndexPath];
+    }
+}
+
+- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
+{
+    RZIndexPathWithLength(indexPath);
+    NSUInteger index = [indexPath indexAtPosition:0];
+    if ( [self leafNodeForIndexPath:indexPath] ) {
+        id<RZMutableAssemblageSupport> assemblage = (id)self;
+        RZConformMutationSupport(assemblage);
+        [assemblage removeObjectAtIndex:index];
+    }
+    else {
+        id<RZAssemblageMutationTraversal> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:NO];
+        RZConformTraversal(assemblage);
+        NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
+        [assemblage removeObjectAtIndexPath:childIndexPath];
+    }
+}
+
+- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2
+{
+    [self beginUpdates];
+    id object = [self objectAtIndexPath:indexPath1];
+    [self removeObjectAtIndexPath:indexPath1];
+    [self insertObject:object atIndexPath:indexPath2];
+    [self endUpdates];
 }
 
 - (void)endUpdates
@@ -121,26 +175,26 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [self transformIndexPath:indexPath fromAssemblage:assemblage];
+    NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didInsertObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [self transformIndexPath:indexPath fromAssemblage:assemblage];
+    NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didRemoveObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *newIndexPath = [self transformIndexPath:indexPath fromAssemblage:assemblage];
+    NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didUpdateObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    NSIndexPath *newFromIndexPath = [self transformIndexPath:fromIndexPath fromAssemblage:assemblage];
-    NSIndexPath *newToIndexPath = [self transformIndexPath:toIndexPath fromAssemblage:assemblage];
+    NSIndexPath *newFromIndexPath = [self indexPathFromChildIndexPath:fromIndexPath fromAssemblage:assemblage];
+    NSIndexPath *newToIndexPath = [self indexPathFromChildIndexPath:toIndexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didMoveObject:object fromIndexPath:newFromIndexPath toIndexPath:newToIndexPath];
 }
 

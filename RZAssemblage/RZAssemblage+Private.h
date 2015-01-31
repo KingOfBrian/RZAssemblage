@@ -10,7 +10,7 @@
 
 #define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
 
-@interface RZAssemblage() <RZAssemblageDelegate> {
+@interface RZAssemblage() <RZAssemblageDelegate, RZAssemblageMutationTraversalSupport> {
 @protected
     NSArray *_store;
 }
@@ -20,10 +20,5 @@
 @property (assign, nonatomic) NSUInteger updateCount;
 
 - (void)assignDelegateIfObjectIsAssemblage:(id)anObject;
-
-- (NSIndexPath *)transformIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage;
-
-- (id<RZAssemblage>)assemblageHoldingIndexPath:(NSIndexPath *)indexPath;
-
 
 @end

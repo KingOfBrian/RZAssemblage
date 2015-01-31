@@ -41,16 +41,6 @@
     [self didEndUpdatesForEnsemble:self];
 }
 
-- (void)insertObject:(id)anObject atIndex:(NSUInteger)index
-{
-    NSParameterAssert(anObject);
-    [self assignDelegateIfObjectIsAssemblage:anObject];
-    [self willBeginUpdatesForAssemblage:self];
-    [self.store insertObject:anObject atIndex:index];
-    [self.delegate assemblage:self didInsertObject:anObject atIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self didEndUpdatesForEnsemble:self];
-}
-
 - (void)removeLastObject
 {
     [self willBeginUpdatesForAssemblage:self];
@@ -58,6 +48,16 @@
     id object = [self.store objectAtIndex:index];
     [self.store removeObjectAtIndex:index];
     [self.delegate assemblage:self didRemoveObject:object atIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self didEndUpdatesForEnsemble:self];
+}
+
+- (void)insertObject:(id)anObject atIndex:(NSUInteger)index
+{
+    NSParameterAssert(anObject);
+    [self assignDelegateIfObjectIsAssemblage:anObject];
+    [self willBeginUpdatesForAssemblage:self];
+    [self.store insertObject:anObject atIndex:index];
+    [self.delegate assemblage:self didInsertObject:anObject atIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self didEndUpdatesForEnsemble:self];
 }
 
@@ -70,17 +70,6 @@
     [self didEndUpdatesForEnsemble:self];
 }
 
-- (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2
-{
-    [self willBeginUpdatesForAssemblage:self];
-    id object = [self.store objectAtIndex:idx1];
-    [self.store exchangeObjectAtIndex:idx1 withObjectAtIndex:idx2];
-    [self.delegate assemblage:self didMoveObject:object
-                fromIndexPath:[NSIndexPath indexPathWithIndex:idx1]
-                  toIndexPath:[NSIndexPath indexPathWithIndex:idx2]];
-    [self didEndUpdatesForEnsemble:self];
-}
-
 - (void)notifyObjectUpdate:(id)anObject
 {
     NSParameterAssert(anObject);
@@ -89,39 +78,6 @@
     [self willBeginUpdatesForAssemblage:self];
     [self.delegate assemblage:self didUpdateObject:anObject atIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self didEndUpdatesForEnsemble:self];
-}
-
-#pragma mark - Index Path Mutation
-
-- (RZMutableAssemblage *)mutableAssemblageHoldingIndexPath:(NSIndexPath *)indexPath
-{
-    id<RZAssemblage> object = [self assemblageHoldingIndexPath:indexPath];
-    if ( [object isKindOfClass:[RZMutableAssemblage class]] == NO ) {
-        [NSException raise:NSInvalidArgumentException format:@"Index Path %@ did not lead to a %@, but %@", indexPath, [RZMutableAssemblage class], object];
-    }
-    return (RZMutableAssemblage *)object;
-}
-
-- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
-{
-    RZMutableAssemblage *container = [self mutableAssemblageHoldingIndexPath:indexPath];
-    [container insertObject:anObject atIndex:[indexPath rz_lastIndex]];
-}
-
-- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
-{
-    RZMutableAssemblage *container = [self mutableAssemblageHoldingIndexPath:indexPath];
-    [container removeObjectAtIndex:[indexPath rz_lastIndex]];
-}
-
-- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2
-{
-    [self beginUpdates];
-    id object = [self objectAtIndexPath:indexPath1];
-    [self removeObjectAtIndexPath:indexPath1];
-    [self insertObject:object atIndexPath:indexPath2];
-    [self endUpdates];
-
 }
 
 @end

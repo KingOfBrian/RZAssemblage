@@ -137,8 +137,14 @@ _Pragma("clang diagnostic pop")                                         \
 
 - (void)move
 {
-    [self.assemblage moveObjectAtIndexPath:[self randomExistingIndexPath]
+    NSIndexPath *fromIndexPath = [self randomExistingIndexPath];
+    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
+    [self.assemblage moveObjectAtIndexPath:fromIndexPath
                                toIndexPath:[self randomExistingIndexPath]];
+
+    if ( [assemblage numberOfChildrenAtIndexPath:nil] == 0 ) {
+        [assemblage addObject:@"Move went Empty, Add an item"];
+    }
 }
 
 - (void)addRow
