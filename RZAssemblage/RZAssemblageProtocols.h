@@ -15,8 +15,14 @@
 - (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath;
 
-
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
+
+@end
+
+@protocol RZMutableAssemblageSupport <RZAssemblage>
+
+- (void)insertObject:(id)anObject atIndex:(NSUInteger)index;
+- (void)removeObjectAtIndex:(NSUInteger)index;
 
 @end
 
@@ -27,28 +33,6 @@
 - (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath;
 - (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
 - (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2;
-
-@end
-
-@protocol RZAssemblageMutationTraversalSupport <NSObject>
-
-// Determine the index path to present to the delegate, given the indexPath specified by the child assemblage
-- (NSIndexPath *)indexPathFromChildIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage;
-
-// Determine the child index path
-- (NSIndexPath *)childIndexPathFromIndexPath:(NSIndexPath *)indexPath;
-
-// Determine if the index path should terminate on this assemblage
-- (BOOL)leafNodeForIndexPath:(NSIndexPath *)indexPath;
-
-- (id<RZAssemblageMutationTraversal>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty;
-
-@end
-
-@protocol RZMutableAssemblageSupport <RZAssemblage>
-
-- (void)insertObject:(id)anObject atIndex:(NSUInteger)index;
-- (void)removeObjectAtIndex:(NSUInteger)index;
 
 @end
 

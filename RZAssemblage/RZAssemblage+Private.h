@@ -7,6 +7,7 @@
 //
 
 #import "RZAssemblage.h"
+#import "RZAssemblageProtocols+Private.h"
 
 #define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
 
