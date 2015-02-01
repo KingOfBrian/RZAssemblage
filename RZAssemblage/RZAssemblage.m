@@ -66,6 +66,11 @@
     return object;
 }
 
+- (NSArray *)allItems
+{
+    return [self.store copy];
+}
+
 - (id)objectAtIndex:(NSUInteger)index
 {
     return [self.store objectAtIndex:index];

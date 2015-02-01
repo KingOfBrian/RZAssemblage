@@ -16,6 +16,7 @@ _Pragma("clang diagnostic pop")                                         \
 #import "RZMutableAssemblage.h"
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZFlatAssemblage.h"
+#import "RZFilteredAssemblage.h"
 
 @interface MutatableAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
 
@@ -45,11 +46,15 @@ _Pragma("clang diagnostic pop")                                         \
     RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
     RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
     RZMutableAssemblage *m4 = [[RZMutableAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
-    
+    self.index = 12;
     self.mutableAssemblages = @[m1, m2, m3, m4];
 
     RZFlatAssemblage *f1 = [[RZFlatAssemblage alloc] initWithArray:@[m3, m4]];
-    self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[m1, m2, f1]];
+    RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
+    filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
+        return [numberString integerValue] % 2;
+    }];
+    self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[m1, m2, filtered]];
 
     self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
                                                                      forTableView:self.tableView
@@ -113,7 +118,7 @@ _Pragma("clang diagnostic pop")                                         \
 - (NSString *)nextValue
 {
     self.index++;
-    return [NSString stringWithFormat:@"Item %@", @(self.index)];
+    return [NSString stringWithFormat:@"%@", @(self.index)];
 }
 
 - (NSUInteger)randomSectionIndex

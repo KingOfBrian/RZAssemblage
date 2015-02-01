@@ -9,6 +9,7 @@
 #import "MasterViewController.h"
 
 #import "MutatableAssemblageTableViewController.h"
+#import "FilteredAssemblageTableViewController.h"
 
 #import "RZAssemblage.h"
 #import "RZAssemblageTableViewDataSource.h"
@@ -31,9 +32,9 @@
     blue.title = @"Blue View Controller";
 
     UIViewController *mutable = [[MutatableAssemblageTableViewController alloc] init];
-
+    UIViewController *filtered = [[FilteredAssemblageTableViewController alloc] init];
     self.assemblage = [[RZAssemblage alloc] initWithArray:@[
-                                                            [[RZAssemblage alloc] initWithArray:@[red, blue, mutable]],
+                                                            [[RZAssemblage alloc] initWithArray:@[red, blue, mutable, filtered]],
                                                             [[RZAssemblage alloc] initWithArray:@[@"String Value A", @"String Value B"]],
                                                             ]];
     self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage

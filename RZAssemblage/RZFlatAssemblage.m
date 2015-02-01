@@ -21,6 +21,11 @@
     return self;
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@: %p flaten %@", self.class, self, self.store];
+}
+
 - (id)objectAtIndex:(NSUInteger)index
 {
     NSUInteger offset = 0;

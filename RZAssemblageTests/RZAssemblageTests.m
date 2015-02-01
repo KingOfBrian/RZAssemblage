@@ -11,6 +11,7 @@
 #import "RZAssemblage.h"
 #import "RZMutableAssemblage.h"
 #import "RZFlatAssemblage.h"
+#import "RZFilteredAssemblage.h"
 
 #define TRACE_DELEGATE_EVENT \
 RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \
@@ -30,6 +31,12 @@ event.delegateSelector = _cmd; \
 @end
 
 @implementation RZAssemblageDelegateEvent
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@, %p %@ %@ %@ %@>", [super description], self.assemblage, NSStringFromSelector(self.delegateSelector), self.object, self.indexPath, self.toIndexPath ? self.toIndexPath : @""];
+}
+
 @end
 
 @interface RZAssemblageTests : XCTestCase <RZAssemblageDelegate>
@@ -298,7 +305,6 @@ event.delegateSelector = _cmd; \
 - (void)testNestedGroupedMutableDelegation
 {
     NSIndexPath *firstIndexPath = [NSIndexPath indexPathForRow:0 inSection:1];
-    NSIndexPath *secondIndexPath = [NSIndexPath indexPathForRow:1 inSection:1];
     RZMutableAssemblage *parent = [[RZMutableAssemblage alloc] initWithArray:@[]];
     parent.delegate = self;
     [parent addObject:[[RZAssemblage alloc] initWithArray:@[]]];
@@ -349,6 +355,42 @@ event.delegateSelector = _cmd; \
 
     [mutableValues endUpdates];
     XCTAssertEqual(self.firstEvent.delegateSelector, @selector(didEndUpdatesForEnsemble:));
+    [self.delegateEvents removeAllObjects];
+}
+
+- (void)testSorting
+{
+    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12]];
+#define START_STOP_EVENT_COUNT 2
+#define CHILD_COUNT 12
+#define EVEN_CHILD_COUNT 12 / 2
+#define THIRD_CHILD_COUNT 12 / 3
+
+    RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
+    s1.delegate = self;
+    [s1 beginUpdates];
+    XCTAssertEqual([s1 numberOfChildren], CHILD_COUNT);
+    s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
+        return [n unsignedIntegerValue] % 2 == 0;
+    }];
+    [s1 endUpdates];
+    XCTAssertEqual([s1 numberOfChildren], EVEN_CHILD_COUNT);
+    XCTAssert(self.delegateEvents.count == START_STOP_EVENT_COUNT + EVEN_CHILD_COUNT);
+    for ( NSUInteger i = 1; i <= EVEN_CHILD_COUNT; i++ ) {
+        XCTAssertEqual([[self.delegateEvents objectAtIndex:i] delegateSelector],
+                       @selector(assemblage:didRemoveObject:atIndexPath:));
+    }
+    [self.delegateEvents removeAllObjects];
+
+
+    [s1 beginUpdates];
+    s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
+        return [n unsignedIntegerValue] % 3 == 0;
+    }];
+    [s1 endUpdates];
+
+    XCTAssertEqual([s1 numberOfChildren], THIRD_CHILD_COUNT);
+
     [self.delegateEvents removeAllObjects];
 }
 
