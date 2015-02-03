@@ -134,7 +134,7 @@ _Pragma("clang diagnostic pop")                                         \
 
 - (NSIndexPath *)randomExistingIndexPath
 {
-    NSUInteger section = [self randomSectionIndex];
+    NSUInteger section = 2;//[self randomSectionIndex];
     RZAssemblage *assemblage = [self.assemblage objectAtIndex:section];
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
     return [NSIndexPath indexPathForRow:row inSection:section];
@@ -186,7 +186,7 @@ _Pragma("clang diagnostic pop")                                         \
     NSUInteger index = arc4random() % actions.count;
     NSValue *boxedSelector = actions[index];
     SEL selector = [boxedSelector pointerValue];
-
+    NSLog(@"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     SUPPRESS_PERFORM_SELECTOR_LEAK_WARNING([self performSelector:selector]);
 }
 

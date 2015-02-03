@@ -169,6 +169,8 @@
 
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
 {
+    RZLogTrace1(assemblage);
+
     if ( self.updateCount == 0 ) {
         [self.delegate willBeginUpdatesForAssemblage:self];
     }
@@ -177,24 +179,31 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
+
     NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didInsertObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
+
     NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didRemoveObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
     NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didUpdateObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
+    RZLogTrace4(assemblage, object, fromIndexPath, toIndexPath);
+
     NSIndexPath *newFromIndexPath = [self indexPathFromChildIndexPath:fromIndexPath fromAssemblage:assemblage];
     NSIndexPath *newToIndexPath = [self indexPathFromChildIndexPath:toIndexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didMoveObject:object fromIndexPath:newFromIndexPath toIndexPath:newToIndexPath];
@@ -202,6 +211,7 @@
 
 - (void)didEndUpdatesForEnsemble:(id<RZAssemblage>)assemblage
 {
+    RZLogTrace1(assemblage);
     self.updateCount -= 1;
 
     if ( self.updateCount == 0 ) {

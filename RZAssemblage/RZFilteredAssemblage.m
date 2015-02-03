@@ -64,14 +64,27 @@
     [self updateFilterState];
 }
 
+- (void)shiftIndexesAfter:(NSUInteger)index by:(NSUInteger)increment
+{
+    NSIndexSet *laterIndexes = [self.filteredIndexes indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+        return idx >= index;
+    }];
+    [self.filteredIndexes removeIndexes:laterIndexes];
+    [laterIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [self.filteredIndexes addIndex:idx + increment];
+    }];
+}
+
 - (void)addFilterForIndex:(NSUInteger)index
 {
+    [self shiftIndexesAfter:index by:1];
     [self.filteredIndexes addIndex:index];
 }
 
 - (void)removeFilterForIndex:(NSUInteger)index
 {
     [self.filteredIndexes removeIndex:index];
+    [self shiftIndexesAfter:index by:-1];
 }
 
 - (void)updateFilterState
@@ -83,7 +96,6 @@
 
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
             [self addFilterForIndex:index];
-
             [self.delegate assemblage:self didRemoveObject:object atIndexPath:childIndexPath];
         }
         else if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO) {
@@ -157,14 +169,13 @@
 {
     RZLogTrace3(assemblage, object, indexPath);
     NSUInteger index = [indexPath indexAtPosition:0];
-    // Update our state if this came from our delegate and not our delgate relay from update
-    if ( assemblage != self ) {
-        [self.store insertObject:object atIndex:index];
-    }
-    if ( [self isObjectFiltered:object] ) {
+    [self.store insertObject:object atIndex:index];
+    BOOL filtered = [self isObjectFiltered:object];
+    if ( filtered ) {
         [self addFilterForIndex:index];
     }
     else {
+        [self shiftIndexesAfter:index by:1];
         indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
         [self.delegate assemblage:self didInsertObject:object atIndexPath:indexPath];
     }
@@ -174,14 +185,10 @@
 {
     RZLogTrace3(assemblage, object, indexPath);
     NSUInteger index = [indexPath indexAtPosition:0];
-    // Update our state if this came from our delegate and not our delgate relay from update
-    if ( assemblage != self ) {
-        [self.store removeObjectAtIndex:index];
-    }
-    if ( [self.filteredIndexes containsIndex:index] ) {
-        [self removeFilterForIndex:index];
-    }
-    else {
+    BOOL filtered = [self.filteredIndexes containsIndex:index];
+    [self.store removeObjectAtIndex:index];
+    [self removeFilterForIndex:index];
+    if ( filtered == NO ) {
         indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
         [self.delegate assemblage:self didRemoveObject:object atIndexPath:indexPath];
     }
@@ -193,10 +200,12 @@
     NSUInteger index = [indexPath indexAtPosition:0];
     indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO ) {
-        [self assemblage:self didInsertObject:object atIndexPath:indexPath];
+        [self removeFilterForIndex:index];
+        [self.delegate assemblage:self didInsertObject:object atIndexPath:indexPath];
     }
     else if ( [self isIndexFiltered:index] == NO && [self isObjectFiltered:object] ) {
-        [self assemblage:self didRemoveObject:object atIndexPath:indexPath];
+        [self addFilterForIndex:index];
+        [self.delegate assemblage:self didRemoveObject:object atIndexPath:indexPath];
     }
     else {
         [self.delegate assemblage:self didUpdateObject:object atIndexPath:indexPath];
