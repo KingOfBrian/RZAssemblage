@@ -375,10 +375,16 @@ event.delegateSelector = _cmd; \
     }];
     [s1 endUpdates];
     XCTAssertEqual([s1 numberOfChildren], EVEN_CHILD_COUNT);
-    XCTAssert(self.delegateEvents.count == START_STOP_EVENT_COUNT + EVEN_CHILD_COUNT);
-    for ( NSUInteger i = 1; i <= EVEN_CHILD_COUNT; i++ ) {
-        XCTAssertEqual([[self.delegateEvents objectAtIndex:i] delegateSelector],
-                       @selector(assemblage:didRemoveObject:atIndexPath:));
+    XCTAssert(self.delegateEvents.count == CHILD_COUNT + START_STOP_EVENT_COUNT);
+    for ( NSUInteger i = 1; i <= CHILD_COUNT; i++ ) {
+        if ( i % 2 ) {
+            XCTAssertEqual([[self.delegateEvents objectAtIndex:i] delegateSelector],
+                           @selector(assemblage:didRemoveObject:atIndexPath:));
+        }
+        else {
+            XCTAssertEqual([[self.delegateEvents objectAtIndex:i] delegateSelector],
+                           @selector(assemblage:didUpdateObject:atIndexPath:));
+        }
     }
     [self.delegateEvents removeAllObjects];
 
