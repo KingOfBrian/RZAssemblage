@@ -10,7 +10,7 @@
 #import <XCTest/XCTest.h>
 #import "RZAssemblage.h"
 #import "RZMutableAssemblage.h"
-#import "RZFlatAssemblage.h"
+#import "RZJoinAssemblage.h"
 #import "RZFilteredAssemblage.h"
 
 #define TRACE_DELEGATE_EVENT \
@@ -200,13 +200,13 @@ event.delegateSelector = _cmd; \
     [self.delegateEvents removeAllObjects];
 }
 
-- (void)testFlatDelegation
+- (void)testJoinDelegation
 {
     RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[]];
     RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[]];
     RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[]];
     NSArray *assemblages = @[m1, m2, m3];
-    RZFlatAssemblage *assemblage = [[RZFlatAssemblage alloc] initWithArray:@[m1, m2, m3]];
+    RZJoinAssemblage *assemblage = [[RZJoinAssemblage alloc] initWithArray:@[m1, m2, m3]];
     assemblage.delegate = self;
 
     [assemblage beginUpdates];
@@ -237,12 +237,12 @@ event.delegateSelector = _cmd; \
     [assemblage endUpdates];
 }
 
-- (void)testFlatIndexPathMutation
+- (void)testJoinIndexPathMutation
 {
     RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[]];
     RZMutableAssemblage *f1m1 = [[RZMutableAssemblage alloc] initWithArray:@[]];
     RZMutableAssemblage *f1m2 = [[RZMutableAssemblage alloc] initWithArray:@[]];
-    RZFlatAssemblage *f1 = [[RZFlatAssemblage alloc] initWithArray:@[f1m1, f1m2]];
+    RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:@[f1m1, f1m2]];
     RZMutableAssemblage *assemblage = [[RZMutableAssemblage alloc] initWithArray:@[m1, f1]];
     assemblage.delegate = self;
 
@@ -400,7 +400,7 @@ event.delegateSelector = _cmd; \
     [self.delegateEvents removeAllObjects];
 }
 
-- (void)testFilterFlat
+- (void)testFilterJoin
 {
 
     NSArray *values = @[@"aa",
@@ -436,7 +436,7 @@ event.delegateSelector = _cmd; \
                              [[RZAssemblage alloc] initWithArray:values],
                              [[RZAssemblage alloc] initWithArray:values],
                              [[RZAssemblage alloc] initWithArray:values]];
-    RZFlatAssemblage *f1 = [[RZFlatAssemblage alloc] initWithArray:assemblages];
+    RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:assemblages];
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
     s1.delegate = self;
     [s1 beginUpdates];
@@ -492,7 +492,7 @@ event.delegateSelector = _cmd; \
     RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
     RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
     RZMutableAssemblage *m4 = [[RZMutableAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
-    RZFlatAssemblage *f1 = [[RZFlatAssemblage alloc] initWithArray:@[m3, m4]];
+    RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:@[m3, m4]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;

@@ -15,7 +15,7 @@ _Pragma("clang diagnostic pop")                                         \
 #import "MutatableAssemblageTableViewController.h"
 #import "RZMutableAssemblage.h"
 #import "RZAssemblageTableViewDataSource.h"
-#import "RZFlatAssemblage.h"
+#import "RZJoinAssemblage.h"
 #import "RZFilteredAssemblage.h"
 
 @interface MutatableAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
@@ -49,7 +49,7 @@ _Pragma("clang diagnostic pop")                                         \
     self.index = 12;
     self.mutableAssemblages = @[m1, m2, m3, m4];
 
-    RZFlatAssemblage *f1 = [[RZFlatAssemblage alloc] initWithArray:@[m3, m4]];
+    RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:@[m3, m4]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;

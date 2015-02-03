@@ -1,5 +1,5 @@
 //
-//  RZFlatAssemblage.h
+//  RZJoinAssemblage.h
 //  RZAssemblage
 //
 //  Created by Brian King on 1/29/15.
@@ -10,8 +10,8 @@
 #import "RZAssemblage.h"
 
 /**
- *  A Flat Assemblage flattens multiple assemblages into one.
+ *  A Join Assemblage jointens multiple assemblages into one.
  */
-@interface RZFlatAssemblage : RZAssemblage
+@interface RZJoinAssemblage : RZAssemblage
 
 @end

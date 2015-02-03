@@ -1,29 +1,29 @@
 //
-//  RZFlatAssemblage.m
+//  RZJoinAssemblage.m
 //  RZAssemblage
 //
 //  Created by Brian King on 1/29/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZFlatAssemblage.h"
+#import "RZJoinAssemblage.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblage+Private.h"
 
-@implementation RZFlatAssemblage
+@implementation RZJoinAssemblage
 
 - (id)initWithArray:(NSArray *)array
 {
     self = [super initWithArray:array];
     for ( id<RZAssemblage> assemblage in array ) {
-        RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"All objects in RZFlatAssemblage must conform to RZAssemblage");
+        RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"All objects in RZJoinAssemblage must conform to RZAssemblage");
     }
     return self;
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p flaten %@", self.class, self, self.store];
+    return [NSString stringWithFormat:@"<%@: %p joinen %@", self.class, self, self.store];
 }
 
 - (id)objectAtIndex:(NSUInteger)index
