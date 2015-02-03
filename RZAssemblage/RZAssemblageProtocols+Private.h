@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol RZAssemblageMutationTraversalSupport <NSObject>
+@protocol RZAssemblageMutationTraversalSupport <RZAssemblageMutationTraversal>
 
 // Determine the index path to present to the delegate, given the indexPath specified by the child assemblage
 - (NSIndexPath *)indexPathFromChildIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage;
@@ -19,6 +19,6 @@
 // Determine if the index path should terminate on this assemblage
 - (BOOL)leafNodeForIndexPath:(NSIndexPath *)indexPath;
 
-- (id<RZAssemblageMutationTraversal>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty;
+- (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty;
 
 @end

@@ -9,10 +9,7 @@
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageProtocols.h"
-
-#define RZConformTraversal(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblageMutationTraversal)], @"Index Path attempted to traverse %@, which does not conform to RZAssemblageMutationTraversal", assemblage);
-#define RZConformMutationSupport(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZMutableAssemblageSupport)], @"Index Path landed on %@, which does not support mutation.", self);
-#define RZIndexPathWithLength(indexPath) RZRaize(indexPath.length > 0, @"Index Path is empty")
+#import "RZAssemblageDefines.h"
 
 @implementation RZAssemblage
 
@@ -109,7 +106,7 @@
     return [indexPath length] == 1;
 }
 
-- (id<RZAssemblageMutationTraversal>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
+- (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
 {
     return [self objectAtIndex:[indexPath indexAtPosition:0]];
 }
@@ -132,7 +129,7 @@
         [assemblage insertObject:anObject atIndex:index];
     }
     else {
-        id<RZAssemblageMutationTraversal> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:YES];
+        id<RZAssemblageMutationTraversalSupport> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:YES];
         RZConformTraversal(assemblage);
         NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
         [assemblage insertObject:anObject atIndexPath:childIndexPath];
@@ -149,7 +146,7 @@
         [assemblage removeObjectAtIndex:index];
     }
     else {
-        id<RZAssemblageMutationTraversal> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:NO];
+        id<RZAssemblageMutationTraversalSupport> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:NO];
         RZConformTraversal(assemblage);
         NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
         [assemblage removeObjectAtIndexPath:childIndexPath];

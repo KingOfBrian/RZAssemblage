@@ -102,7 +102,7 @@
     return index;
 }
 
-- (id<RZAssemblageMutationTraversal>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
+- (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
 {
     NSUInteger index = [self indexOfAssemblageContainingParentIndexPath:indexPath];
     id<RZAssemblageMutationTraversal> assemblage = [self.store objectAtIndex:index];

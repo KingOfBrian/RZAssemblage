@@ -9,6 +9,7 @@
 #import "RZFRCAssemblage.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblage+Private.h"
+#import "RZAssemblageDefines.h"
 
 #define RZAssertIndexPathLength(indexPath, offset) RZRaize(indexPath.length <= ((self.hasSections ? 2 : 1) + offset), @"Index Path %@ has length of %lu, expected index <= %d", indexPath, (unsigned long)indexPath.length, ((self.hasSections ? 2 : 1) + offset))
 #define RZAssertContainerIndexPath(indexPath) RZAssertIndexPathLength(indexPath, -1)
@@ -92,6 +93,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
+    RZLogTrace1(controller);
     [self.delegate willBeginUpdatesForAssemblage:self];
 }
 
@@ -101,6 +103,7 @@
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
+    RZLogTrace5(controller, anObject, indexPath, @(type), newIndexPath);
     // If this NSFRC does not have sections, strip the section index path, which will always be 0.
     indexPath = self.hasSections ? indexPath : [indexPath rz_indexPathByRemovingFirstIndex];
     newIndexPath = self.hasSections ? newIndexPath : [newIndexPath rz_indexPathByRemovingFirstIndex];
@@ -130,6 +133,7 @@
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type
 {
+    RZLogTrace4(controller, sectionInfo, @(sectionIndex), @(type));
     NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:sectionIndex];
     switch ( type ) {
         case NSFetchedResultsChangeInsert: {
@@ -148,6 +152,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    RZLogTrace1(controller);
     [self.delegate didEndUpdatesForEnsemble:self];
 }
 

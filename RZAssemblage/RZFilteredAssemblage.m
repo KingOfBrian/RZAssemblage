@@ -9,6 +9,7 @@
 #import "RZFilteredAssemblage.h"
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
+#import "RZAssemblageDefines.h"
 
 @interface RZFilteredAssemblage()
 
@@ -63,6 +64,16 @@
     [self updateFilterState];
 }
 
+- (void)addFilterForIndex:(NSUInteger)index
+{
+    [self.filteredIndexes addIndex:index];
+}
+
+- (void)removeFilterForIndex:(NSUInteger)index
+{
+    [self.filteredIndexes removeIndex:index];
+}
+
 - (void)updateFilterState
 {
     [self beginUpdates];
@@ -71,16 +82,16 @@
         NSIndexPath *childIndexPath = [NSIndexPath indexPathWithIndex:childIndex];
 
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
-            [self.filteredIndexes addIndex:index];
+            [self addFilterForIndex:index];
 
             [self.delegate assemblage:self didRemoveObject:object atIndexPath:childIndexPath];
         }
         else if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO) {
-            [self.filteredIndexes removeIndex:index];
+            [self removeFilterForIndex:index];
             [self.delegate assemblage:self didInsertObject:object atIndexPath:childIndexPath];
         }
         else {
-            [self.delegate assemblage:self didUpdateObject:object atIndexPath: [NSIndexPath indexPathWithIndex:index]];
+            [self.delegate assemblage:self didUpdateObject:object atIndexPath:childIndexPath];
         }
     }];
     [self endUpdates];
@@ -97,7 +108,7 @@
 {
     __block NSUInteger index = [indexPath indexAtPosition:0];
     [self.filteredIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        if (idx < index) {
+        if (idx <= index) {
             index += 1;
         }
     }];
@@ -114,8 +125,9 @@
 
 - (NSIndexPath *)childIndexPathFromIndexPath:(NSIndexPath *)indexPath
 {
+    NSUInteger index = [self realIndexFromIndexPath:indexPath];
     indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-    return [indexPath indexPathByAddingIndex:[self realIndexFromIndexPath:indexPath]];
+    return [indexPath indexPathByAddingIndex:index];
 }
 
 - (BOOL)leafNodeForIndexPath:(NSIndexPath *)indexPath
@@ -123,10 +135,10 @@
     return NO;
 }
 
-- (id<RZAssemblageMutationTraversal>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty;
+- (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty;
 {
-    if ( [self.filteredAssemblage conformsToProtocol:@protocol(RZAssemblageMutationTraversal)] ) {
-        return (id<RZAssemblageMutationTraversal>)self.filteredAssemblage;
+    if ( [self.filteredAssemblage conformsToProtocol:@protocol(RZAssemblageMutationTraversalSupport)] ) {
+        return (id)self.filteredAssemblage;
     }
     return nil;
 }
@@ -143,13 +155,14 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
     NSUInteger index = [indexPath indexAtPosition:0];
     // Update our state if this came from our delegate and not our delgate relay from update
     if ( assemblage != self ) {
         [self.store insertObject:object atIndex:index];
     }
     if ( [self isObjectFiltered:object] ) {
-        [self.filteredIndexes addIndex:index];
+        [self addFilterForIndex:index];
     }
     else {
         indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
@@ -159,13 +172,14 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
     NSUInteger index = [indexPath indexAtPosition:0];
     // Update our state if this came from our delegate and not our delgate relay from update
     if ( assemblage != self ) {
         [self.store removeObjectAtIndex:index];
     }
     if ( [self.filteredIndexes containsIndex:index] ) {
-        [self.filteredIndexes removeIndex:index];
+        [self removeFilterForIndex:index];
     }
     else {
         indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
@@ -175,13 +189,14 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
+    RZLogTrace3(assemblage, object, indexPath);
     NSUInteger index = [indexPath indexAtPosition:0];
     indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO ) {
-        [self.delegate assemblage:self didInsertObject:object atIndexPath:indexPath];
+        [self assemblage:self didInsertObject:object atIndexPath:indexPath];
     }
     else if ( [self isIndexFiltered:index] == NO && [self isObjectFiltered:object] ) {
-        [self.delegate assemblage:self didRemoveObject:object atIndexPath:indexPath];
+        [self assemblage:self didRemoveObject:object atIndexPath:indexPath];
     }
     else {
         [self.delegate assemblage:self didUpdateObject:object atIndexPath:indexPath];

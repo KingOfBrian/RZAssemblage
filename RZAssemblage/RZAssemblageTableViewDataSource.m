@@ -7,12 +7,7 @@
 //
 
 #import "RZAssemblageTableViewDataSource.h"
-
-#define RZLog(format, ...) //NSLog(format, ##__VA_ARGS__)
-#define RZLogTrace1(arg1) RZLog(@"%@ - %@", NSStringFromSelector(_cmd), arg1)
-#define RZLogTrace2(arg1, arg2) RZLog(@"%@ - %@ %@", NSStringFromSelector(_cmd), arg1, arg2)
-#define RZLogTrace3(arg1, arg2, arg3) RZLog(@"%@ - %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3)
-#define RZLogTrace4(arg1, arg2, arg3, arg4) RZLog(@"%@ - %@ %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3, arg4);
+#import "RZAssemblageDefines.h"
 
 @interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
 
@@ -51,12 +46,16 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self.assemblage numberOfChildrenAtIndexPath:nil];
+    NSUInteger count = [self.assemblage numberOfChildrenAtIndexPath:nil];
+    RZLogTrace1(@(count));
+    return count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.assemblage numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    NSUInteger count = [self.assemblage numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    RZLogTrace1(@(count));
+    return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

@@ -358,7 +358,7 @@ event.delegateSelector = _cmd; \
     [self.delegateEvents removeAllObjects];
 }
 
-- (void)testSorting
+- (void)testFilterNumericA
 {
     RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12]];
 #define START_STOP_EVENT_COUNT 2
@@ -392,6 +392,111 @@ event.delegateSelector = _cmd; \
     XCTAssertEqual([s1 numberOfChildren], THIRD_CHILD_COUNT);
 
     [self.delegateEvents removeAllObjects];
+}
+
+- (void)testFilterFlat
+{
+
+    NSArray *values = @[@"aa",
+                        @"ab",
+                        @"ac",
+                        @"ad",
+                        @"ae",
+                        @"af",
+                        @"ba",
+                        @"bb",
+                        @"bc",
+                        @"bd",
+                        @"be",
+                        @"bf",
+                        @"ca",
+                        @"cb",
+                        @"cc",
+                        @"cd",
+                        @"ce",
+                        @"cf",
+                        @"da",
+                        @"db",
+                        @"dc",
+                        @"dd",
+                        @"de",
+                        @"df"];
+    NSPredicate *aFilter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
+        return [s hasPrefix:@"a"];
+    }];
+    NSArray *aValues = [values filteredArrayUsingPredicate:aFilter];
+
+    NSArray *assemblages = @[[[RZAssemblage alloc] initWithArray:values],
+                             [[RZAssemblage alloc] initWithArray:values],
+                             [[RZAssemblage alloc] initWithArray:values],
+                             [[RZAssemblage alloc] initWithArray:values]];
+    RZFlatAssemblage *f1 = [[RZFlatAssemblage alloc] initWithArray:assemblages];
+    RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
+    s1.delegate = self;
+    [s1 beginUpdates];
+    [self.delegateEvents removeLastObject];
+    XCTAssertEqual([s1 numberOfChildren], values.count * assemblages.count);
+    s1.filter = aFilter;
+    [s1 endUpdates];
+    [self.delegateEvents removeLastObject];
+
+    XCTAssertEqual([s1 numberOfChildren], aValues.count * assemblages.count);
+    for ( NSUInteger i = 0; i < aValues.count; i++ ) {
+        XCTAssertEqual([s1 objectAtIndex:i], [aValues objectAtIndex:i]);
+    }
+    NSUInteger cursorIndex = 0;
+    NSUInteger tableIndex = 0;
+    for ( NSUInteger assemblageIndex = 0; assemblageIndex < assemblages.count; assemblageIndex++) {
+
+        NSArray *updateEvents = [self.delegateEvents subarrayWithRange:NSMakeRange(cursorIndex, aValues.count)];
+        cursorIndex += updateEvents.count;
+        for ( RZAssemblageDelegateEvent *event in updateEvents ) {
+            XCTAssertEqual([event delegateSelector], @selector(assemblage:didUpdateObject:atIndexPath:));
+            XCTAssertEqual([[event indexPath] indexAtPosition:0], tableIndex);
+            tableIndex++;
+        }
+
+        NSArray *removeEvents = [self.delegateEvents subarrayWithRange:NSMakeRange(cursorIndex, values.count - aValues.count)];
+        cursorIndex += removeEvents.count;
+        for ( RZAssemblageDelegateEvent *event in removeEvents ) {
+            XCTAssertEqual([event delegateSelector], @selector(assemblage:didRemoveObject:atIndexPath:));
+            XCTAssertEqual([[event indexPath] indexAtPosition:0], tableIndex);
+        }
+    }
+    [self.delegateEvents removeAllObjects];
+
+
+    NSPredicate *bFilter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
+        return [s hasPrefix:@"b"];
+    }];
+    NSArray *bValues = [values filteredArrayUsingPredicate:bFilter];
+
+    [s1 beginUpdates];
+    s1.filter = bFilter;
+    [s1 endUpdates];
+//
+//    XCTAssertEqual([s1 numberOfChildren], THIRD_CHILD_COUNT);
+//
+//    [self.delegateEvents removeAllObjects];
+}
+
+- (void)testMutation
+{
+    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]];
+    RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
+    RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
+    RZMutableAssemblage *m4 = [[RZMutableAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
+    RZFlatAssemblage *f1 = [[RZFlatAssemblage alloc] initWithArray:@[m3, m4]];
+    RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
+    filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
+        return [numberString integerValue] % 2;
+    }];
+    RZMutableAssemblage *assemblage = [[RZMutableAssemblage alloc] initWithArray:@[m1, m2, filtered]];
+
+    assemblage.delegate = self;
+
+    [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+
 }
 
 @end
