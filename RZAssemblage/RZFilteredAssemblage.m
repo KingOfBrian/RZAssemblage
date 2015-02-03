@@ -77,14 +77,12 @@
 
 - (void)addFilterForIndex:(NSUInteger)index
 {
-    [self shiftIndexesAfter:index by:1];
     [self.filteredIndexes addIndex:index];
 }
 
 - (void)removeFilterForIndex:(NSUInteger)index
 {
     [self.filteredIndexes removeIndex:index];
-    [self shiftIndexesAfter:index by:-1];
 }
 
 - (void)updateFilterState
@@ -172,6 +170,7 @@
     [self.store insertObject:object atIndex:index];
     BOOL filtered = [self isObjectFiltered:object];
     if ( filtered ) {
+        [self shiftIndexesAfter:index by:1];
         [self addFilterForIndex:index];
     }
     else {
@@ -188,6 +187,7 @@
     BOOL filtered = [self.filteredIndexes containsIndex:index];
     [self.store removeObjectAtIndex:index];
     [self removeFilterForIndex:index];
+    [self shiftIndexesAfter:index by:-1];
     if ( filtered == NO ) {
         indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
         [self.delegate assemblage:self didRemoveObject:object atIndexPath:indexPath];
