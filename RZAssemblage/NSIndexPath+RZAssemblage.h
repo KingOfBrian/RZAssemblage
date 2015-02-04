@@ -14,6 +14,10 @@
 
 - (NSIndexPath *)rz_indexPathByPrependingIndex:(NSUInteger)index;
 
+- (NSIndexPath *)rz_indexPathByUpdatingIndex:(NSUInteger)index atPosition:(NSUInteger)position;
+
+- (NSIndexPath *)rz_indexPathShiftedAtIndexPath:(NSIndexPath *)indexPath by:(NSUInteger)change;
+
 - (NSUInteger)rz_lastIndex;
 
 @end

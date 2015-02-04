@@ -8,6 +8,7 @@
 
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZAssemblageDefines.h"
+#import "RZBufferedAssemblage.h"
 
 @interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
 
@@ -28,7 +29,7 @@
 {
     self = [super init];
     if ( self ) {
-        _assemblage = assemblage;
+        _assemblage = [[RZBufferedAssemblage alloc] initWithAssemblage:assemblage];
         _assemblage.delegate = self;
         _tableView = tableView;
         _tableView.dataSource = self;

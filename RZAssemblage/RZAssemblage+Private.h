@@ -9,8 +9,6 @@
 #import "RZAssemblage.h"
 #import "RZAssemblageProtocols+Private.h"
 
-#define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
-
 @interface RZAssemblage() <RZAssemblageDelegate, RZAssemblageMutationTraversalSupport> {
 @protected
     NSArray *_store;

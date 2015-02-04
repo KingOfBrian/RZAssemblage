@@ -7,6 +7,7 @@
 //
 
 #import "NSIndexPath+RZAssemblage.h"
+#import "RZAssemblageDefines.h"
 
 @implementation NSIndexPath(RZAssemblage)
 
@@ -31,6 +32,32 @@
     indexPath = [NSIndexPath indexPathWithIndexes:indexes length:self.length + 1];
     free(indexes);
     return indexPath;
+}
+
+- (NSIndexPath *)rz_indexPathByUpdatingIndex:(NSUInteger)index atPosition:(NSUInteger)position
+{
+    RZRaize(position < self.length, @"Position is larger than the length of the index path.")
+    NSIndexPath *indexPath = nil;
+    NSUInteger *indexes = calloc(self.length, sizeof(NSUInteger));
+    [self getIndexes:indexes];
+    indexes[position] = index;
+    indexPath = [NSIndexPath indexPathWithIndexes:indexes length:self.length];
+    free(indexes);
+    return indexPath;
+}
+
+- (NSIndexPath *)rz_indexPathShiftedAtIndexPath:(NSIndexPath *)indexPath by:(NSUInteger)change
+{
+    NSIndexPath *result = nil;
+    if ( indexPath.length <= self.length ) {
+        NSUInteger indexPosition = indexPath.length - 1;
+        NSUInteger mutationIndex = [indexPath indexAtPosition:indexPosition];
+        NSUInteger indexAtDepth = [self indexAtPosition:indexPosition];
+        if ( mutationIndex <= indexAtDepth ) {
+            result = [self rz_indexPathByUpdatingIndex:indexAtDepth + change atPosition:indexPosition];
+        }
+    }
+    return result;
 }
 
 - (NSUInteger)rz_lastIndex

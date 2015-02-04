@@ -9,6 +9,7 @@
 #import "RZJoinAssemblage.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblage+Private.h"
+#import "RZAssemblageDefines.h"
 
 @implementation RZJoinAssemblage
 

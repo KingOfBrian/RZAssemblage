@@ -33,7 +33,7 @@
             forTableView:(UITableView *)tableView
           withDataSource:(id<RZAssemblageTableViewDataSourceProxy>)dataSource;
 
-@property (strong, nonatomic, readonly) RZAssemblage *assemblage;
+@property (strong, nonatomic, readonly) id<RZAssemblage> assemblage;
 
 @property (weak, nonatomic, readonly) UITableView *tableView;
 

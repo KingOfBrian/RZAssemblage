@@ -15,6 +15,7 @@
 #define RZLogTrace4(arg1, arg2, arg3, arg4) RZLog(@"%@ - %@ %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3, arg4);
 #define RZLogTrace5(arg1, arg2, arg3, arg4, arg5) RZLog(@"%@ - %@ %@ %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3, arg4, arg5);
 
+#define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
 #define RZConformTraversal(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblageMutationTraversal)], @"Index Path attempted to traverse %@, which does not conform to RZAssemblageMutationTraversal", assemblage);
 #define RZConformMutationSupport(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZMutableAssemblageSupport)], @"Index Path landed on %@, which does not support mutation.", self);
 
