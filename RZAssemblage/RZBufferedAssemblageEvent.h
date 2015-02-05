@@ -29,10 +29,6 @@ typedef NS_ENUM(NSUInteger, RZBufferedAssemblageEventType) {
 + (instancetype)updateEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 + (instancetype)removeEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 
-- (void)updateIndexesForInsertAtIndexPath:(NSIndexPath *)indexPath;
-
-- (void)updateIndexesForRemoveAtIndexPath:(NSIndexPath *)indexPath;
-
 - (NSUInteger)maxIndexPathLength;
 
 @end

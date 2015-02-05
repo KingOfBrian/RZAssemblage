@@ -22,4 +22,6 @@
 
 - (NSUInteger)rz_lastIndex;
 
+- (NSString *)rz_shortDescription;
+
 @end

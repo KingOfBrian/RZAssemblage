@@ -165,7 +165,7 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZFilterLog(@"%p I[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     NSUInteger index = [indexPath indexAtPosition:0];
     [self.store insertObject:object atIndex:index];
     BOOL filtered = [self isObjectFiltered:object];
@@ -182,7 +182,7 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZFilterLog(@"%p R[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     NSUInteger index = [indexPath indexAtPosition:0];
     BOOL filtered = [self.filteredIndexes containsIndex:index];
     [self.store removeObjectAtIndex:index];
@@ -196,7 +196,7 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZFilterLog(@"%p U[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     NSUInteger index = [indexPath indexAtPosition:0];
     indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO ) {

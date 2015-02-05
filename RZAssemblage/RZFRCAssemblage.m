@@ -93,7 +93,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    RZLogTrace1(controller);
+    RZFRCLog(@"%@", controller);
     [self.delegate willBeginUpdatesForAssemblage:self];
 }
 
@@ -103,7 +103,7 @@
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
-    RZLogTrace5(controller, anObject, indexPath, @(type), newIndexPath);
+    RZFRCLog(@"%p:type[%@] %@ -> %@ = %@", controller, @(type), [indexPath rz_shortDescription], [newIndexPath rz_shortDescription], anObject);
     // If this NSFRC does not have sections, strip the section index path, which will always be 0.
     indexPath = self.hasSections ? indexPath : [indexPath rz_indexPathByRemovingFirstIndex];
     newIndexPath = self.hasSections ? newIndexPath : [newIndexPath rz_indexPathByRemovingFirstIndex];
@@ -133,7 +133,7 @@
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type
 {
-    RZLogTrace4(controller, sectionInfo, @(sectionIndex), @(type));
+    RZFRCLog(@"%p:type[%@] %@ = %@", controller, @(type), @(sectionIndex), sectionInfo);
     NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:sectionIndex];
     switch ( type ) {
         case NSFetchedResultsChangeInsert: {
@@ -152,7 +152,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    RZLogTrace1(controller);
+    RZFRCLog(@"%@", controller);
     [self.delegate didEndUpdatesForEnsemble:self];
 }
 

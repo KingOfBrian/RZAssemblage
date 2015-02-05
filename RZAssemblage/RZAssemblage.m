@@ -170,7 +170,7 @@
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
 {
     if ( self.updateCount == 0 ) {
-        RZLogTrace1(assemblage);
+        RZAssemblageLog(@"%@", assemblage);
         [self.delegate willBeginUpdatesForAssemblage:self];
     }
     self.updateCount += 1;
@@ -178,7 +178,7 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZAssemblageLog(@"%p I[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
 
     NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didInsertObject:object atIndexPath:newIndexPath];
@@ -186,7 +186,7 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZAssemblageLog(@"%p R[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
 
     NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didRemoveObject:object atIndexPath:newIndexPath];
@@ -194,14 +194,14 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZAssemblageLog(@"%p U[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
     [self.delegate assemblage:self didUpdateObject:object atIndexPath:newIndexPath];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    RZLogTrace4(assemblage, object, fromIndexPath, toIndexPath);
+    RZAssemblageLog(@"%p M[%@] -> [%@] = %@", assemblage, [fromIndexPath rz_shortDescription], [toIndexPath rz_shortDescription], object);
 
     NSIndexPath *newFromIndexPath = [self indexPathFromChildIndexPath:fromIndexPath fromAssemblage:assemblage];
     NSIndexPath *newToIndexPath = [self indexPathFromChildIndexPath:toIndexPath fromAssemblage:assemblage];
@@ -213,7 +213,7 @@
     self.updateCount -= 1;
 
     if ( self.updateCount == 0 ) {
-        RZLogTrace1(assemblage);
+        RZAssemblageLog(@"%@", assemblage);
         [self.delegate didEndUpdatesForEnsemble:self];
     }
 }

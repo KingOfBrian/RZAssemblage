@@ -8,12 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
-#define RZLog(format, ...) NSLog(format, ##__VA_ARGS__)
-#define RZLogTrace1(arg1) RZLog(@"%@ - %@", NSStringFromSelector(_cmd), arg1)
-#define RZLogTrace2(arg1, arg2) RZLog(@"%@ - %@ %@", NSStringFromSelector(_cmd), arg1, arg2)
-#define RZLogTrace3(arg1, arg2, arg3) RZLog(@"%@ - %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3)
-#define RZLogTrace4(arg1, arg2, arg3, arg4) RZLog(@"%@ - %@ %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3, arg4);
-#define RZLogTrace5(arg1, arg2, arg3, arg4, arg5) RZLog(@"%@ - %@ %@ %@ %@ %@", NSStringFromSelector(_cmd), arg1, arg2, arg3, arg4, arg5);
+// Must do a clean build after changing any of these.
+#ifdef DEBUG
+#define RZLog(fmt, ... ) CFShow((__bridge CFStringRef)[NSString stringWithFormat:@"%@:%d:[%p %@] - %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__,  self, NSStringFromSelector(_cmd), [NSString stringWithFormat:(fmt), ##__VA_ARGS__]])
+#else
+#define RZLog(fmt, ... )
+#endif
+
+#define RZAssemblageLog(fmt, ... ) //RZLog(fmt, ##__VA_ARGS__)
+#define RZFilterLog(fmt, ... ) //RZLog(fmt, ##__VA_ARGS__)
+#define RZBufferLog(fmt, ... ) //RZLog(fmt, ##__VA_ARGS__)
+#define RZDataSourceLog(fmt, ... ) RZLog(fmt, ##__VA_ARGS__)
+#define RZFRCLog(fmt, ... ) //RZLog(fmt, ##__VA_ARGS__)
+
 
 #define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
 #define RZConformTraversal(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblageMutationTraversal)], @"Index Path attempted to traverse %@, which does not conform to RZAssemblageMutationTraversal", assemblage);

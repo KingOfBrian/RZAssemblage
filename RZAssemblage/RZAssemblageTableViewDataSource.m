@@ -9,6 +9,7 @@
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZAssemblageDefines.h"
 #import "RZBufferedAssemblage.h"
+#import "NSIndexPath+RZAssemblage.h"
 
 @interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
 
@@ -48,14 +49,14 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSUInteger count = [self.assemblage numberOfChildrenAtIndexPath:nil];
-    RZLogTrace1(@(count));
+    RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSUInteger count = [self.assemblage numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
-    RZLogTrace1(@(count));
+    RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
@@ -71,13 +72,13 @@
 
 - (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
 {
-    RZLogTrace1(assemblage);
+    RZDataSourceLog(@"%@", assemblage);
     [self.tableView beginUpdates];
 }
 
 - (void)assemblage:(RZAssemblage *)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZDataSourceLog(@"%p I[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     if ( [self.class isSectionIndexPath:indexPath] ) {
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
                       withRowAnimation:self.addSectionAnimation];
@@ -89,7 +90,7 @@
 
 - (void)assemblage:(RZAssemblage *)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZDataSourceLog(@"%p R[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     if ( [self.class isSectionIndexPath:indexPath] ) {
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
                       withRowAnimation:self.removeSectionAnimation];
@@ -102,7 +103,7 @@
 
 - (void)assemblage:(RZAssemblage *)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZDataSourceLog(@"%p U[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     NSAssert([self.class isSectionIndexPath:indexPath] == NO, @"Do not know what to do for a section update");
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     [self.dataSource tableView:self.tableView
@@ -113,7 +114,7 @@
 
 - (void)assemblage:(RZAssemblage *)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    RZLogTrace4(assemblage, object, fromIndexPath, toIndexPath);
+    RZDataSourceLog(@"%p M[%@] -> [%@] = %@", assemblage, [fromIndexPath rz_shortDescription], [toIndexPath rz_shortDescription], object);
     if ( [self.class isSectionIndexPath:fromIndexPath] ) {
         [self.tableView moveSection:[fromIndexPath indexAtPosition:0]
                           toSection:[toIndexPath indexAtPosition:0]];
@@ -125,7 +126,7 @@
 
 - (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
 {
-    RZLogTrace1(assemblage);
+    RZDataSourceLog(@"%@", assemblage);
     [self.tableView endUpdates];
 }
 
@@ -148,7 +149,6 @@
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace2(tableView, indexPath);
     return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView canMoveRowAtIndexPath:indexPath] : NO;
 }
 
@@ -166,13 +166,11 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace2(tableView, indexPath);
     [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView commitEditingStyle:editingStyle forRowAtIndexPath:indexPath]:nil;
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sIndexPath toIndexPath:(NSIndexPath *)dIndexPath
 {
-    RZLogTrace3(tableView, sIndexPath, dIndexPath);
     [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView moveRowAtIndexPath:sIndexPath toIndexPath:dIndexPath]:nil;
 }
 

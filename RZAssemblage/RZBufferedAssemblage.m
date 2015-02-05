@@ -146,10 +146,9 @@
     }
 }
 
-
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
 {
-    RZLogTrace1(assemblage);
+    RZBufferLog(@"%@", assemblage);
     RZRaize(self.bufferingIsActive == NO, @"Buffered assemblage began updates while already buffering");
     self.bufferingIsActive = YES;
     self.eventsByIndexPath = [NSMutableDictionary dictionary];
@@ -157,34 +156,34 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZBufferLog(@"%p I[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     RZBufferedAssemblageEvent *insert = [RZBufferedAssemblageEvent insertEventForObject:object atIndexPath:indexPath];
     [self handleInsertEvent:insert];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZBufferLog(@"%p R[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     RZBufferedAssemblageEvent *remove = [RZBufferedAssemblageEvent removeEventForObject:object atIndexPath:indexPath];
     [self handleRemoveEvent:remove];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZLogTrace3(assemblage, object, indexPath);
+    RZBufferLog(@"%p U[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
     RZBufferedAssemblageEvent *update = [RZBufferedAssemblageEvent removeEventForObject:object atIndexPath:indexPath];
     [self handleUpdateEvent:update];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    RZLogTrace4(assemblage, object, fromIndexPath, toIndexPath);
+    RZBufferLog(@"%p M[%@] -> [%@] = %@", assemblage, [fromIndexPath rz_shortDescription], [toIndexPath rz_shortDescription], object);
     RZNoMoveSupportYet;
 }
 
 - (void)didEndUpdatesForEnsemble:(id<RZAssemblage>)assemblage
 {
-    RZLogTrace1(assemblage);
+    RZBufferLog(@"%@", assemblage);
     self.bufferingIsActive = NO;
     [self submitBufferedUpdates];
 }

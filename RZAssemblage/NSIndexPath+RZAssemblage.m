@@ -72,4 +72,13 @@
     return self.length == 0 ? NSNotFound : [self indexAtPosition:self.length - 1];
 }
 
+- (NSString *)rz_shortDescription
+{
+    NSMutableArray *indexes = [NSMutableArray array];
+    for ( NSUInteger i = 0; i < self.length; i++ ) {
+        [indexes addObject:[NSString stringWithFormat:@"%zd", [self indexAtPosition:i]]];
+    }
+    return [indexes componentsJoinedByString:@":"];
+}
+
 @end
