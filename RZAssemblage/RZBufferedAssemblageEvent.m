@@ -9,6 +9,31 @@
 #import "RZBufferedAssemblageEvent.h"
 #import "NSIndexPath+RZAssemblage.h"
 
+NSString * NSStringForRZAssemblageEventType(RZBufferedAssemblageEventType type) {
+    NSString *result = nil;
+    switch (type) {
+        case RZBufferedAssemblageEventTypeNoEvent:
+            result = @"None";
+            break;
+        case RZBufferedAssemblageEventTypeInsert:
+            result = @"Insert";
+            break;
+        case RZBufferedAssemblageEventTypeRemove:
+            result = @"Remove";
+            break;
+        case RZBufferedAssemblageEventTypeUpdate:
+            result = @"Update";
+            break;
+        case RZBufferedAssemblageEventTypeMove:
+            result = @"Move";
+            break;
+
+        default:
+            break;
+    }
+    return result;
+}
+
 @implementation RZBufferedAssemblageEvent
 
 + (instancetype)insertEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
@@ -45,7 +70,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@:%p indexPath=%@, object=%@>", self.class, self, self.indexPath, self.object];
+    return [NSString stringWithFormat:@"<%@:%p %@ indexPath=%@, object=%@>", self.class, self, NSStringForRZAssemblageEventType(self.type), self.indexPath, self.object];
 }
 
 @end
@@ -69,7 +94,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@:%p fromIndexPath=%@, toIndexPath=%@, object=%@>", self.class, self, self.indexPath, self.toIndexPath, self.object];
+    return [NSString stringWithFormat:@"<%@:%p %@ fromIndexPath=%@, toIndexPath=%@, object=%@>", self.class, self, @"Move", self.indexPath, self.toIndexPath, self.object];
 }
 
 @end

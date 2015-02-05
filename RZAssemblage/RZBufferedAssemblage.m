@@ -21,6 +21,7 @@
 @property (assign, nonatomic) BOOL bufferingIsActive;
 
 @property (strong, nonatomic) NSMutableDictionary *eventsByIndexPath;
+@property (strong, nonatomic) NSMutableDictionary *removedIndexSetByContainingIndexPath;
 
 @end
 
@@ -129,9 +130,7 @@
             previousEvent.object = event.object;
             break;
         case RZBufferedAssemblageEventTypeRemove:
-            // I'm not sure what to do here.   I don't believe this should ever happen naturally
-            // off of the delegate, but a doctored index could land here.   Lets just log and no-op
-            // now
+            // I'm not sure what to do here.  Lets just log and no-op
             NSLog(@"Got an update for an index that was removed.  Not sure what to do:\n%@\n%@", event, previousEvent);
             break;
         case RZBufferedAssemblageEventTypeUpdate:
@@ -146,32 +145,58 @@
     }
 }
 
+- (NSMutableIndexSet *)removedIndexSetForIndexPath:(NSIndexPath *)indexPath
+{
+    NSIndexPath *containingIndexPath = [indexPath indexPathByRemovingLastIndex];
+    NSMutableIndexSet *removedIndexes = self.removedIndexSetByContainingIndexPath[containingIndexPath];
+    if ( removedIndexes == nil ) {
+        removedIndexes = [NSMutableIndexSet indexSet];
+        self.removedIndexSetByContainingIndexPath[containingIndexPath] = removedIndexes;
+    }
+    return removedIndexes;
+}
+
+- (NSIndexPath *)shiftedIndexPathForIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger index = [indexPath rz_lastIndex];
+    NSIndexSet *containingIndexes = [self removedIndexSetForIndexPath:indexPath];
+    NSIndexSet *earlierIndexes = [containingIndexes indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+        return idx <= index;
+    }];
+    return [indexPath rz_indexPathWithLastIndexShiftedBy:earlierIndexes.count];
+}
+
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
 {
     RZBufferLog(@"%@", assemblage);
     RZRaize(self.bufferingIsActive == NO, @"Buffered assemblage began updates while already buffering");
     self.bufferingIsActive = YES;
     self.eventsByIndexPath = [NSMutableDictionary dictionary];
+    self.removedIndexSetByContainingIndexPath = [NSMutableDictionary dictionary];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZBufferLog(@"%p I[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    RZBufferedAssemblageEvent *insert = [RZBufferedAssemblageEvent insertEventForObject:object atIndexPath:indexPath];
+    NSIndexPath *shiftedIndexPath = [self shiftedIndexPathForIndexPath:indexPath];
+    RZBufferLog(@"%p I[%@|%@] = %@", assemblage, [indexPath rz_shortDescription], [shiftedIndexPath rz_shortDescription], object);
+    RZBufferedAssemblageEvent *insert = [RZBufferedAssemblageEvent insertEventForObject:object atIndexPath:shiftedIndexPath];
     [self handleInsertEvent:insert];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZBufferLog(@"%p R[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    RZBufferedAssemblageEvent *remove = [RZBufferedAssemblageEvent removeEventForObject:object atIndexPath:indexPath];
+    NSIndexPath *shiftedIndexPath = [self shiftedIndexPathForIndexPath:indexPath];
+    RZBufferLog(@"%p R[%@|%@] = %@", assemblage, [indexPath rz_shortDescription], [shiftedIndexPath rz_shortDescription], object);
+    [[self removedIndexSetForIndexPath:indexPath] addIndex:[indexPath rz_lastIndex]];
+    RZBufferedAssemblageEvent *remove = [RZBufferedAssemblageEvent removeEventForObject:object atIndexPath:shiftedIndexPath];
     [self handleRemoveEvent:remove];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    RZBufferLog(@"%p U[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    RZBufferedAssemblageEvent *update = [RZBufferedAssemblageEvent removeEventForObject:object atIndexPath:indexPath];
+    NSIndexPath *shiftedIndexPath = [self shiftedIndexPathForIndexPath:indexPath];
+    RZBufferLog(@"%p U[%@|%@] = %@", assemblage, [indexPath rz_shortDescription], [shiftedIndexPath rz_shortDescription], object);
+    RZBufferedAssemblageEvent *update = [RZBufferedAssemblageEvent updateEventForObject:object atIndexPath:shiftedIndexPath];
     [self handleUpdateEvent:update];
 }
 
@@ -186,18 +211,22 @@
     RZBufferLog(@"%@", assemblage);
     self.bufferingIsActive = NO;
     [self submitBufferedUpdates];
+    self.eventsByIndexPath = nil;
+    self.removedIndexSetByContainingIndexPath = nil;
 }
 
 - (void)submitBufferedUpdates
 {
-    NSArray *allEvents = [self.eventsByIndexPath allValues];
+    NSArray *allEvents = [[self.eventsByIndexPath allValues] sortedArrayUsingComparator:^NSComparisonResult(RZBufferedAssemblageEvent *e1, RZBufferedAssemblageEvent *e2) {
+        return [e1.indexPath compare:e2.indexPath];
+    }];
     NSUInteger indexDepth = 0;
     // Do one pass to determine how deep the index paths we've received have gotten.
     // For UIKit views, this will probably always be 2.
     for ( RZBufferedAssemblageEvent *event in allEvents ) {
         indexDepth = MAX(indexDepth, event.maxIndexPathLength);
     }
-
+    NSLog(@"%@", allEvents);
     // Emit events starting shallow and getting deper.  This will emit section events and then row events for UIKit.
     // This will duplicate the order of NSFRC (https://github.com/Raizlabs/RZCollectionList/wiki/Batch-Notification-Order)
     [self.delegate willBeginUpdatesForAssemblage:self];
