@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSUInteger, RZBufferedAssemblageEventType) {
+    RZBufferedAssemblageEventTypeNoEvent = 0,
+    RZBufferedAssemblageEventTypeInsert,
+    RZBufferedAssemblageEventTypeRemove,
+    RZBufferedAssemblageEventTypeUpdate,
+    RZBufferedAssemblageEventTypeMove
+};
+
 /**
  * Internal helper object for the RZBufferedAssemblage.  There should be no reason to use this externally.
  */
@@ -15,8 +23,11 @@
 
 @property (strong, nonatomic) id object;
 @property (strong, nonatomic) NSIndexPath *indexPath;
+@property (nonatomic) RZBufferedAssemblageEventType type;
 
-+ (instancetype)eventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
++ (instancetype)insertEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
++ (instancetype)updateEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
++ (instancetype)removeEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 
 - (void)updateIndexesForInsertAtIndexPath:(NSIndexPath *)indexPath;
 

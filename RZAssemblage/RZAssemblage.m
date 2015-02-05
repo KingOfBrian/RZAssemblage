@@ -169,9 +169,8 @@
 
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
 {
-    RZLogTrace1(assemblage);
-
     if ( self.updateCount == 0 ) {
+        RZLogTrace1(assemblage);
         [self.delegate willBeginUpdatesForAssemblage:self];
     }
     self.updateCount += 1;
@@ -211,10 +210,10 @@
 
 - (void)didEndUpdatesForEnsemble:(id<RZAssemblage>)assemblage
 {
-    RZLogTrace1(assemblage);
     self.updateCount -= 1;
 
     if ( self.updateCount == 0 ) {
+        RZLogTrace1(assemblage);
         [self.delegate didEndUpdatesForEnsemble:self];
     }
 }

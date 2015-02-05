@@ -11,11 +11,30 @@
 
 @implementation RZBufferedAssemblageEvent
 
-+ (instancetype)eventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath
++ (instancetype)insertEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 {
     RZBufferedAssemblageEvent *event = [[self alloc] init];
     event.object = object;
     event.indexPath = indexPath;
+    event.type = RZBufferedAssemblageEventTypeInsert;
+    return event;
+}
+
++ (instancetype)updateEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
+{
+    RZBufferedAssemblageEvent *event = [[self alloc] init];
+    event.object = object;
+    event.indexPath = indexPath;
+    event.type = RZBufferedAssemblageEventTypeUpdate;
+    return event;
+}
+
++ (instancetype)removeEventForObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
+{
+    RZBufferedAssemblageEvent *event = [[self alloc] init];
+    event.object = object;
+    event.indexPath = indexPath;
+    event.type = RZBufferedAssemblageEventTypeRemove;
     return event;
 }
 
@@ -24,14 +43,9 @@
     return self.indexPath.length;
 }
 
-- (void)updateIndexesForInsertAtIndexPath:(NSIndexPath *)indexPath
+- (NSString *)description
 {
-    self.indexPath = [self.indexPath rz_indexPathShiftedAtIndexPath:indexPath by:1];
-}
-
-- (void)updateIndexesForRemoveAtIndexPath:(NSIndexPath *)indexPath
-{
-    self.indexPath = [self.indexPath rz_indexPathShiftedAtIndexPath:indexPath by:-1];
+    return [NSString stringWithFormat:@"<%@:%p indexPath=%@, object=%@>", self.class, self, self.indexPath, self.object];
 }
 
 @end
@@ -40,7 +54,10 @@
 
 + (instancetype)eventForObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    RZBufferedAssemblageMoveEvent *event = [self eventForObject:object atIndexPath:fromIndexPath];
+    RZBufferedAssemblageMoveEvent *event = [[RZBufferedAssemblageMoveEvent alloc] init];
+    event.type = RZBufferedAssemblageEventTypeMove;
+    event.object = object;
+    event.indexPath = fromIndexPath;
     event.toIndexPath = toIndexPath;
     return event;
 }
@@ -50,16 +67,9 @@
     return MAX([super maxIndexPathLength], self.toIndexPath.length);
 }
 
-- (void)updateIndexesForInsertAtIndexPath:(NSIndexPath *)indexPath
+- (NSString *)description
 {
-    [super updateIndexesForInsertAtIndexPath:indexPath];
-    self.toIndexPath = [self.toIndexPath rz_indexPathShiftedAtIndexPath:indexPath by:-1];
-}
-
-- (void)updateIndexesForRemoveAtIndexPath:(NSIndexPath *)indexPath
-{
-    [super updateIndexesForRemoveAtIndexPath:indexPath];
-    self.toIndexPath = [self.toIndexPath rz_indexPathShiftedAtIndexPath:indexPath by:-1];
+    return [NSString stringWithFormat:@"<%@:%p fromIndexPath=%@, toIndexPath=%@, object=%@>", self.class, self, self.indexPath, self.toIndexPath, self.object];
 }
 
 @end

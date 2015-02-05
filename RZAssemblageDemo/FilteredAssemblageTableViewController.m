@@ -65,7 +65,8 @@
 {
     [self.data beginUpdates];
     while ( [self.data numberOfChildren] != 0 ) {
-        [self.data removeObjectAtIndex:[self.data numberOfChildren] - 1];
+//        [self.data removeObjectAtIndex:[self.data numberOfChildren] - 1];
+        [self.data removeObjectAtIndex:0];
     }
     [self.data endUpdates];
 }
@@ -73,7 +74,7 @@
 - (void)addData
 {
     [self.data beginUpdates];
-    for ( NSUInteger i = 0; i < 50; i++ ) {
+    for ( NSUInteger i = 0; i < 5; i++ ) {
         [self.data addObject:@(i+1)];
     }
     [self.data endUpdates];

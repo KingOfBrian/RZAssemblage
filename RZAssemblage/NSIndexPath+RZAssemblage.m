@@ -60,6 +60,13 @@
     return result;
 }
 
+- (NSIndexPath *)rz_indexPathWithLastIndexShiftedBy:(NSInteger)shift
+{
+    NSUInteger end = self.length - 1;
+    NSUInteger index = [self indexAtPosition:end];
+    return [self rz_indexPathByUpdatingIndex:index + shift atPosition:end];
+}
+
 - (NSUInteger)rz_lastIndex
 {
     return self.length == 0 ? NSNotFound : [self indexAtPosition:self.length - 1];

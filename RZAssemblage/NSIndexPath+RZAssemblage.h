@@ -18,6 +18,8 @@
 
 - (NSIndexPath *)rz_indexPathShiftedAtIndexPath:(NSIndexPath *)indexPath by:(NSUInteger)change;
 
+- (NSIndexPath *)rz_indexPathWithLastIndexShiftedBy:(NSInteger)shift;
+
 - (NSUInteger)rz_lastIndex;
 
 @end
