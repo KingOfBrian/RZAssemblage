@@ -81,4 +81,17 @@
     return [indexes componentsJoinedByString:@":"];
 }
 
+- (void)rz_enumerateUsingBlock:(RZIndexPathIndexBlock)block
+{
+    NSParameterAssert(block);
+    for ( NSUInteger i = 0; i < self.length; i++ ) {
+        NSUInteger index = [self indexAtPosition:i];
+        BOOL stop = NO;
+        block(index, &stop);
+        if ( stop ) {
+            break;
+        }
+    }
+}
+
 @end

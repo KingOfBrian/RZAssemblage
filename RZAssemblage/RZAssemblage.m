@@ -32,6 +32,8 @@
     return [NSString stringWithFormat:@"%@ - %@", super.description, self.store];
 }
 
+#pragma mark - <RZAssemblage>
+
 - (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
 {
     NSUInteger count = NSNotFound;
@@ -78,6 +80,8 @@
     return self.store.count;
 }
 
+#pragma mark - Private
+
 - (NSUInteger)indexForChildAssemblage:(id<RZAssemblage>)assemblage
 {
     NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"%@ does not conform to <RZAssemblage>", assemblage);
@@ -91,6 +95,8 @@
     }
 }
 
+#pragma mark - RZAssemblageMutationTraversalSupport
+
 - (NSIndexPath *)indexPathFromChildIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage
 {
     return [indexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
@@ -101,37 +107,27 @@
     return [indexPath rz_indexPathByRemovingFirstIndex];
 }
 
-- (BOOL)leafNodeForIndexPath:(NSIndexPath *)indexPath
-{
-    return [indexPath length] == 1;
-}
-
 - (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
 {
     return [self objectAtIndex:[indexPath indexAtPosition:0]];
 }
 
-- (void)beginUpdates
-{
-    [self willBeginUpdatesForAssemblage:self];
-}
-
 #pragma mark - Index Path Mutation
-
 
 - (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
 {
     RZIndexPathWithLength(indexPath);
-    NSUInteger index = [indexPath indexAtPosition:0];
-    if ( [self leafNodeForIndexPath:indexPath] ) {
+    NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
+
+    if ( childIndexPath.length == 1 ) {
         RZConformMutationSupport(self);
         id<RZMutableAssemblageSupport> assemblage = (id)self;
+        NSUInteger index = [indexPath indexAtPosition:0];
         [assemblage insertObject:anObject atIndex:index];
     }
     else {
         id<RZAssemblageMutationTraversalSupport> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:YES];
         RZConformTraversal(assemblage);
-        NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
         [assemblage insertObject:anObject atIndexPath:childIndexPath];
     }
 }
@@ -139,16 +135,16 @@
 - (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
 {
     RZIndexPathWithLength(indexPath);
-    NSUInteger index = [indexPath indexAtPosition:0];
-    if ( [self leafNodeForIndexPath:indexPath] ) {
+    NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
+    if ( childIndexPath.length == 1 ) {
         id<RZMutableAssemblageSupport> assemblage = (id)self;
         RZConformMutationSupport(assemblage);
+        NSUInteger index = [indexPath indexAtPosition:0];
         [assemblage removeObjectAtIndex:index];
     }
     else {
         id<RZAssemblageMutationTraversalSupport> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:NO];
         RZConformTraversal(assemblage);
-        NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
         [assemblage removeObjectAtIndexPath:childIndexPath];
     }
 }
@@ -162,60 +158,28 @@
     [self endUpdates];
 }
 
+#pragma mark - Delegation
+
+- (void)beginUpdates
+{
+    self.changeSet = self.changeSet ?: [[RZAssemblageChangeSet alloc] init];
+    [self.changeSet beginUpdateWithAssemblage:self];
+}
+
+- (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet
+{
+    NSUInteger assemblageIndex = [self indexForChildAssemblage:assemblage];
+    [self.changeSet mergeChangeSet:changeSet fromIndex:assemblageIndex];
+}
+
 - (void)endUpdates
 {
-    [self didEndUpdatesForEnsemble:self];
-}
-
-- (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
-{
-    if ( self.updateCount == 0 ) {
-        RZAssemblageLog(@"%@", assemblage);
-        [self.delegate willBeginUpdatesForAssemblage:self];
-    }
-    self.updateCount += 1;
-}
-
-- (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssemblageLog(@"%p I[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-
-    NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
-    [self.delegate assemblage:self didInsertObject:object atIndexPath:newIndexPath];
-}
-
-- (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssemblageLog(@"%p R[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-
-    NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
-    [self.delegate assemblage:self didRemoveObject:object atIndexPath:newIndexPath];
-}
-
-- (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssemblageLog(@"%p U[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    NSIndexPath *newIndexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
-    [self.delegate assemblage:self didUpdateObject:object atIndexPath:newIndexPath];
-}
-
-- (void)assemblage:(id<RZAssemblage>)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-    RZAssemblageLog(@"%p M[%@] -> [%@] = %@", assemblage, [fromIndexPath rz_shortDescription], [toIndexPath rz_shortDescription], object);
-
-    NSIndexPath *newFromIndexPath = [self indexPathFromChildIndexPath:fromIndexPath fromAssemblage:assemblage];
-    NSIndexPath *newToIndexPath = [self indexPathFromChildIndexPath:toIndexPath fromAssemblage:assemblage];
-    [self.delegate assemblage:self didMoveObject:object fromIndexPath:newFromIndexPath toIndexPath:newToIndexPath];
-}
-
-- (void)didEndUpdatesForEnsemble:(id<RZAssemblage>)assemblage
-{
-    self.updateCount -= 1;
-
-    if ( self.updateCount == 0 ) {
-        RZAssemblageLog(@"%@", assemblage);
-        [self.delegate didEndUpdatesForEnsemble:self];
+    [self.changeSet endUpdateWithAssemblage:self];
+    if ( self.changeSet.updateCount == 0 ) {
+        [self.delegate assemblage:self didChange:self.changeSet];
+        self.changeSet = nil;
     }
 }
+
 
 @end

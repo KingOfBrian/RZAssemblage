@@ -10,6 +10,7 @@
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
+#import "RZMutableIndexPathSet.h"
 
 @interface RZFilteredAssemblage()
 
@@ -64,44 +65,17 @@
     [self updateFilterState];
 }
 
-- (void)shiftIndexesAfter:(NSUInteger)index by:(NSUInteger)increment
-{
-    NSIndexSet *laterIndexes = [self.filteredIndexes indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
-        return idx >= index;
-    }];
-    [self.filteredIndexes removeIndexes:laterIndexes];
-    [laterIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        [self.filteredIndexes addIndex:idx + increment];
-    }];
-}
-
-- (void)addFilterForIndex:(NSUInteger)index
-{
-    [self.filteredIndexes addIndex:index];
-}
-
-- (void)removeFilterForIndex:(NSUInteger)index
-{
-    [self.filteredIndexes removeIndex:index];
-}
-
 - (void)updateFilterState
 {
     [self beginUpdates];
     [self.store enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
-        NSUInteger childIndex = [self indexFromRealIndexPath:[NSIndexPath indexPathWithIndex:index]];
-        NSIndexPath *childIndexPath = [NSIndexPath indexPathWithIndex:childIndex];
-
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
-            [self addFilterForIndex:index];
-            [self.delegate assemblage:self didRemoveObject:object atIndexPath:childIndexPath];
+            [self.filteredIndexes addIndex:index];
+            [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
         }
         else if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO) {
-            [self removeFilterForIndex:index];
-            [self.delegate assemblage:self didInsertObject:object atIndexPath:childIndexPath];
-        }
-        else {
-            [self.delegate assemblage:self didUpdateObject:object atIndexPath:childIndexPath];
+            [self.filteredIndexes removeIndex:index];
+            [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
         }
     }];
     [self endUpdates];
@@ -163,53 +137,47 @@
     return [self.filteredIndexes containsIndex:index];
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+- (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet
 {
-    RZFilterLog(@"%p I[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    NSUInteger index = [indexPath indexAtPosition:0];
-    [self.store insertObject:object atIndex:index];
-    BOOL filtered = [self isObjectFiltered:object];
-    if ( filtered ) {
-//        [self shiftIndexesAfter:index by:1];
-        [self addFilterForIndex:index];
-    }
-    else {
-//        [self shiftIndexesAfter:index by:1];
-        indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
-        [self.delegate assemblage:self didInsertObject:object atIndexPath:indexPath];
-    }
-}
+    [changeSet.inserts.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        id object = [changeSet.startingAssemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
+        [self.store insertObject:object atIndex:idx];
+        BOOL filtered = [self isObjectFiltered:object];
+        if ( filtered ) {
+            [self.filteredIndexes addIndex:idx];
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    RZFilterLog(@"%p R[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    NSUInteger index = [indexPath indexAtPosition:0];
-    BOOL filtered = [self.filteredIndexes containsIndex:index];
-    [self.store removeObjectAtIndex:index];
-    [self removeFilterForIndex:index];
-//    [self shiftIndexesAfter:index by:-1];
-    if ( filtered == NO ) {
-        indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
-        [self.delegate assemblage:self didRemoveObject:object atIndexPath:indexPath];
-    }
-}
+            // How do are other indexes affected?!
+//            [changeSet removeInsertAtIndex:idx];
+        }
+    }];
+    [changeSet.removes.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        id object = [changeSet.startingAssemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
+        [self.store removeObjectAtIndex:idx];
+        [self.filteredIndexes removeIndex:idx];
+        BOOL filtered = [self isObjectFiltered:object];
+        if ( filtered ) {
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    RZFilterLog(@"%p U[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    NSUInteger index = [indexPath indexAtPosition:0];
-    indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
-    if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO ) {
-        [self removeFilterForIndex:index];
-        [self.delegate assemblage:self didInsertObject:object atIndexPath:indexPath];
-    }
-    else if ( [self isIndexFiltered:index] == NO && [self isObjectFiltered:object] ) {
-        [self addFilterForIndex:index];
-        [self.delegate assemblage:self didRemoveObject:object atIndexPath:indexPath];
-    }
-    else {
-//        [self.delegate assemblage:self didUpdateObject:object atIndexPath:indexPath];
-    }
+        }
+    }];
+    [changeSet.updates.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        id object = [changeSet.startingAssemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
+        NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:idx];
+        indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
+        if ( [self isIndexFiltered:idx] && [self isObjectFiltered:object] == NO ) {
+            [self.filteredIndexes removeIndex:idx];
+
+//            [changeSet removeUpdateAtIndex:idx];
+            [changeSet insertAtIndexPath:indexPath];
+        }
+        else if ( [self isIndexFiltered:idx] == NO && [self isObjectFiltered:object] ) {
+            [self.filteredIndexes addIndex:idx];
+//            [changeSet removeUpdateAtIndex:idx];
+            [changeSet removeAtIndexPath:indexPath];
+        }
+    }];
+    [changeSet.moves.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+    }];
+    [super assemblage:self didChange:changeSet];
 }
 
 @end

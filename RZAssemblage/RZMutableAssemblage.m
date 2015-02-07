@@ -30,44 +30,37 @@
 
 #pragma mark - Basic Mutation
 
+
 - (void)addObject:(id)anObject
 {
-    NSParameterAssert(anObject);
-    [self assignDelegateIfObjectIsAssemblage:anObject];
-    [self willBeginUpdatesForAssemblage:self];
-    [self.store addObject:anObject];
-    NSUInteger index = self.store.count - 1;
-    [self.delegate assemblage:self didInsertObject:anObject atIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self didEndUpdatesForEnsemble:self];
+    [self insertObject:anObject atIndex:self.store.count];
 }
 
 - (void)removeLastObject
 {
-    [self willBeginUpdatesForAssemblage:self];
+    [self beginUpdates];
     NSUInteger index = self.store.count - 1;
-    id object = [self.store objectAtIndex:index];
     [self.store removeObjectAtIndex:index];
-    [self.delegate assemblage:self didRemoveObject:object atIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self didEndUpdatesForEnsemble:self];
+    [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self endUpdates];
 }
 
 - (void)insertObject:(id)anObject atIndex:(NSUInteger)index
 {
     NSParameterAssert(anObject);
     [self assignDelegateIfObjectIsAssemblage:anObject];
-    [self willBeginUpdatesForAssemblage:self];
+    [self beginUpdates];
     [self.store insertObject:anObject atIndex:index];
-    [self.delegate assemblage:self didInsertObject:anObject atIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self didEndUpdatesForEnsemble:self];
+    [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self endUpdates];
 }
 
 - (void)removeObjectAtIndex:(NSUInteger)index
 {
-    [self willBeginUpdatesForAssemblage:self];
-    id object = [self.store objectAtIndex:index];
+    [self beginUpdates];
     [self.store removeObjectAtIndex:index];
-    [self.delegate assemblage:self didRemoveObject:object atIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self didEndUpdatesForEnsemble:self];
+    [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self endUpdates];
 }
 
 - (void)notifyObjectUpdate:(id)anObject
@@ -75,9 +68,9 @@
     NSParameterAssert(anObject);
     NSUInteger index = [self.store indexOfObject:anObject];
     NSAssert(index != NSNotFound, @"Object is not part of assemblage");
-    [self willBeginUpdatesForAssemblage:self];
-    [self.delegate assemblage:self didUpdateObject:anObject atIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self didEndUpdatesForEnsemble:self];
+    [self beginUpdates];
+    [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self endUpdates];
 }
 
 @end

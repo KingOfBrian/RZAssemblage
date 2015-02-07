@@ -24,7 +24,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p joinen %@", self.class, self, self.store];
+    return [NSString stringWithFormat:@"<%@: %p join %@", self.class, self, self.store];
 }
 
 - (id)objectAtIndex:(NSUInteger)index
@@ -50,12 +50,6 @@
         count += [assemblage numberOfChildrenAtIndexPath:nil];
     }
     return count;
-}
-
-- (BOOL)leafNodeForIndexPath:(NSIndexPath *)indexPath
-{
-    // Index Path operations should never terminate here.
-    return NO;
 }
 
 - (NSIndexPath *)indexPathFromChildIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage
@@ -87,11 +81,9 @@
     return [baseIndexPath rz_indexPathByPrependingIndex:index];
 }
 
-- (NSUInteger)indexOfAssemblageContainingParentIndexPath:(NSIndexPath *)indexPath
+- (NSUInteger)indexOfAssemblageContainingParentIndex:(NSUInteger)parentIndex;
 {
     NSUInteger index = 0;
-    NSUInteger parentIndex = [indexPath indexAtPosition:0];
-
     for ( id<RZAssemblage> partAssemblage in self.store ) {
         NSUInteger count = [partAssemblage numberOfChildrenAtIndexPath:nil];
         if ( parentIndex <= count ) {
@@ -105,7 +97,7 @@
 
 - (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
 {
-    NSUInteger index = [self indexOfAssemblageContainingParentIndexPath:indexPath];
+    NSUInteger index = [self indexOfAssemblageContainingParentIndex:[indexPath indexAtPosition:0]];
     id<RZAssemblageMutationTraversal> assemblage = [self.store objectAtIndex:index];
     if ( canBeEmpty == NO && [assemblage numberOfChildrenAtIndexPath:nil] == 0 ) {
         index++;

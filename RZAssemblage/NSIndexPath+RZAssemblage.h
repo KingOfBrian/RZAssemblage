@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void(^RZIndexPathIndexBlock)(NSUInteger index, BOOL *stop);
+
 @interface NSIndexPath(RZAssemblage)
 
 - (NSIndexPath *)rz_indexPathByRemovingFirstIndex;
@@ -23,5 +25,7 @@
 - (NSUInteger)rz_lastIndex;
 
 - (NSString *)rz_shortDescription;
+
+- (void)rz_enumerateUsingBlock:(RZIndexPathIndexBlock)block;
 
 @end

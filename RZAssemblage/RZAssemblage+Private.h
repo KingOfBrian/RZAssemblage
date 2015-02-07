@@ -8,6 +8,8 @@
 
 #import "RZAssemblage.h"
 #import "RZAssemblageProtocols+Private.h"
+#import "RZAssemblageChangeSet.h"
+
 
 @interface RZAssemblage() <RZAssemblageDelegate, RZAssemblageMutationTraversalSupport> {
 @protected
@@ -16,7 +18,7 @@
 
 @property (copy, nonatomic) NSArray *store;
 
-@property (assign, nonatomic) NSUInteger updateCount;
+@property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
 
 - (void)assignDelegateIfObjectIsAssemblage:(id)anObject;
 

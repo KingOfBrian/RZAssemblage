@@ -10,6 +10,8 @@
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblage+Private.h"
 #import "RZAssemblageDefines.h"
+#import "RZAssemblageChangeSet.h"
+
 
 #define RZAssertIndexPathLength(indexPath, offset) RZRaize(indexPath.length <= ((self.hasSections ? 2 : 1) + offset), @"Index Path %@ has length of %lu, expected index <= %d", indexPath, (unsigned long)indexPath.length, ((self.hasSections ? 2 : 1) + offset))
 #define RZAssertContainerIndexPath(indexPath) RZAssertIndexPathLength(indexPath, -1)
@@ -18,6 +20,7 @@
 @interface RZFRCAssemblage() <NSFetchedResultsControllerDelegate>
 
 @property (assign, nonatomic, readonly) BOOL hasSections;
+@property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
 
 @end
 
@@ -70,6 +73,16 @@
     return numberOfChildren;
 }
 
+- (NSUInteger)numberOfChildren
+{
+    return [self numberOfChildrenAtIndexPath:nil];
+}
+
+- (id)objectAtIndex:(NSUInteger)index
+{
+    return [self objectAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+}
+
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath
 {
     RZAssertItemIndexPath(indexPath);
@@ -94,7 +107,8 @@
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     RZFRCLog(@"%@", controller);
-    [self.delegate willBeginUpdatesForAssemblage:self];
+    self.changeSet = self.changeSet ?: [[RZAssemblageChangeSet alloc] init];
+    [self.changeSet beginUpdateWithAssemblage:self];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -110,19 +124,19 @@
 
     switch ( type ) {
         case NSFetchedResultsChangeInsert: {
-            [self.delegate assemblage:self didInsertObject:anObject atIndexPath:indexPath];
+            [self.changeSet insertAtIndexPath:indexPath];
             break;
         }
         case NSFetchedResultsChangeDelete: {
-            [self.delegate assemblage:self didRemoveObject:anObject atIndexPath:indexPath];
+            [self.changeSet removeAtIndexPath:indexPath];
             break;
         }
         case NSFetchedResultsChangeMove: {
-            [self.delegate assemblage:self didMoveObject:anObject fromIndexPath:indexPath toIndexPath:newIndexPath];
+            [self.changeSet moveAtIndexPath:indexPath toIndexPath:newIndexPath];
             break;
         }
         case NSFetchedResultsChangeUpdate: {
-            [self.delegate assemblage:self didUpdateObject:anObject atIndexPath:indexPath];
+            [self.changeSet updateAtIndexPath:indexPath];
             break;
         }
     }
@@ -137,11 +151,11 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:sectionIndex];
     switch ( type ) {
         case NSFetchedResultsChangeInsert: {
-            [self.delegate assemblage:self didInsertObject:sectionInfo atIndexPath:indexPath];
+            [self.changeSet insertAtIndexPath:indexPath];
             break;
         }
         case NSFetchedResultsChangeDelete: {
-            [self.delegate assemblage:self didRemoveObject:sectionInfo atIndexPath:indexPath];
+            [self.changeSet removeAtIndexPath:indexPath];
             break;
         }
         default: {
@@ -153,7 +167,11 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     RZFRCLog(@"%@", controller);
-    [self.delegate didEndUpdatesForEnsemble:self];
+    [self.changeSet endUpdateWithAssemblage:self];
+    if ( self.changeSet.updateCount == 0 ) {
+        [self.delegate assemblage:self didChange:self.changeSet];
+        self.changeSet = nil;
+    }
 }
 
 @end
