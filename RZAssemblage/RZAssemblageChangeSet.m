@@ -12,7 +12,7 @@
 
 @interface RZAssemblageChangeSet ()
 
-@property (strong, nonatomic) id<RZAssemblage> startingAssemblage;
+@property (copy, nonatomic) id<RZAssemblage> startingAssemblage;
 
 @property (strong, nonatomic) RZMutableIndexPathSet *inserts;
 @property (strong, nonatomic) RZMutableIndexPathSet *updates;
@@ -22,6 +22,24 @@
 @end
 
 @implementation RZAssemblageChangeSet
+
+- (instancetype)init
+{
+    self = [super init];
+    if ( self ) {
+        _inserts = [RZMutableIndexPathSet mutableIndexPathSet];
+        _updates = [RZMutableIndexPathSet mutableIndexPathSet];
+        _removes = [RZMutableIndexPathSet mutableIndexPathSet];
+        _moves   = [RZMutableIndexPathSet mutableIndexPathSet];
+    }
+    return self;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@:%p \nI=%@, U=%@, R=%@, M=%@>", self.class, self,
+            self.inserts, self.updates, self.removes, self.moves];
+}
 
 - (void)beginUpdateWithAssemblage:(id<RZAssemblage>)assemblage
 {

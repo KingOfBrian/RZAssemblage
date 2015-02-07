@@ -12,18 +12,22 @@
 #import "RZMutableAssemblage.h"
 #import "RZJoinAssemblage.h"
 #import "RZFilteredAssemblage.h"
+#import "RZAssemblageChangeSet.h"
+#import "RZMutableIndexPathSet.h"
+#import "NSIndexPath+RZAssemblage.h"
 
 #define TRACE_DELEGATE_EVENT \
 RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \
 [self.delegateEvents addObject:event]; \
-event.assemblage = assemblage; \
-event.delegateSelector = _cmd; \
+event.delegateSelector = _cmd;\
+event.assemblage = assemblage;
 
 
 @interface RZAssemblageDelegateEvent : NSObject
 
 @property (strong, nonatomic) RZAssemblage *assemblage;
 @property (assign, nonatomic) SEL delegateSelector;
+@property (assign, nonatomic) RZAssemblageMutationType type;
 @property (strong, nonatomic) id object;
 @property (strong, nonatomic) NSIndexPath *indexPath;
 @property (strong, nonatomic) NSIndexPath *toIndexPath;
@@ -34,7 +38,13 @@ event.delegateSelector = _cmd; \
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@, %p %@ %@ %@ %@>", [super description], self.assemblage, NSStringFromSelector(self.delegateSelector), self.object, self.indexPath, self.toIndexPath ? self.toIndexPath : @""];
+    return [NSString stringWithFormat:@"<%@, %p, %@ %zd %@ %@ %@>",
+            [super description], self.assemblage,
+            NSStringFromSelector(self.delegateSelector),
+            self.type,
+            self.object,
+            [self.indexPath rz_shortDescription],
+            self.toIndexPath ? [self.toIndexPath rz_shortDescription] : @""];
 }
 
 @end
@@ -64,33 +74,32 @@ event.delegateSelector = _cmd; \
     TRACE_DELEGATE_EVENT
 }
 
-- (void)assemblage:(RZAssemblage *)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+- (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet
 {
-    TRACE_DELEGATE_EVENT
-    event.object = object;
-    event.indexPath = indexPath;
-}
-
-- (void)assemblage:(RZAssemblage *)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    TRACE_DELEGATE_EVENT
-    event.object = object;
-    event.indexPath = indexPath;
-}
-
-- (void)assemblage:(RZAssemblage *)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    TRACE_DELEGATE_EVENT
-    event.object = object;
-    event.indexPath = indexPath;
-}
-
-- (void)assemblage:(RZAssemblage *)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-    TRACE_DELEGATE_EVENT
-    event.object = object;
-    event.indexPath = fromIndexPath;
-    event.toIndexPath = toIndexPath;
+    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        TRACE_DELEGATE_EVENT
+        event.type = RZAssemblageMutationTypeInsert;
+        event.object = [assemblage objectAtIndexPath:indexPath];
+        event.indexPath = indexPath;
+    }];
+    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        TRACE_DELEGATE_EVENT
+        event.type = RZAssemblageMutationTypeRemove;
+        event.object = [changeSet.startingAssemblage objectAtIndexPath:indexPath];
+        event.indexPath = indexPath;
+    }];
+    [changeSet.updates enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        TRACE_DELEGATE_EVENT
+        event.type = RZAssemblageMutationTypeUpdate;
+        event.object = [assemblage objectAtIndexPath:indexPath];
+        event.indexPath = indexPath;
+    }];
+    [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        TRACE_DELEGATE_EVENT
+        event.type = RZAssemblageMutationTypeMove;
+        event.object = [assemblage objectAtIndexPath:indexPath];
+        event.indexPath = indexPath;
+    }];
 }
 
 - (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
@@ -131,62 +140,23 @@ event.delegateSelector = _cmd; \
     mutableValues.delegate = self;
 
     [mutableValues addObject:@1];
-    XCTAssert(self.delegateEvents.count == 3);
-    XCTAssertEqual(self.secondEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
-    [self.delegateEvents removeAllObjects];
-
-    [mutableValues removeLastObject];
-    XCTAssert(self.delegateEvents.count == 3);
-    XCTAssertEqual(self.secondEvent.delegateSelector, @selector(assemblage:didRemoveObject:atIndexPath:));
-    [self.delegateEvents removeAllObjects];
-
-    [mutableValues insertObject:@2 atIndex:0];
-    XCTAssert(self.delegateEvents.count == 3);
-    XCTAssertEqual(self.secondEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
-    [self.delegateEvents removeAllObjects];
-
-    [mutableValues removeObjectAtIndex:0];
-    XCTAssert(self.delegateEvents.count == 3);
-    XCTAssertEqual(self.secondEvent.delegateSelector, @selector(assemblage:didRemoveObject:atIndexPath:));
-    [self.delegateEvents removeAllObjects];
-
-    [mutableValues insertObject:@2 atIndex:0];
-    [mutableValues insertObject:@1 atIndex:0];
-    XCTAssert(self.delegateEvents.count == 6);
-    [self.delegateEvents removeAllObjects];
-
-}
-
-- (void)testGroupedMutableDelegation
-{
-    RZMutableAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
-    mutableValues.delegate = self;
-    [mutableValues beginUpdates];
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(willBeginUpdatesForAssemblage:));
-    [self.delegateEvents removeAllObjects];
-
-    [mutableValues addObject:@1];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
-    XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:0]);
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
     [self.delegateEvents removeAllObjects];
 
     [mutableValues removeLastObject];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didRemoveObject:atIndexPath:));
-    XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:0]);
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeRemove);
     [self.delegateEvents removeAllObjects];
 
     [mutableValues insertObject:@2 atIndex:0];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
-    XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:0]);
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
     [self.delegateEvents removeAllObjects];
 
     [mutableValues removeObjectAtIndex:0];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didRemoveObject:atIndexPath:));
-    XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:0]);
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeRemove);
     [self.delegateEvents removeAllObjects];
 
     [mutableValues insertObject:@2 atIndex:0];
@@ -194,10 +164,31 @@ event.delegateSelector = _cmd; \
     XCTAssert(self.delegateEvents.count == 2);
     [self.delegateEvents removeAllObjects];
 
+}
 
+- (void)testGroupedMutableDelegationNoOp
+{
+    RZMutableAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    mutableValues.delegate = self;
+    [mutableValues beginUpdates];
+
+    [mutableValues addObject:@1];
+    [mutableValues removeLastObject];
+    [mutableValues insertObject:@2 atIndex:0];
+    [mutableValues removeObjectAtIndex:0];
     [mutableValues endUpdates];
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(didEndUpdatesForEnsemble:));
-    [self.delegateEvents removeAllObjects];
+    XCTAssert(self.delegateEvents.count == 0);
+
+
+//    [mutableValues insertObject:@2 atIndex:0];
+//    [mutableValues insertObject:@1 atIndex:0];
+//    XCTAssert(self.delegateEvents.count == 2);
+//    [self.delegateEvents removeAllObjects];
+//
+//
+//    [mutableValues endUpdates];
+//    XCTAssert(self.delegateEvents.count == 0);
+//    [self.delegateEvents removeAllObjects];
 }
 
 - (void)testJoinDelegation
@@ -215,13 +206,13 @@ event.delegateSelector = _cmd; \
     for ( RZMutableAssemblage *ma in assemblages ) {
         [ma addObject:@1];
         XCTAssert(self.delegateEvents.count == 1);
-        XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
+        XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
         XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:0]);
         [self.delegateEvents removeAllObjects];
 
         [ma removeLastObject];
         XCTAssert(self.delegateEvents.count == 1);
-        XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didRemoveObject:atIndexPath:));
+        XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeRemove);
         XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:0]);
         [self.delegateEvents removeAllObjects];
     }
@@ -229,7 +220,7 @@ event.delegateSelector = _cmd; \
     for ( RZMutableAssemblage *ma in assemblages ) {
         [ma addObject:@1];
         XCTAssert(self.delegateEvents.count == 1);
-        XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
+        XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
         XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:[assemblages indexOfObject:ma]]);
         [self.delegateEvents removeAllObjects];
     }
@@ -319,26 +310,26 @@ event.delegateSelector = _cmd; \
 
     [mutableValues addObject:@1];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
 
     XCTAssertEqualObjects(self.firstEvent.indexPath, firstIndexPath);
     [self.delegateEvents removeAllObjects];
 
     [mutableValues removeLastObject];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didRemoveObject:atIndexPath:));
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeRemove);
     XCTAssertEqualObjects(self.firstEvent.indexPath, firstIndexPath);
     [self.delegateEvents removeAllObjects];
 
     [mutableValues insertObject:@2 atIndex:0];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
     XCTAssertEqualObjects(self.firstEvent.indexPath, firstIndexPath);
     [self.delegateEvents removeAllObjects];
 
     [mutableValues removeObjectAtIndex:0];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didRemoveObject:atIndexPath:));
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeRemove);
     XCTAssertEqualObjects(self.firstEvent.indexPath, firstIndexPath);
     [self.delegateEvents removeAllObjects];
 
@@ -349,7 +340,7 @@ event.delegateSelector = _cmd; \
 
     [parent addObject:[[RZAssemblage alloc] initWithArray:@[@"Only the assemblage is notified"]]];
     XCTAssert(self.delegateEvents.count == 1);
-    XCTAssertEqual(self.firstEvent.delegateSelector, @selector(assemblage:didInsertObject:atIndexPath:));
+    XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
     XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:2]);
     [self.delegateEvents removeAllObjects];
 
@@ -377,13 +368,13 @@ event.delegateSelector = _cmd; \
     XCTAssertEqual([s1 numberOfChildren], EVEN_CHILD_COUNT);
     XCTAssert(self.delegateEvents.count == CHILD_COUNT + START_STOP_EVENT_COUNT);
     for ( NSUInteger i = 1; i <= CHILD_COUNT; i++ ) {
+        RZAssemblageDelegateEvent *ev = self.delegateEvents[i];
         if ( i % 2 ) {
-            XCTAssertEqual([[self.delegateEvents objectAtIndex:i] delegateSelector],
-                           @selector(assemblage:didRemoveObject:atIndexPath:));
+            XCTAssertEqual(ev.type, RZAssemblageMutationTypeInsert);
+
         }
         else {
-            XCTAssertEqual([[self.delegateEvents objectAtIndex:i] delegateSelector],
-                           @selector(assemblage:didUpdateObject:atIndexPath:));
+            XCTAssertEqual(ev.type, RZAssemblageMutationTypeUpdate);
         }
     }
     [self.delegateEvents removeAllObjects];
@@ -457,7 +448,7 @@ event.delegateSelector = _cmd; \
         NSArray *updateEvents = [self.delegateEvents subarrayWithRange:NSMakeRange(cursorIndex, aValues.count)];
         cursorIndex += updateEvents.count;
         for ( RZAssemblageDelegateEvent *event in updateEvents ) {
-            XCTAssertEqual([event delegateSelector], @selector(assemblage:didUpdateObject:atIndexPath:));
+            XCTAssertEqual([event type], RZAssemblageMutationTypeInsert);
             XCTAssertEqual([[event indexPath] indexAtPosition:0], tableIndex);
             tableIndex++;
         }
@@ -465,7 +456,7 @@ event.delegateSelector = _cmd; \
         NSArray *removeEvents = [self.delegateEvents subarrayWithRange:NSMakeRange(cursorIndex, values.count - aValues.count)];
         cursorIndex += removeEvents.count;
         for ( RZAssemblageDelegateEvent *event in removeEvents ) {
-            XCTAssertEqual([event delegateSelector], @selector(assemblage:didRemoveObject:atIndexPath:));
+            XCTAssertEqual([event type], RZAssemblageMutationTypeRemove);
             XCTAssertEqual([[event indexPath] indexAtPosition:0], tableIndex);
         }
     }

@@ -32,6 +32,12 @@
     return [NSString stringWithFormat:@"%@ - %@", super.description, self.store];
 }
 
+- (id)copyWithZone:(NSZone *)zone;
+{
+    RZAssemblage *copy = [[self class] allocWithZone:zone];
+    copy->_store = [self.store copyWithZone:zone];
+    return copy;
+}
 #pragma mark - <RZAssemblage>
 
 - (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;

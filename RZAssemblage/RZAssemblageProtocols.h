@@ -12,7 +12,7 @@
 @class RZAssemblageChangeSet;
 
 // This protocol is the API used by data sources
-@protocol RZAssemblage <NSObject>
+@protocol RZAssemblage <NSObject, NSCopying>
 
 - (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath;
@@ -24,7 +24,6 @@
 
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
-- (id<RZAssemblage>)assemblageContainingIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval;
 - (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
              assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
 

@@ -21,13 +21,6 @@
 
 @implementation RZIndexNode
 
-- (instancetype)init
-{
-    self = [super init];
-    self.childNodes = [NSMutableArray array];
-    return self;
-}
-
 + (instancetype)rootIndexNode
 {
     return [[self alloc] init];
@@ -38,6 +31,19 @@
     RZIndexNode *indexNode = [[self alloc] init];
     indexNode.index = index;
     return indexNode;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    self.childNodes = [NSMutableArray array];
+    return self;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@:%p i=%zd, %@, children=%@", self.class, self,
+            self.index, self.present ? @"" : @"node", self.childNodes];
 }
 
 + (NSComparator)comparator
@@ -59,7 +65,7 @@
     };
 }
 
-- (void)addSortedNodeForIndex:(NSUInteger)index
+- (RZIndexNode *)addSortedNodeForIndex:(NSUInteger)index
 {
     RZIndexNode *childNode = [RZIndexNode indexNodeWithIndex:index];
 
@@ -70,6 +76,7 @@
                                             usingComparator:self.class.comparator];
 
     [self.childNodes insertObject:childNode atIndex:sortedIndex];
+    return childNode;
 }
 
 - (RZIndexNode *)indexNodeForIndex:(NSUInteger)index createNew:(BOOL)createNew;
@@ -82,7 +89,7 @@
         }
     }
     if ( childNode == nil && createNew ) {
-        [self addSortedNodeForIndex:index];
+        childNode = [self addSortedNodeForIndex:index];
     }
     return childNode;
 }
@@ -152,20 +159,21 @@
 
 - (void)enumerateIndexPathsFromIndexPath:(NSIndexPath *)indexPath withBlock:(RZMutableIndexPathBlock)block
 {
-    if ( indexPath == nil ) {
-        indexPath = [NSIndexPath indexPathWithIndex:self.index];
-    }
-    else {
-        indexPath = [indexPath indexPathByAddingIndex:self.index];
-    }
     BOOL stop = NO;
-    if ( self.present ) {
+    if ( self.present && indexPath ) {
         block(indexPath, &stop);
         if ( stop ) {
             return;
         }
     }
     for ( RZIndexNode *childNode in self.childNodes ) {
+        if ( indexPath == nil ) {
+            indexPath = [NSIndexPath indexPathWithIndex:self.index];
+        }
+        else {
+            indexPath = [indexPath indexPathByAddingIndex:self.index];
+        }
+
         [childNode enumerateIndexPathsFromIndexPath:indexPath withBlock:block];
     }
 }
@@ -192,6 +200,11 @@
         _indexNode = [RZIndexNode rootIndexNode];
     }
     return self;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@:%p root=%@>", self.class, self, self.indexNode];
 }
 
 - (NSIndexSet *)rootIndexes;

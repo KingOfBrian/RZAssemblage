@@ -19,7 +19,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 @interface RZAssemblageChangeSet : NSObject
 
-@property (strong, nonatomic, readonly) id<RZAssemblage> startingAssemblage;
+@property (copy, nonatomic, readonly) id<RZAssemblage> startingAssemblage;
 
 @property (nonatomic, readonly) NSUInteger updateCount;
 @property (strong, nonatomic, readonly) RZMutableIndexPathSet *inserts;
