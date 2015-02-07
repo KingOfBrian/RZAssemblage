@@ -12,7 +12,7 @@
 
 @protocol RZAssemblageDelegate;
 
-@interface RZAssemblage : NSObject <RZAssemblage, RZAssemblageMutationTraversal>
+@interface RZAssemblage : NSObject <RZAssemblage>
 
 - (instancetype)init __attribute__((unavailable));
 

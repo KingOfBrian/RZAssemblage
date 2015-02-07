@@ -24,22 +24,9 @@
 
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
-@end
-
-@protocol RZMutableAssemblageSupport <RZAssemblage>
-
-- (void)insertObject:(id)anObject atIndex:(NSUInteger)index;
-- (void)removeObjectAtIndex:(NSUInteger)index;
-
-@end
-
-@protocol RZAssemblageMutationTraversal <RZAssemblage>
-
-// Index Path mutation.
-// These methods will assert if the index path lands on an assemblage that does not support RZMutableAssemblageSupport.
-- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath;
-- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
-- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2;
+- (id<RZAssemblage>)assemblageContainingIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval;
+- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
+             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
 
 @end
 

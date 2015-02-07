@@ -9,6 +9,7 @@
 #import "RZMutableAssemblage.h"
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
+#import "RZAssemblageDefines.h"
 
 @interface RZMutableAssemblage()
 
@@ -70,6 +71,45 @@
     NSAssert(index != NSNotFound, @"Object is not part of assemblage");
     [self beginUpdates];
     [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self endUpdates];
+}
+
+@end
+
+@implementation RZAssemblage (RZAssemblageMutation)
+
+- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
+{
+    id<RZAssemblage> assemblage = nil;
+    NSIndexPath *newIndexPath = nil;
+
+    [self lookupIndexPath:indexPath forRemoval:NO
+               assemblage:&assemblage newIndexPath:&newIndexPath];
+
+    RZRaize([assemblage isKindOfClass:[RZMutableAssemblage class]], @"IndexPath %@ must be mutable, not %@", indexPath, assemblage);
+    RZMutableAssemblage *mutable = (id)assemblage;
+    [mutable insertObject:anObject atIndex:[newIndexPath rz_lastIndex]];
+}
+
+- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
+{
+    id<RZAssemblage> assemblage = nil;
+    NSIndexPath *newIndexPath = nil;
+
+    [self lookupIndexPath:indexPath forRemoval:YES
+               assemblage:&assemblage newIndexPath:&newIndexPath];
+
+    RZRaize([assemblage isKindOfClass:[RZMutableAssemblage class]], @"IndexPath %@ must be mutable, not %@", indexPath, assemblage);
+    RZMutableAssemblage *mutable = (id)assemblage;
+    [mutable removeObjectAtIndex:[newIndexPath rz_lastIndex]];
+}
+
+- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2
+{
+    [self beginUpdates];
+    id object = [self objectAtIndexPath:indexPath1];
+    [self removeObjectAtIndexPath:indexPath1];
+    [self insertObject:object atIndexPath:indexPath2];
     [self endUpdates];
 }
 

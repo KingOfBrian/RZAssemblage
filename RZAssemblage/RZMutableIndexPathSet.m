@@ -212,20 +212,6 @@
     [self.indexNode removeIndexNodeRepresentingIndex:index];
 }
 
-- (void)addIndexes:(NSIndexSet *)indexSet
-{
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        [self addIndex:idx];
-    }];
-}
-
-- (void)removeIndexes:(NSIndexSet *)indexSet
-{
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        [self removeIndex:idx];
-    }];
-}
-
 - (void)addIndexPath:(NSIndexPath *)indexPath
 {
     RZIndexNode *indexNode = [self.indexNode indexNodeForIndexPath:indexPath createNew:YES];

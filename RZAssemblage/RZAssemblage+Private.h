@@ -7,11 +7,10 @@
 //
 
 #import "RZAssemblage.h"
-#import "RZAssemblageProtocols+Private.h"
 #import "RZAssemblageChangeSet.h"
 
 
-@interface RZAssemblage() <RZAssemblageDelegate, RZAssemblageMutationTraversalSupport> {
+@interface RZAssemblage() <RZAssemblageDelegate> {
 @protected
     NSArray *_store;
 }

@@ -10,13 +10,24 @@
 #import "RZAssemblage.h"
 #import "RZAssemblageProtocols.h"
 
-@interface RZMutableAssemblage : RZAssemblage <RZMutableAssemblageSupport>
+@interface RZMutableAssemblage : RZAssemblage
 
 - (instancetype)initWithArray:(NSArray *)array;
 
 // Remote change notification
 - (void)notifyObjectUpdate:(id)object;
+
+- (void)insertObject:(id)anObject atIndex:(NSUInteger)index;
 - (void)addObject:(id)anObject;
+- (void)removeObjectAtIndex:(NSUInteger)index;
 - (void)removeLastObject;
+
+@end
+
+@interface RZAssemblage (RZAssemblageMutation)
+
+- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath;
+- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
+- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2;
 
 @end

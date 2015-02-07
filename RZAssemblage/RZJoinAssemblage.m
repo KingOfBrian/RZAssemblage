@@ -52,33 +52,16 @@
     return count;
 }
 
-- (NSIndexPath *)indexPathFromChildIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage
+- (NSUInteger)indexCountPrecedingAssemblage:(id<RZAssemblage>)childAssemblage
 {
-    // Increase the index path based on the assemblage that it comes from.
-    NSUInteger index = [indexPath indexAtPosition:0];
-    NSIndexPath *baseIndexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+    NSUInteger count = 0;
     for ( id<RZAssemblage> partAssemblage in self.store ) {
-        if ( assemblage == partAssemblage ) {
+        if ( partAssemblage == childAssemblage ) {
             break;
         }
-        index += [partAssemblage numberOfChildrenAtIndexPath:nil];
+        count += [partAssemblage numberOfChildrenAtIndexPath:nil];
     }
-    return [baseIndexPath rz_indexPathByPrependingIndex:index];
-}
-
-- (NSIndexPath *)childIndexPathFromIndexPath:(NSIndexPath *)indexPath
-{
-    // Decrease the first index in the index path until it fits in an assemblage.
-    NSUInteger index = [indexPath indexAtPosition:0];
-    NSIndexPath *baseIndexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-
-    for ( id<RZAssemblage> partAssemblage in self.store ) {
-        if ( index < [partAssemblage numberOfChildrenAtIndexPath:nil] ) {
-            break;
-        }
-        index -= [partAssemblage numberOfChildrenAtIndexPath:nil];
-    }
-    return [baseIndexPath rz_indexPathByPrependingIndex:index];
+    return count;
 }
 
 - (NSUInteger)indexOfAssemblageContainingParentIndex:(NSUInteger)parentIndex;
@@ -95,14 +78,19 @@
     return index;
 }
 
-- (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
+- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
+             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
 {
-    NSUInteger index = [self indexOfAssemblageContainingParentIndex:[indexPath indexAtPosition:0]];
-    id<RZAssemblageMutationTraversal> assemblage = [self.store objectAtIndex:index];
-    if ( canBeEmpty == NO && [assemblage numberOfChildrenAtIndexPath:nil] == 0 ) {
-        index++;
-    }
-    return [self.store objectAtIndex:index];
+    NSUInteger index = [indexPath indexAtPosition:0];
+    NSUInteger assemblageIndex = [self indexOfAssemblageContainingParentIndex:index];
+    id<RZAssemblage> nextAssemblage = [self.store objectAtIndex:assemblageIndex];
+
+    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+    index -= [self indexCountPrecedingAssemblage:nextAssemblage];
+    indexPath = [indexPath rz_indexPathByPrependingIndex:index];
+
+    [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
+                         assemblage:assemblage newIndexPath:newIndexPath];
 }
 
 @end

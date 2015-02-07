@@ -95,67 +95,20 @@
     }
 }
 
-#pragma mark - RZAssemblageMutationTraversalSupport
-
-- (NSIndexPath *)indexPathFromChildIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage
+- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
+             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
 {
-    return [indexPath rz_indexPathByPrependingIndex:[self indexForChildAssemblage:assemblage]];
-}
-
-- (NSIndexPath *)childIndexPathFromIndexPath:(NSIndexPath *)indexPath
-{
-    return [indexPath rz_indexPathByRemovingFirstIndex];
-}
-
-- (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty
-{
-    return [self objectAtIndex:[indexPath indexAtPosition:0]];
-}
-
-#pragma mark - Index Path Mutation
-
-- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
-{
-    RZIndexPathWithLength(indexPath);
-    NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
-
-    if ( childIndexPath.length == 1 ) {
-        RZConformMutationSupport(self);
-        id<RZMutableAssemblageSupport> assemblage = (id)self;
-        NSUInteger index = [indexPath indexAtPosition:0];
-        [assemblage insertObject:anObject atIndex:index];
+    NSUInteger index = [indexPath indexAtPosition:0];
+    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+    id<RZAssemblage> nextAssemblage = [self objectAtIndex:index];
+    if ( indexPath.length > 0 ) {
+        [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
+                             assemblage:assemblage newIndexPath:newIndexPath];
     }
     else {
-        id<RZAssemblageMutationTraversalSupport> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:YES];
-        RZConformTraversal(assemblage);
-        [assemblage insertObject:anObject atIndexPath:childIndexPath];
+        *newIndexPath = indexPath;
+        *assemblage = nextAssemblage;
     }
-}
-
-- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
-{
-    RZIndexPathWithLength(indexPath);
-    NSIndexPath *childIndexPath = [self childIndexPathFromIndexPath:indexPath];
-    if ( childIndexPath.length == 1 ) {
-        id<RZMutableAssemblageSupport> assemblage = (id)self;
-        RZConformMutationSupport(assemblage);
-        NSUInteger index = [indexPath indexAtPosition:0];
-        [assemblage removeObjectAtIndex:index];
-    }
-    else {
-        id<RZAssemblageMutationTraversalSupport> assemblage = [self assemblageToTraverseForIndexPath:indexPath canBeEmpty:NO];
-        RZConformTraversal(assemblage);
-        [assemblage removeObjectAtIndexPath:childIndexPath];
-    }
-}
-
-- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2
-{
-    [self beginUpdates];
-    id object = [self objectAtIndexPath:indexPath1];
-    [self removeObjectAtIndexPath:indexPath1];
-    [self insertObject:object atIndexPath:indexPath2];
-    [self endUpdates];
 }
 
 #pragma mark - Delegation

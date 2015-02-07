@@ -20,9 +20,6 @@ typedef void(^RZMutableIndexPathBlock)(NSIndexPath *indexPath, BOOL *stop);
 - (void)addIndex:(NSUInteger)index;
 - (void)removeIndex:(NSUInteger)index;
 
-- (void)addIndexes:(NSIndexSet *)indexSet;
-- (void)removeIndexes:(NSIndexSet *)indexSet;
-
 - (void)addIndexPath:(NSIndexPath *)indexPath;
 - (void)removeIndexPath:(NSIndexPath *)indexPath;
 
