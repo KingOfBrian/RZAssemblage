@@ -79,16 +79,21 @@
 
 - (void)removeAtIndexPath:(NSIndexPath *)indexPath
 {
+    BOOL insertWasRemoved = [self.inserts containsIndexPath:indexPath];
+
     [self.updates shiftIndexesStartingAfterIndexPath:indexPath by:-1];
     [self.inserts shiftIndexesStartingAfterIndexPath:indexPath by:-1];
     [self.moves shiftIndexesStartingAfterIndexPath:indexPath by:-1];
 
-    // If the index has already been removed, shift it down
-    NSIndexPath *indexPathToRemove = indexPath;
-    while ( [self.removes containsIndexPath:indexPathToRemove] ) {
-        indexPathToRemove = [indexPathToRemove rz_indexPathWithLastIndexShiftedBy:1];
+    // Do nothing if the removal was an un-propagated insertion
+    if ( insertWasRemoved == NO) {
+        // If the index has already been removed, shift it down till it finds an empty index.
+        NSIndexPath *indexPathToRemove = indexPath;
+        while ( [self.removes containsIndexPath:indexPathToRemove] ) {
+            indexPathToRemove = [indexPathToRemove rz_indexPathWithLastIndexShiftedBy:1];
+        }
+        [self.removes addIndexPath:indexPathToRemove];
     }
-    [self.removes addIndexPath:indexPathToRemove];
 }
 
 - (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
