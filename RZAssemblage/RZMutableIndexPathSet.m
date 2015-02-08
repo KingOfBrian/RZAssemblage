@@ -129,6 +129,12 @@
 
 - (void)shiftIndexesStartingAtIndex:(NSUInteger)index by:(NSInteger)shift
 {
+    for ( NSUInteger i = MAX(index + shift, 0); i < index; i++ ) {
+        RZIndexNode *shiftedNode = [self indexNodeForIndex:i createNew:NO];
+        if ( shiftedNode.present ) {
+            [self.childNodes removeObject:shiftedNode];
+        }
+    }
     for ( RZIndexNode *childNode in self.childNodes ) {
         if ( childNode.index >= index ) {
             childNode.index += shift;
@@ -212,6 +218,11 @@
     return self.indexNode.childIndexSet;
 }
 
+- (NSUInteger)count
+{
+    return self.rootIndexes.count;
+}
+
 #pragma mark - Mutation
 
 - (void)addIndex:(NSUInteger)index
@@ -243,6 +254,11 @@
 {
     RZIndexNode *indexNode = [self.indexNode indexNodeForIndexPath:indexPath createNew:NO];
     return indexNode.present;
+}
+
+- (BOOL)containsIndex:(NSUInteger)index;
+{
+    return [self containsIndexPath:[NSIndexPath indexPathWithIndex:index]];
 }
 
 - (void)shiftIndexesStartingAtIndexPath:(NSIndexPath *)indexPath by:(NSUInteger)shift

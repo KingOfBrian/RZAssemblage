@@ -17,6 +17,8 @@ typedef void(^RZMutableIndexPathBlock)(NSIndexPath *indexPath, BOOL *stop);
 
 @property (strong, nonatomic, readonly) NSIndexSet *rootIndexes;
 
+- (NSUInteger)count;
+
 - (void)addIndex:(NSUInteger)index;
 - (void)removeIndex:(NSUInteger)index;
 
@@ -24,6 +26,7 @@ typedef void(^RZMutableIndexPathBlock)(NSIndexPath *indexPath, BOOL *stop);
 - (void)removeIndexPath:(NSIndexPath *)indexPath;
 
 - (BOOL)containsIndexPath:(NSIndexPath *)indexPath;
+- (BOOL)containsIndex:(NSUInteger)index;
 
 - (void)shiftIndexesStartingAtIndexPath:(NSIndexPath *)IndexPath by:(NSUInteger)shift;
 - (void)shiftIndexesStartingAfterIndexPath:(NSIndexPath *)IndexPath by:(NSUInteger)shift;
