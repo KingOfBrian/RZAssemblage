@@ -10,6 +10,8 @@
 #import "RZAssemblageProtocols.h"
 @class RZMutableIndexPathSet;
 
+typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *indexPath);
+
 typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblageMutationTypeInsert = 0,
     RZAssemblageMutationTypeUpdate,
@@ -35,7 +37,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)removeAtIndexPath:(NSIndexPath *)indexPath;
 - (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2;
 
-- (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet fromIndex:(NSUInteger)index;
+- (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform;
 
 - (void)endUpdateWithAssemblage:(id<RZAssemblage>)assemblage;
 

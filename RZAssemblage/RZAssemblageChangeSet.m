@@ -44,18 +44,9 @@
 - (void)beginUpdateWithAssemblage:(id<RZAssemblage>)assemblage
 {
     if ( self.updateCount == 0 ) {
-#warning Add Copy
         self.startingAssemblage = assemblage;
     }
     _updateCount++;
-}
-
-- (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet fromIndex:(NSUInteger)index
-{
-    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
-        indexPath = [indexPath rz_indexPathByPrependingIndex:index];
-        [self insertAtIndexPath:indexPath];
-    }];
 }
 
 - (void)endUpdateWithAssemblage:(id<RZAssemblage>)assemblage
@@ -94,6 +85,27 @@
         }
         [self.removes addIndexPath:indexPathToRemove];
     }
+}
+
+- (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet
+withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
+{
+    NSParameterAssert(transform);
+    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        NSIndexPath *newIndexPath = transform(indexPath);
+        [self insertAtIndexPath:newIndexPath];
+    }];
+    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        NSIndexPath *newIndexPath = transform(indexPath);
+        [self removeAtIndexPath:newIndexPath];
+    }];
+    [changeSet.updates enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        NSIndexPath *newIndexPath = transform(indexPath);
+        [self updateAtIndexPath:newIndexPath];
+    }];
+    [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }];
+
 }
 
 - (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2

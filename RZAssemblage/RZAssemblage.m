@@ -10,6 +10,7 @@
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageProtocols.h"
 #import "RZAssemblageDefines.h"
+#import "RZMutableIndexPathSet.h"
 
 @implementation RZAssemblage
 
@@ -35,9 +36,22 @@
 - (id)copyWithZone:(NSZone *)zone;
 {
     RZAssemblage *copy = [[self class] allocWithZone:zone];
-    copy->_store = [self.store copyWithZone:zone];
+
+    // Copy the store.   Do a deep copy of any assemblages that are in the store.
+    // This is not good.
+    NSMutableArray *store = [NSMutableArray arrayWithArray:self.store];
+    NSUInteger index = 0;
+    for ( id object in self.store ) {
+        if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
+            id assemblageCopy = [object copy];
+            [store replaceObjectAtIndex:index withObject:assemblageCopy];
+        }
+        index++;
+    }
+    copy->_store = [self.store isKindOfClass:[NSMutableArray class]] ? store : [store copy];
     return copy;
 }
+
 #pragma mark - <RZAssemblage>
 
 - (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
@@ -64,14 +78,14 @@
         object = [self objectAtIndex:[indexPath indexAtPosition:0]];
     }
     else if ( length > 1 ) {
-        id<RZAssemblage> assemblage = [self objectAtIndex:[indexPath indexAtPosition:0]];
+        id<RZAssemblage> assemblage = [self.store objectAtIndex:[indexPath indexAtPosition:0]];
         NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
         object = [assemblage objectAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return object;
 }
 
-- (NSArray *)allItems
+- (NSArray *)allObjects
 {
     return [self.store copy];
 }
@@ -106,15 +120,16 @@
 {
     NSUInteger index = [indexPath indexAtPosition:0];
     indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-    id<RZAssemblage> nextAssemblage = [self objectAtIndex:index];
-    if ( indexPath.length > 0 ) {
-        [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
-                             assemblage:assemblage newIndexPath:newIndexPath];
+    if ( index < self.store.count ) {
+        id<RZAssemblage> nextAssemblage = [self.store objectAtIndex:index];
+        if ( [nextAssemblage conformsToProtocol:@protocol(RZAssemblage)] ) {
+            [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
+                                 assemblage:assemblage newIndexPath:newIndexPath];
+            return;
+        }
     }
-    else {
-        *newIndexPath = indexPath;
-        *assemblage = nextAssemblage;
-    }
+    *newIndexPath = [NSIndexPath indexPathWithIndex:index];
+    *assemblage = self;
 }
 
 #pragma mark - Delegation
@@ -127,8 +142,13 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet
 {
+    RZRaize(self.changeSet != nil, @"Must begin an update on the parent assemblage before mutating a child assemblage");
+    [self beginUpdates];
     NSUInteger assemblageIndex = [self indexForChildAssemblage:assemblage];
-    [self.changeSet mergeChangeSet:changeSet fromIndex:assemblageIndex];
+    [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
+        return [indexPath rz_indexPathByPrependingIndex:assemblageIndex];
+    }];
+    [self endUpdates];
 }
 
 - (void)endUpdates

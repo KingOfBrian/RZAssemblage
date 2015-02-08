@@ -33,9 +33,17 @@
         }
         assemblage.delegate = self;
         _filteredIndexes = [NSMutableIndexSet indexSet];
-        [self updateFilterState];
     }
     return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone;
+{
+    RZFilteredAssemblage *copy = [super copyWithZone:zone];
+    copy->_filter = self.filter;
+    copy->_filteredIndexes = [self.filteredIndexes copyWithZone:zone];
+    copy->_filteredAssemblage = [self.filteredAssemblage copyWithZone:zone];
+    return copy;
 }
 
 - (NSString *)description
@@ -54,7 +62,7 @@
     return [super objectAtIndex:index];
 }
 
-- (NSArray *)allItems
+- (NSArray *)allObjects
 {
     return [self.store filteredArrayUsingPredicate:self.filter];
 }
@@ -68,14 +76,29 @@
 - (void)updateFilterState
 {
     [self beginUpdates];
+    // Process removals first, and do not modify the internal
+    // index state, to ensure that the indexes generated are valid when used on the
+    // assemblage before the filter change.
+    [self.store enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+        if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
+            indexPath = [self indexPathFromRealIndexPath:indexPath];
+            [self.changeSet removeAtIndexPath:indexPath];
+        }
+    }];
     [self.store enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
             [self.filteredIndexes addIndex:index];
-            [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
         }
-        else if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO) {
+    }];
+    // Next generate insert events and always ensure that the indexes are valid against
+    // the current state.
+    [self.store enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+        if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
+            indexPath = [self indexPathFromRealIndexPath:indexPath];
             [self.filteredIndexes removeIndex:index];
-            [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+            [self.changeSet insertAtIndexPath:indexPath];
         }
     }];
     [self endUpdates];
@@ -91,40 +114,21 @@
 - (NSUInteger)realIndexFromIndexPath:(NSIndexPath *)indexPath
 {
     __block NSUInteger index = [indexPath indexAtPosition:0];
-    [self.filteredIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        if (idx <= index) {
-            index += 1;
+    [self.filteredIndexes enumerateRangesUsingBlock:^(NSRange range, BOOL *stop) {
+        if ( index >=  range.location ) {
+            index += range.length;
         }
     }];
+
     return index;
 }
 
-- (NSIndexPath *)indexPathFromChildIndexPath:(NSIndexPath *)indexPath fromAssemblage:(id<RZAssemblage>)assemblage
+- (NSIndexPath *)indexPathFromRealIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger index = [self indexFromRealIndexPath:indexPath];
     indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
     indexPath = [indexPath indexPathByAddingIndex:index];
     return indexPath;
-}
-
-- (NSIndexPath *)childIndexPathFromIndexPath:(NSIndexPath *)indexPath
-{
-    NSUInteger index = [self realIndexFromIndexPath:indexPath];
-    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-    return [indexPath indexPathByAddingIndex:index];
-}
-
-- (BOOL)leafNodeForIndexPath:(NSIndexPath *)indexPath
-{
-    return NO;
-}
-
-- (id<RZAssemblageMutationTraversalSupport>)assemblageToTraverseForIndexPath:(NSIndexPath *)indexPath canBeEmpty:(BOOL)canBeEmpty;
-{
-    if ( [self.filteredAssemblage conformsToProtocol:@protocol(RZAssemblageMutationTraversalSupport)] ) {
-        return (id)self.filteredAssemblage;
-    }
-    return nil;
 }
 
 - (BOOL)isObjectFiltered:(id)object
@@ -162,7 +166,7 @@
     [changeSet.updates.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         id object = [changeSet.startingAssemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
         NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:idx];
-        indexPath = [self indexPathFromChildIndexPath:indexPath fromAssemblage:assemblage];
+        indexPath = [self indexPathFromRealIndexPath:indexPath];
         if ( [self isIndexFiltered:idx] && [self isObjectFiltered:object] == NO ) {
             [self.filteredIndexes removeIndex:idx];
 
@@ -177,7 +181,9 @@
     }];
     [changeSet.moves.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
     }];
-    [super assemblage:self didChange:changeSet];
+    [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
+        return [self indexPathFromRealIndexPath:indexPath];
+    }];
 }
 
 @end

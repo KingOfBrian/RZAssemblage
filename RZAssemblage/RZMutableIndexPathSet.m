@@ -53,13 +53,13 @@
         NSUInteger index2 = obj2.index;
         NSComparisonResult result = NSNotFound;
         if ( index1 < index2 ) {
-            result = NSOrderedDescending;
+            result = NSOrderedAscending;
         }
         else if ( index1 == index2 ) {
             result = NSOrderedSame;
         }
         else {
-            result = NSOrderedAscending;
+            result = NSOrderedDescending;
         }
         return result;
     };
@@ -173,14 +173,15 @@
         }
     }
     for ( RZIndexNode *childNode in self.childNodes ) {
+        NSIndexPath *childIndexPath = nil;
         if ( indexPath == nil ) {
-            indexPath = [NSIndexPath indexPathWithIndex:self.index];
+            childIndexPath = [NSIndexPath indexPathWithIndex:childNode.index];
         }
         else {
-            indexPath = [indexPath indexPathByAddingIndex:self.index];
+            childIndexPath = [indexPath indexPathByAddingIndex:childNode.index];
         }
 
-        [childNode enumerateIndexPathsFromIndexPath:indexPath withBlock:block];
+        [childNode enumerateIndexPathsFromIndexPath:childIndexPath withBlock:block];
     }
 }
 
