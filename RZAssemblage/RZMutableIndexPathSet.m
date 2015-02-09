@@ -113,7 +113,9 @@
             *stop = YES;
         }
     }];
-    [self.childNodes removeObjectAtIndex:childNodeIndex];
+    if ( childNodeIndex != NSNotFound ) {
+        [self.childNodes removeObjectAtIndex:childNodeIndex];
+    }
 }
 
 - (NSIndexSet *)childIndexSet
