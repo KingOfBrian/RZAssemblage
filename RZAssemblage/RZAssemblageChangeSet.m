@@ -87,6 +87,30 @@
     }
 }
 
+- (void)clearInsertAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.updates shiftIndexesStartingAtIndexPath:indexPath by:-1];
+    [self.inserts shiftIndexesStartingAtIndexPath:indexPath by:-1];
+    [self.moves shiftIndexesStartingAtIndexPath:indexPath by:-1];
+
+    [self.inserts removeIndexPath:indexPath];
+
+}
+
+- (void)clearRemoveAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.updates shiftIndexesStartingAfterIndexPath:indexPath by:1];
+    [self.inserts shiftIndexesStartingAfterIndexPath:indexPath by:1];
+    [self.moves shiftIndexesStartingAfterIndexPath:indexPath by:1];
+
+    [self.removes removeIndexPath:indexPath];
+}
+
+- (void)clearUpdateAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.updates removeIndexPath:indexPath];
+}
+
 - (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet
 withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
 {

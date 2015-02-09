@@ -467,8 +467,8 @@ event.assemblage = assemblage;
     RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
     RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
     RZMutableAssemblage *m4 = [[RZMutableAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
-    RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:@[m3, m4]];
-    RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
+    RZJoinAssemblage *j1 = [[RZJoinAssemblage alloc] initWithArray:@[m3, m4]];
+    RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:j1];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
@@ -478,6 +478,14 @@ event.assemblage = assemblage;
 
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
 
+    // This is @ 2:2
+    [m3 addObject:@"9"];
+    XCTAssert([[filtered objectAtIndex:2] isEqualToString:@"9"]);
+    [self.delegateEvents removeAllObjects];
+    id obj = [assemblage objectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+    [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]
+                          toIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]];
+    XCTAssertEqual(obj, [assemblage objectAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]]);
 }
 
 @end

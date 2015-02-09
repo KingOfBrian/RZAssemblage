@@ -80,6 +80,7 @@
 
 - (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
 {
+    RZAssemblageLog(@"Insert %@ at %@", anObject, indexPath);
     id<RZAssemblage> assemblage = nil;
     NSIndexPath *newIndexPath = nil;
 
@@ -93,6 +94,7 @@
 
 - (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
 {
+    RZAssemblageLog(@"Remove %@", indexPath);
     id<RZAssemblage> assemblage = nil;
     NSIndexPath *newIndexPath = nil;
 
@@ -106,6 +108,10 @@
 
 - (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2
 {
+    if ( [indexPath1 isEqual:indexPath2] ) {
+        return;
+    }
+    RZAssemblageLog(@"Move %@ -> %@", indexPath1, indexPath2);
     [self beginUpdates];
     id object = [self objectAtIndexPath:indexPath1];
     [self removeObjectAtIndexPath:indexPath1];

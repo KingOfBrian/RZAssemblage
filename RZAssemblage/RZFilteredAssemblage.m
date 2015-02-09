@@ -104,6 +104,14 @@
     [self endUpdates];
 }
 
+- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
+             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
+{
+    indexPath = [self realIndexPathFromIndexPath:indexPath];
+    [self.filteredAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
+                         assemblage:assemblage newIndexPath:newIndexPath];
+}
+
 - (NSUInteger)indexFromRealIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger index = [indexPath indexAtPosition:0];
@@ -131,6 +139,14 @@
     return indexPath;
 }
 
+- (NSIndexPath *)realIndexPathFromIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger index = [self realIndexFromIndexPath:indexPath];
+    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+    indexPath = [indexPath indexPathByAddingIndex:index];
+    return indexPath;
+}
+
 - (BOOL)isObjectFiltered:(id)object
 {
     return self.filter && [self.filter evaluateWithObject:object] == NO;
@@ -143,39 +159,46 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
-    [changeSet.inserts.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        id object = [changeSet.startingAssemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
-        [self.store insertObject:object atIndex:idx];
+    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        NSUInteger idx = [indexPath indexAtPosition:0];
+        id object = [assemblage objectAtIndexPath:indexPath];
         BOOL filtered = [self isObjectFiltered:object];
         if ( filtered ) {
-            [self.filteredIndexes addIndex:idx];
-
+            [self.filteredIndexes addIndex:[indexPath indexAtPosition:0]];
             // How do are other indexes affected?!
-//            [changeSet removeInsertAtIndex:idx];
+            [changeSet clearInsertAtIndexPath:indexPath];
+        }
+        else {
+            [self.store insertObject:object atIndex:idx];
+            [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
         }
     }];
-    [changeSet.removes.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        id object = [changeSet.startingAssemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
+    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        NSUInteger idx = [indexPath indexAtPosition:0];
+        id object = [changeSet.startingAssemblage objectAtIndexPath:indexPath];
         [self.store removeObjectAtIndex:idx];
-        [self.filteredIndexes removeIndex:idx];
+        [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:-1];
+
         BOOL filtered = [self isObjectFiltered:object];
         if ( filtered ) {
-
+            // How do are other indexes affected?!
+            [changeSet clearRemoveAtIndexPath:indexPath];
         }
     }];
-    [changeSet.updates.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        id object = [changeSet.startingAssemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
-        NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:idx];
+    [changeSet.updates enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        NSUInteger idx = [indexPath indexAtPosition:0];
+        id object = [assemblage objectAtIndexPath:indexPath];
         indexPath = [self indexPathFromRealIndexPath:indexPath];
         if ( [self isIndexFiltered:idx] && [self isObjectFiltered:object] == NO ) {
             [self.filteredIndexes removeIndex:idx];
 
-//            [changeSet removeUpdateAtIndex:idx];
+            [changeSet clearUpdateAtIndexPath:indexPath];
             [changeSet insertAtIndexPath:indexPath];
         }
         else if ( [self isIndexFiltered:idx] == NO && [self isObjectFiltered:object] ) {
             [self.filteredIndexes addIndex:idx];
-//            [changeSet removeUpdateAtIndex:idx];
+            [changeSet clearUpdateAtIndexPath:indexPath];
+
             [changeSet removeAtIndexPath:indexPath];
         }
     }];

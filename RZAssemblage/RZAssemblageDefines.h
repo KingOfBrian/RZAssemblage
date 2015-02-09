@@ -15,8 +15,8 @@
 #define RZLog(fmt, ... )
 #endif
 
-#define RZAssemblageLog(fmt, ... ) //RZLog(fmt, ##__VA_ARGS__)
-#define RZFilterLog(fmt, ... ) //RZLog(fmt, ##__VA_ARGS__)
+#define RZAssemblageLog(fmt, ... ) RZLog(fmt, ##__VA_ARGS__)
+#define RZFilterLog(fmt, ... ) RZLog(fmt, ##__VA_ARGS__)
 #define RZBufferLog(fmt, ... ) RZLog(fmt, ##__VA_ARGS__)
 #define RZDataSourceLog(fmt, ... ) RZLog(fmt, ##__VA_ARGS__)
 #define RZFRCLog(fmt, ... ) //RZLog(fmt, ##__VA_ARGS__)
