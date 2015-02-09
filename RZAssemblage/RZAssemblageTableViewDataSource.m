@@ -9,7 +9,8 @@
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZAssemblageDefines.h"
 #import "NSIndexPath+RZAssemblage.h"
-
+#import "RZAssemblageChangeSet.h"
+#import "RZMutableIndexPathSet.h"
 
 @interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
 
@@ -30,6 +31,7 @@
 {
     self = [super init];
     if ( self ) {
+        _assemblage = assemblage;
         _assemblage.delegate = self;
         _tableView = tableView;
         _tableView.dataSource = self;
@@ -69,64 +71,57 @@
 
 #pragma mark - RZAssemblageDelegate
 
+- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+{
+    // The RZAssemblageChangeSet needs a better API here.
+    [self.tableView beginUpdates];
+    // Process section insert / removes
+    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        if ( indexPath.length == 1 ) {
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
+                          withRowAnimation:self.removeSectionAnimation];
+        }
+    }];
+    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        if ( indexPath.length == 1 ) {
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
+                          withRowAnimation:self.addSectionAnimation];
+        }
+    }];
+
+    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        if ( indexPath.length == 2 ) {
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath]
+                                  withRowAnimation:self.removeObjectAnimation];
+        }
+    }];
+    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        if ( indexPath.length == 2 ) {
+            [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:self.addObjectAnimation];
+        }
+    }];
+    [changeSet.updates enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        NSAssert(indexPath.length == 2, @"");
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        id object = [assemblage objectAtIndexPath:indexPath];
+        [self.dataSource tableView:self.tableView
+                        updateCell:cell
+                         forObject:object
+                       atIndexPath:indexPath];
+    }];
+#warning moves
+
+    [self.tableView endUpdates];
+}
+
 - (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
 {
     RZDataSourceLog(@"%@", assemblage);
-    [self.tableView beginUpdates];
-}
-
-- (void)assemblage:(RZAssemblage *)assemblage didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    RZDataSourceLog(@"%p I[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    if ( [self.class isSectionIndexPath:indexPath] ) {
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
-                      withRowAnimation:self.addSectionAnimation];
-    }
-    else {
-        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:self.addObjectAnimation];
-    }
-}
-
-- (void)assemblage:(RZAssemblage *)assemblage didRemoveObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    RZDataSourceLog(@"%p R[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    if ( [self.class isSectionIndexPath:indexPath] ) {
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
-                      withRowAnimation:self.removeSectionAnimation];
-    }
-    else {
-        [self.tableView deleteRowsAtIndexPaths:@[indexPath]
-                              withRowAnimation:self.removeObjectAnimation];
-    }
-}
-
-- (void)assemblage:(RZAssemblage *)assemblage didUpdateObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    RZDataSourceLog(@"%p U[%@] = %@", assemblage, [indexPath rz_shortDescription], object);
-    NSAssert([self.class isSectionIndexPath:indexPath] == NO, @"Do not know what to do for a section update");
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    [self.dataSource tableView:self.tableView
-                    updateCell:cell
-                     forObject:object
-                   atIndexPath:indexPath];
-}
-
-- (void)assemblage:(RZAssemblage *)assemblage didMoveObject:(id)object fromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-    RZDataSourceLog(@"%p M[%@] -> [%@] = %@", assemblage, [fromIndexPath rz_shortDescription], [toIndexPath rz_shortDescription], object);
-    if ( [self.class isSectionIndexPath:fromIndexPath] ) {
-        [self.tableView moveSection:[fromIndexPath indexAtPosition:0]
-                          toSection:[toIndexPath indexAtPosition:0]];
-    }
-    else {
-        [self.tableView moveRowAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
-    }
 }
 
 - (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
 {
     RZDataSourceLog(@"%@", assemblage);
-    [self.tableView endUpdates];
 }
 
 #pragma - Relay Optional UITableViewDataSource

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 typedef void(^RZMutableIndexPathNodeBlock)(NSIndexPath *containingIndexPath, NSIndexSet *indexes, BOOL *stop);
+
 typedef void(^RZMutableIndexPathBlock)(NSIndexPath *indexPath, BOOL *stop);
 
 @interface RZMutableIndexPathSet : NSObject

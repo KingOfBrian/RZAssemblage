@@ -100,10 +100,9 @@ event.assemblage = assemblage;
 
 - (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
 {
-    TRACE_DELEGATE_EVENT
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
         TRACE_DELEGATE_EVENT

@@ -169,7 +169,7 @@
     RZFRCLog(@"%@", controller);
     [self.changeSet endUpdateWithAssemblage:self];
     if ( self.changeSet.updateCount == 0 ) {
-        [self.delegate assemblage:self didChange:self.changeSet];
+        [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
         self.changeSet = nil;
     }
 }

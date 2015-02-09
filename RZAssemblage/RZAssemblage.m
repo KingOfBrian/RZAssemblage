@@ -136,14 +136,23 @@
 
 - (void)beginUpdates
 {
-    self.changeSet = self.changeSet ?: [[RZAssemblageChangeSet alloc] init];
+    if ( self.changeSet == nil ) {
+        self.changeSet = [[RZAssemblageChangeSet alloc] init];
+        if ( [self.delegate respondsToSelector:@selector(willBeginUpdatesForAssemblage:)] ) {
+            [self.delegate willBeginUpdatesForAssemblage:self];
+        }
+    }
     [self.changeSet beginUpdateWithAssemblage:self];
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet
+- (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
+{
+    [self beginUpdates];
+}
+
+- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     RZRaize(self.changeSet != nil, @"Must begin an update on the parent assemblage before mutating a child assemblage");
-    [self beginUpdates];
     NSUInteger assemblageIndex = [self indexForChildAssemblage:assemblage];
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         return [indexPath rz_indexPathByPrependingIndex:assemblageIndex];
@@ -155,7 +164,7 @@
 {
     [self.changeSet endUpdateWithAssemblage:self];
     if ( self.changeSet.updateCount == 0 ) {
-        [self.delegate assemblage:self didChange:self.changeSet];
+        [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
         self.changeSet = nil;
     }
 }

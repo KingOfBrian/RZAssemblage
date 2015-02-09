@@ -30,9 +30,11 @@
 @end
 
 // This protocol is used by assemblage's to notify changes
-#warning flesh out delegate once the pattern is proven.  Easier (to drag around the change set)
 @protocol RZAssemblageDelegate <NSObject>
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet;
+- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet;
+
+@optional
+- (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage;
 
 @end

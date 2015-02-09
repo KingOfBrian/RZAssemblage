@@ -100,12 +100,13 @@
                          assemblage:assemblage newIndexPath:newIndexPath];
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         NSUInteger offset = [self indexOffsetForAssemblage:assemblage];
         return [indexPath rz_indexPathWithLastIndexShiftedBy:offset];
     }];
+    [self endUpdates];
 }
 
 @end

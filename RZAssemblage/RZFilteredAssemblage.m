@@ -141,7 +141,7 @@
     return [self.filteredIndexes containsIndex:index];
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didChange:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     [changeSet.inserts.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         id object = [changeSet.startingAssemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
@@ -184,6 +184,7 @@
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         return [self indexPathFromRealIndexPath:indexPath];
     }];
+    [self endUpdates];
 }
 
 @end
