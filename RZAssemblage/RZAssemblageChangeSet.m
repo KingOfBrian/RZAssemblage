@@ -41,6 +41,21 @@
             self.inserts, self.updates, self.removes, self.moves];
 }
 
+- (NSArray *)insertedIndexPaths
+{
+    return self.inserts.sortedIndexPaths;
+}
+
+- (NSArray *)removedIndexPaths
+{
+    return self.removes.sortedIndexPaths;
+}
+
+- (NSArray *)updatedIndexPaths
+{
+    return self.updates.sortedIndexPaths;
+}
+
 - (void)beginUpdateWithAssemblage:(id<RZAssemblage>)assemblage
 {
     if ( self.updateCount == 0 ) {
@@ -87,6 +102,15 @@
     }
 }
 
+- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
+{
+    if ( [self.updates containsIndexPath:index1] ) {
+        [self.updates removeIndexPath:index1];
+        [self.updates addIndexPath:index2];
+    }
+    [self.moves addIndexPath:index2];
+}
+
 - (void)clearInsertAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.updates shiftIndexesStartingAtIndexPath:indexPath by:-1];
@@ -130,15 +154,6 @@ withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
     [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
     }];
 
-}
-
-- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
-{
-    if ( [self.updates containsIndexPath:index1] ) {
-        [self.updates removeIndexPath:index1];
-        [self.updates addIndexPath:index2];
-    }
-    [self.moves addIndexPath:index2];
 }
 
 @end

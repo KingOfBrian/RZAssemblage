@@ -24,11 +24,11 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 @property (copy, nonatomic, readonly) id<RZAssemblage> startingAssemblage;
 
 @property (nonatomic, readonly) NSUInteger updateCount;
-@property (strong, nonatomic, readonly) RZMutableIndexPathSet *inserts;
-@property (strong, nonatomic, readonly) RZMutableIndexPathSet *updates;
-@property (strong, nonatomic, readonly) RZMutableIndexPathSet *removes;
-@property (strong, nonatomic, readonly) RZMutableIndexPathSet *moves;
 
+@property (strong, nonatomic, readonly) NSArray *insertedIndexPaths;
+@property (strong, nonatomic, readonly) NSArray *updatedIndexPaths;
+@property (strong, nonatomic, readonly) NSArray *removedIndexPaths;
+//@property (strong, nonatomic, readonly) NSDictionary *moveIndexPathMap;
 
 - (void)beginUpdateWithAssemblage:(id<RZAssemblage>)assemblage;
 

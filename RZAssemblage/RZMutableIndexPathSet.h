@@ -35,5 +35,6 @@ typedef void(^RZMutableIndexPathBlock)(NSIndexPath *indexPath, BOOL *stop);
 - (void)enumerateSortedIndexPathNodesUsingBlock:(RZMutableIndexPathNodeBlock)block;
 - (void)enumerateSortedIndexPathsUsingBlock:(RZMutableIndexPathBlock)block;
 
+- (NSArray *)sortedIndexPaths;
 
 @end

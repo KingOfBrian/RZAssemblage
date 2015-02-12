@@ -76,31 +76,30 @@
     // The RZAssemblageChangeSet needs a better API here.
     [self.tableView beginUpdates];
     // Process section insert / removes
-    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         if ( indexPath.length == 1 ) {
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
                           withRowAnimation:self.removeSectionAnimation];
         }
-    }];
-    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         if ( indexPath.length == 1 ) {
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:[indexPath indexAtPosition:0]]
                           withRowAnimation:self.addSectionAnimation];
         }
-    }];
-
-    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+    for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         if ( indexPath.length == 2 ) {
             [self.tableView deleteRowsAtIndexPaths:@[indexPath]
                                   withRowAnimation:self.removeObjectAnimation];
         }
-    }];
-    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         if ( indexPath.length == 2 ) {
             [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:self.addObjectAnimation];
         }
-    }];
-    [changeSet.updates enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+    for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSAssert(indexPath.length == 2, @"");
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         id object = [assemblage objectAtIndexPath:indexPath];
@@ -108,7 +107,7 @@
                         updateCell:cell
                          forObject:object
                        atIndexPath:indexPath];
-    }];
+    }
 #warning moves
 
     [self.tableView endUpdates];

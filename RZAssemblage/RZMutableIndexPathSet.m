@@ -287,4 +287,13 @@
     [self.indexNode enumerateIndexPathsFromIndexPath:nil withBlock:block];
 }
 
+- (NSArray *)sortedIndexPaths
+{
+    NSMutableArray *sortedIndexPaths = [NSMutableArray array];
+    [self enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        [sortedIndexPaths addObject:indexPath];
+    }];
+    return sortedIndexPaths;
+}
+
 @end

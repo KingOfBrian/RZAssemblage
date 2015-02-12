@@ -52,6 +52,15 @@
     return count;
 }
 
+- (NSArray *)allObjects
+{
+    NSMutableArray *allObjects = [NSMutableArray array];
+    for ( id<RZAssemblage>assemblage in self.store ) {
+        [allObjects addObjectsFromArray:assemblage.allObjects];
+    }
+    return allObjects;
+}
+
 - (NSUInteger)indexOffsetForAssemblage:(id<RZAssemblage>)childAssemblage
 {
     NSUInteger count = 0;

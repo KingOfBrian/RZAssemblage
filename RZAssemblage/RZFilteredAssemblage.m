@@ -14,7 +14,6 @@
 
 @interface RZFilteredAssemblage()
 
-@property (copy, nonatomic) NSMutableArray *store;
 @property (copy, nonatomic) NSMutableIndexSet *filteredIndexes;
 @property (strong, nonatomic) id<RZAssemblage>filteredAssemblage;
 
@@ -27,11 +26,7 @@
     self = [super initWithArray:@[]];
     if ( self ) {
         _filteredAssemblage = assemblage;
-        _store = [NSMutableArray array];
-        for ( NSUInteger i = 0; i < [assemblage numberOfChildrenAtIndexPath:nil]; i++ ) {
-            [self.store addObject:[assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:i]]];
-        }
-        assemblage.delegate = self;
+        _filteredAssemblage.delegate = self;
         _filteredIndexes = [NSMutableIndexSet indexSet];
     }
     return self;
@@ -48,23 +43,23 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p %@ filtering indexes %@ with %@", self.class, self, self.store, self.filteredIndexes, self.filter];
+    return [NSString stringWithFormat:@"<%@: %p %@ filtering indexes %@ with %@", self.class, self, self.filteredAssemblage, self.filteredIndexes, self.filter];
 }
 
 - (NSUInteger)numberOfChildren
 {
-    return self.store.count - self.filteredIndexes.count;
+    return [self.filteredAssemblage numberOfChildren] - self.filteredIndexes.count;
 }
 
 - (id)objectAtIndex:(NSUInteger)index
 {
     index = [self realIndexFromIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    return [super objectAtIndex:index];
+    return [self.filteredAssemblage objectAtIndex:index];
 }
 
 - (NSArray *)allObjects
 {
-    return [self.store filteredArrayUsingPredicate:self.filter];
+    return [[self.filteredAssemblage allObjects] filteredArrayUsingPredicate:self.filter];
 }
 
 - (void)setFilter:(NSPredicate *)filter
@@ -79,21 +74,21 @@
     // Process removals first, and do not modify the internal
     // index state, to ensure that the indexes generated are valid when used on the
     // assemblage before the filter change.
-    [self.store enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+    [[self.filteredAssemblage allObjects] enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
             NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
             indexPath = [self indexPathFromRealIndexPath:indexPath];
             [self.changeSet removeAtIndexPath:indexPath];
         }
     }];
-    [self.store enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+    [[self.filteredAssemblage allObjects] enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
             [self.filteredIndexes addIndex:index];
         }
     }];
     // Next generate insert events and always ensure that the indexes are valid against
     // the current state.
-    [self.store enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+    [[self.filteredAssemblage allObjects] enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
         if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO) {
             NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
             indexPath = [self indexPathFromRealIndexPath:indexPath];
@@ -159,7 +154,7 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
-    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
         id object = [assemblage objectAtIndexPath:indexPath];
         BOOL filtered = [self isObjectFiltered:object];
@@ -169,14 +164,12 @@
             [changeSet clearInsertAtIndexPath:indexPath];
         }
         else {
-            [self.store insertObject:object atIndex:idx];
             [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
         }
-    }];
-    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+    for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
         id object = [changeSet.startingAssemblage objectAtIndexPath:indexPath];
-        [self.store removeObjectAtIndex:idx];
         [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:-1];
 
         BOOL filtered = [self isObjectFiltered:object];
@@ -184,26 +177,24 @@
             // How do are other indexes affected?!
             [changeSet clearRemoveAtIndexPath:indexPath];
         }
-    }];
-    [changeSet.updates enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+    for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
         id object = [assemblage objectAtIndexPath:indexPath];
-        indexPath = [self indexPathFromRealIndexPath:indexPath];
+        NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
         if ( [self isIndexFiltered:idx] && [self isObjectFiltered:object] == NO ) {
             [self.filteredIndexes removeIndex:idx];
 
-            [changeSet clearUpdateAtIndexPath:indexPath];
-            [changeSet insertAtIndexPath:indexPath];
+            [changeSet clearUpdateAtIndexPath:parentIndexPath];
+            [changeSet insertAtIndexPath:parentIndexPath];
         }
         else if ( [self isIndexFiltered:idx] == NO && [self isObjectFiltered:object] ) {
             [self.filteredIndexes addIndex:idx];
-            [changeSet clearUpdateAtIndexPath:indexPath];
+            [changeSet clearUpdateAtIndexPath:parentIndexPath];
 
-            [changeSet removeAtIndexPath:indexPath];
+            [changeSet removeAtIndexPath:parentIndexPath];
         }
-    }];
-    [changeSet.moves.rootIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-    }];
+    }
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         return [self indexPathFromRealIndexPath:indexPath];
     }];

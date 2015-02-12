@@ -175,8 +175,8 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)random
 {
     NSArray *actions = @[
-                         [NSValue valueWithPointer:@selector(move)],
-                         [NSValue valueWithPointer:@selector(move)],
+//                         [NSValue valueWithPointer:@selector(move)],
+//                         [NSValue valueWithPointer:@selector(move)],
                          [NSValue valueWithPointer:@selector(addRow)],
                          [NSValue valueWithPointer:@selector(addRow)],
                          [NSValue valueWithPointer:@selector(addRow)],

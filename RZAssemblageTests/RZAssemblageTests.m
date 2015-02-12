@@ -104,30 +104,30 @@ event.assemblage = assemblage;
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
-    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeRemove;
         event.object = [changeSet.startingAssemblage objectAtIndexPath:indexPath];
         event.indexPath = indexPath;
-    }];
-    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeInsert;
         event.object = [assemblage objectAtIndexPath:indexPath];
         event.indexPath = indexPath;
-    }];
-    [changeSet.updates enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+    for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeUpdate;
         event.object = [assemblage objectAtIndexPath:indexPath];
         event.indexPath = indexPath;
-    }];
-    [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
-        TRACE_DELEGATE_EVENT
-        event.type = RZAssemblageMutationTypeMove;
-        event.object = [assemblage objectAtIndexPath:indexPath];
-        event.indexPath = indexPath;
-    }];
+    }
+//    [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+//        TRACE_DELEGATE_EVENT
+//        event.type = RZAssemblageMutationTypeMove;
+//        event.object = [assemblage objectAtIndexPath:indexPath];
+//        event.indexPath = indexPath;
+//    }];
 }
 
 - (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
