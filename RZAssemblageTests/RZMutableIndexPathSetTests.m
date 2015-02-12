@@ -108,4 +108,16 @@
     XCTAssert([indexSet count] == 0);
 }
 
+- (void)testAddRemove
+{
+    RZMutableIndexPathSet *indexPathSet = [self indexSetWithRange:NSMakeRange(1, 2)];
+    XCTAssert(indexPathSet.sortedIndexPaths.count == 2);
+    [indexPathSet removeIndexPath:[NSIndexPath indexPathWithIndex:0]];
+    XCTAssert(indexPathSet.sortedIndexPaths.count == 2);
+    [indexPathSet removeIndexPath:[NSIndexPath indexPathWithIndex:1]];
+    XCTAssert(indexPathSet.sortedIndexPaths.count == 1);
+    [indexPathSet removeIndexPath:[NSIndexPath indexPathWithIndex:2]];
+    XCTAssert(indexPathSet.sortedIndexPaths.count == 0);
+}
+
 @end

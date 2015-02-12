@@ -109,7 +109,7 @@
 {
     __block NSUInteger childNodeIndex = NSNotFound;
     [self.childNodes enumerateObjectsUsingBlock:^(RZIndexNode *node, NSUInteger idx, BOOL *stop) {
-        if ( node.index == idx ) {
+        if ( node.index == index ) {
             childNodeIndex = idx;
             *stop = YES;
         }
