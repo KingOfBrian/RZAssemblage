@@ -73,6 +73,7 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
+    RZDataSourceLog(@"Update = %@", changeSet);
     // The RZAssemblageChangeSet needs a better API here.
     [self.tableView beginUpdates];
     // Process section insert / removes

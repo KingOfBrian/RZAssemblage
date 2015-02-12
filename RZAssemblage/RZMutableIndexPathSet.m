@@ -42,8 +42,9 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@:%p i=%zd, %@, children=%@", self.class, self,
-            self.index, self.present ? @"" : @"node", self.childNodes];
+    return [NSString stringWithFormat:@"<%@:%p i=%zd%@%@", self.class, self,
+            self.index, self.present ? @"" : @", node",
+            self.childNodes.count > 0 ? [NSString stringWithFormat:@", children=%@", self.childNodes] : @""];
 }
 
 + (NSComparator)comparator

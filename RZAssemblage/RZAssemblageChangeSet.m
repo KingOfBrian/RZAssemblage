@@ -37,8 +37,8 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@:%p \nI=%@, U=%@, R=%@, M=%@>", self.class, self,
-            self.inserts, self.updates, self.removes, self.moves];
+    return [NSString stringWithFormat:@"<%@:%p \nI=%@, U=%@, R=%@, M=Not Supported>", self.class, self,
+            self.insertedIndexPaths, self.updatedIndexPaths, self.removedIndexPaths];
 }
 
 - (NSArray *)insertedIndexPaths

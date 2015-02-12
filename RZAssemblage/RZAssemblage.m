@@ -164,6 +164,7 @@
 {
     [self.changeSet endUpdateWithAssemblage:self];
     if ( self.changeSet.updateCount == 0 ) {
+        RZAssemblageLog(@"Change:%@ -> %p:\n%@", self, self.delegate, self.changeSet);
         [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
         self.changeSet = nil;
     }
