@@ -488,4 +488,39 @@ event.assemblage = assemblage;
     XCTAssertEqual(obj, [assemblage objectAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]]);
 }
 
+- (void)testFilterRemoval
+{
+    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
+    RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
+    filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
+        return [numberString integerValue] % 2;
+    }];
+    filtered.delegate = self;
+    XCTAssert([filtered numberOfChildren] == 3);
+    for ( NSUInteger i = 0; i < 3; i++ ) {
+        XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
+    }
+
+    [m1 removeObjectAtIndex:1];
+    XCTAssert([filtered numberOfChildren] == 3);
+    for ( NSUInteger i = 0; i < 3; i++ ) {
+        XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
+    }
+    XCTAssert(self.delegateEvents.count == 0);
+
+    [m1 removeObjectAtIndex:2];
+    XCTAssert([filtered numberOfChildren] == 3);
+    for ( NSUInteger i = 0; i < 3; i++ ) {
+        XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
+    }
+    XCTAssert(self.delegateEvents.count == 0);
+
+    [m1 removeObjectAtIndex:3];
+    XCTAssert([filtered numberOfChildren] == 3);
+    for ( NSUInteger i = 0; i < 3; i++ ) {
+        XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
+    }
+    XCTAssert(self.delegateEvents.count == 0);
+}
+
 @end

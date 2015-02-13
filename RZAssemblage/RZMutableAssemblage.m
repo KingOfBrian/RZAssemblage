@@ -48,6 +48,7 @@
 
 - (void)insertObject:(id)anObject atIndex:(NSUInteger)index
 {
+    RZAssemblageLog(@"%p:Insert %@ at %zd", self, anObject, index);
     NSParameterAssert(anObject);
     [self assignDelegateIfObjectIsAssemblage:anObject];
     [self beginUpdates];
@@ -58,6 +59,7 @@
 
 - (void)removeObjectAtIndex:(NSUInteger)index
 {
+    RZAssemblageLog(@"%p:Remove at %zd", self, index);
     [self beginUpdates];
     [self.store removeObjectAtIndex:index];
     [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
@@ -68,6 +70,7 @@
 {
     NSParameterAssert(anObject);
     NSUInteger index = [self.store indexOfObject:anObject];
+    RZAssemblageLog(@"%p:Update %@ at %zd", self, anObject, index);
     NSAssert(index != NSNotFound, @"Object is not part of assemblage");
     [self beginUpdates];
     [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];

@@ -159,8 +159,8 @@
         id object = [assemblage objectAtIndexPath:indexPath];
         BOOL filtered = [self isObjectFiltered:object];
         if ( filtered ) {
-            [self.filteredIndexes addIndex:[indexPath indexAtPosition:0]];
-            // How do are other indexes affected?!
+            [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
+            [self.filteredIndexes addIndex:idx];
             [changeSet clearInsertAtIndexPath:indexPath];
         }
         else {
@@ -170,13 +170,12 @@
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
         id object = [changeSet.startingAssemblage objectAtIndexPath:indexPath];
-        [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:-1];
 
         BOOL filtered = [self isObjectFiltered:object];
         if ( filtered ) {
-            // How do are other indexes affected?!
             [changeSet clearRemoveAtIndexPath:indexPath];
         }
+        [self.filteredIndexes shiftIndexesStartingAtIndex:idx + 1 by:-1];
     }
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];

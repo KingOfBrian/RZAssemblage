@@ -114,16 +114,6 @@
     [self.tableView endUpdates];
 }
 
-- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
-{
-    RZDataSourceLog(@"%@", assemblage);
-}
-
-- (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
-{
-    RZDataSourceLog(@"%@", assemblage);
-}
-
 #pragma - Relay Optional UITableViewDataSource
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section

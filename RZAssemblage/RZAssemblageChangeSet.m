@@ -113,12 +113,11 @@
 
 - (void)clearInsertAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self.inserts removeIndexPath:indexPath];
+
     [self.updates shiftIndexesStartingAtIndexPath:indexPath by:-1];
     [self.inserts shiftIndexesStartingAtIndexPath:indexPath by:-1];
     [self.moves shiftIndexesStartingAtIndexPath:indexPath by:-1];
-
-    [self.inserts removeIndexPath:indexPath];
-
 }
 
 - (void)clearRemoveAtIndexPath:(NSIndexPath *)indexPath
