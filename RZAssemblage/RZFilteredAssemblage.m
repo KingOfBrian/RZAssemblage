@@ -10,7 +10,7 @@
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
-#import "RZMutableIndexPathSet.h"
+#import "RZIndexPathSet.h"
 
 @interface RZFilteredAssemblage()
 

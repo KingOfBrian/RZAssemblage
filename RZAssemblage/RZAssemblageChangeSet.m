@@ -7,7 +7,7 @@
 //
 
 #import "RZAssemblageChangeSet.h"
-#import "RZMutableIndexPathSet.h"
+#import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
 
 @interface RZAssemblageChangeSet ()
@@ -27,10 +27,10 @@
 {
     self = [super init];
     if ( self ) {
-        _inserts = [RZMutableIndexPathSet mutableIndexPathSet];
-        _updates = [RZMutableIndexPathSet mutableIndexPathSet];
-        _removes = [RZMutableIndexPathSet mutableIndexPathSet];
-        _moves   = [RZMutableIndexPathSet mutableIndexPathSet];
+        _inserts = [RZMutableIndexPathSet set];
+        _updates = [RZMutableIndexPathSet set];
+        _removes = [RZMutableIndexPathSet set];
+        _moves   = [RZMutableIndexPathSet set];
     }
     return self;
 }
@@ -138,21 +138,22 @@
 withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
 {
     NSParameterAssert(transform);
-    [changeSet.inserts enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+
+    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         NSIndexPath *newIndexPath = transform(indexPath);
         [self insertAtIndexPath:newIndexPath];
-    }];
-    [changeSet.removes enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+
+    for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         NSIndexPath *newIndexPath = transform(indexPath);
         [self removeAtIndexPath:newIndexPath];
-    }];
-    [changeSet.updates enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+    }
+
+    for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSIndexPath *newIndexPath = transform(indexPath);
         [self updateAtIndexPath:newIndexPath];
-    }];
-    [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
-    }];
-
+    }
+#warning Moves
 }
 
 @end

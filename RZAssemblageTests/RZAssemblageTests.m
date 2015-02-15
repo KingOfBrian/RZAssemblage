@@ -13,7 +13,7 @@
 #import "RZJoinAssemblage.h"
 #import "RZFilteredAssemblage.h"
 #import "RZAssemblageChangeSet.h"
-#import "RZMutableIndexPathSet.h"
+#import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
 
 #define TRACE_DELEGATE_EVENT \

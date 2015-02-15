@@ -10,7 +10,7 @@
 #import "RZAssemblageDefines.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageChangeSet.h"
-#import "RZMutableIndexPathSet.h"
+#import "RZIndexPathSet.h"
 
 @interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
 

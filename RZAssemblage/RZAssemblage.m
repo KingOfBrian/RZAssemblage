@@ -10,7 +10,7 @@
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageProtocols.h"
 #import "RZAssemblageDefines.h"
-#import "RZMutableIndexPathSet.h"
+#import "RZIndexPathSet.h"
 
 @implementation RZAssemblage
 

@@ -8,13 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "RZMutableIndexPathSet.h"
+#import "RZIndexPathSet.h"
 
 @implementation RZMutableIndexPathSet(Test)
 
 - (void)shiftIndexesStartingAtIndex:(NSUInteger)index by:(NSUInteger)shift
 {
     [self shiftIndexesStartingAtIndexPath:[NSIndexPath indexPathWithIndex:index] by:shift];
+}
+
+- (BOOL)containsIndex:(NSUInteger)index
+{
+    return [self containsIndexPath:[NSIndexPath indexPathWithIndex:index]];
 }
 
 @end
@@ -38,11 +43,11 @@
 - (id)indexSetWithRange:(NSRange)range
 {
     //    return [[NSMutableIndexSet alloc] initWithIndexesInRange:range];
-    RZMutableIndexPathSet *indexPathSet = [[RZMutableIndexPathSet alloc] init];
+    NSMutableSet *set = [NSMutableSet set];
     for ( NSUInteger i = range.location; i < range.location + range.length; i++ ) {
-        [indexPathSet addIndex:i];
+        [set addObject:[NSIndexPath indexPathWithIndex:i]];
     }
-    return indexPathSet;
+    return [RZMutableIndexPathSet setWithIndexPaths:set];
 }
 
 - (void)testIndexSetPositiveShift
