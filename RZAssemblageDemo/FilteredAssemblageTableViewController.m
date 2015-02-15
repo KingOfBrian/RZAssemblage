@@ -63,21 +63,21 @@
 
 - (void)clearData
 {
-    [self.data beginUpdates];
+    [self.data openBatchUpdate];
     while ( [self.data numberOfChildren] != 0 ) {
 //        [self.data removeObjectAtIndex:[self.data numberOfChildren] - 1];
         [self.data removeObjectAtIndex:0];
     }
-    [self.data endUpdates];
+    [self.data closeBatchUpdate];
 }
 
 - (void)addData
 {
-    [self.data beginUpdates];
+    [self.data openBatchUpdate];
     for ( NSUInteger i = 0; i < 5; i++ ) {
         [self.data addObject:@(i+1)];
     }
-    [self.data endUpdates];
+    [self.data closeBatchUpdate];
 }
 
 - (void)filterBump

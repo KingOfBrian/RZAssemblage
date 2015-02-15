@@ -121,8 +121,8 @@
     NSUInteger index = [indexPath indexAtPosition:0];
     indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
     if ( index < self.store.count ) {
-        id<RZAssemblage> nextAssemblage = [self.store objectAtIndex:index];
-        if ( [nextAssemblage conformsToProtocol:@protocol(RZAssemblage)] ) {
+        id<RZAssemblageMutationRelay> nextAssemblage = [self.store objectAtIndex:index];
+        if ( [nextAssemblage conformsToProtocol:@protocol(RZAssemblageMutationRelay)] ) {
             [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
                                  assemblage:assemblage newIndexPath:newIndexPath];
             return;
@@ -134,7 +134,7 @@
 
 #pragma mark - Delegation
 
-- (void)beginUpdates
+- (void)openBatchUpdate
 {
     if ( self.changeSet == nil ) {
         self.changeSet = [[RZAssemblageChangeSet alloc] init];
@@ -147,7 +147,7 @@
 
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
 {
-    [self beginUpdates];
+    [self openBatchUpdate];
 }
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
@@ -157,10 +157,10 @@
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         return [indexPath rz_indexPathByPrependingIndex:assemblageIndex];
     }];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
-- (void)endUpdates
+- (void)closeBatchUpdate
 {
     [self.changeSet endUpdateWithAssemblage:self];
     if ( self.changeSet.updateCount == 0 ) {

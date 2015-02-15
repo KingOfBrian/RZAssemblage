@@ -11,8 +11,9 @@
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
+#import "RZAssemblageMutationRelay.h"
 
-@interface RZFilteredAssemblage()
+@interface RZFilteredAssemblage() <RZAssemblageMutationRelay>
 
 @property (copy, nonatomic) NSMutableIndexSet *filteredIndexes;
 @property (strong, nonatomic) id<RZAssemblage>filteredAssemblage;
@@ -70,7 +71,7 @@
 
 - (void)updateFilterState
 {
-    [self beginUpdates];
+    [self openBatchUpdate];
     // Process removals first, and do not modify the internal
     // index state, to ensure that the indexes generated are valid when used on the
     // assemblage before the filter change.
@@ -96,15 +97,17 @@
             [self.changeSet insertAtIndexPath:indexPath];
         }
     }];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
 - (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
              assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
 {
+    id<RZAssemblageMutationRelay>assemblageRelay = (id)self.filteredAssemblage;
+    RZRaize([assemblageRelay conformsToProtocol:@protocol(RZAssemblageMutationRelay)], @"Contained assemblage does not support mutation relay");
     indexPath = [self realIndexPathFromIndexPath:indexPath];
-    [self.filteredAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
-                         assemblage:assemblage newIndexPath:newIndexPath];
+    [assemblageRelay lookupIndexPath:indexPath forRemoval:forRemoval
+                          assemblage:assemblage newIndexPath:newIndexPath];
 }
 
 - (NSUInteger)indexFromRealIndexPath:(NSIndexPath *)indexPath
@@ -197,7 +200,7 @@
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         return [self indexPathFromRealIndexPath:indexPath];
     }];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
 @end

@@ -18,8 +18,8 @@
 
 - (instancetype)initWithArray:(NSArray *)array;
 
-- (void)beginUpdates;
+- (void)openBatchUpdate;
 
-- (void)endUpdates;
+- (void)closeBatchUpdate;
 
 @end

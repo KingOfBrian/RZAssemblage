@@ -10,6 +10,8 @@
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
+#import "RZAssemblageMutationRelay.h"
+
 
 @interface RZMutableAssemblage()
 
@@ -39,11 +41,11 @@
 
 - (void)removeLastObject
 {
-    [self beginUpdates];
+    [self openBatchUpdate];
     NSUInteger index = self.store.count - 1;
     [self.store removeObjectAtIndex:index];
     [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
 - (void)insertObject:(id)anObject atIndex:(NSUInteger)index
@@ -51,19 +53,19 @@
     RZAssemblageLog(@"%p:Insert %@ at %zd", self, anObject, index);
     NSParameterAssert(anObject);
     [self assignDelegateIfObjectIsAssemblage:anObject];
-    [self beginUpdates];
+    [self openBatchUpdate];
     [self.store insertObject:anObject atIndex:index];
     [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
 - (void)removeObjectAtIndex:(NSUInteger)index
 {
     RZAssemblageLog(@"%p:Remove at %zd", self, index);
-    [self beginUpdates];
+    [self openBatchUpdate];
     [self.store removeObjectAtIndex:index];
     [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
 - (void)notifyObjectUpdate:(id)anObject
@@ -72,9 +74,9 @@
     NSUInteger index = [self.store indexOfObject:anObject];
     RZAssemblageLog(@"%p:Update %@ at %zd", self, anObject, index);
     NSAssert(index != NSNotFound, @"Object is not part of assemblage");
-    [self beginUpdates];
+    [self openBatchUpdate];
     [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
 @end
@@ -115,11 +117,11 @@
         return;
     }
     RZAssemblageLog(@"Move %@ -> %@", indexPath1, indexPath2);
-    [self beginUpdates];
+    [self openBatchUpdate];
     id object = [self objectAtIndexPath:indexPath1];
     [self removeObjectAtIndexPath:indexPath1];
     [self insertObject:object atIndexPath:indexPath2];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
 @end

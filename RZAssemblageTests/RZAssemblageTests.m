@@ -198,13 +198,13 @@ event.assemblage = assemblage;
 {
     RZMutableAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
     mutableValues.delegate = self;
-    [mutableValues beginUpdates];
+    [mutableValues openBatchUpdate];
 
     [mutableValues addObject:@1];
     [mutableValues removeLastObject];
     [mutableValues insertObject:@2 atIndex:0];
     [mutableValues removeObjectAtIndex:0];
-    [mutableValues endUpdates];
+    [mutableValues closeBatchUpdate];
     XCTAssert(self.delegateEvents.count == 0);
 }
 
@@ -217,20 +217,20 @@ event.assemblage = assemblage;
     RZJoinAssemblage *assemblage = [[RZJoinAssemblage alloc] initWithArray:@[m1, m2, m3]];
     assemblage.delegate = self;
 
-    [assemblage beginUpdates];
+    [assemblage openBatchUpdate];
     for ( RZMutableAssemblage *ma in assemblages ) {
         [ma addObject:@1];
         [ma removeLastObject];
     }
-    [assemblage endUpdates];
+    [assemblage closeBatchUpdate];
     XCTAssert(self.delegateEvents.count == 0);
     [self.delegateEvents removeAllObjects];
 
-    [assemblage beginUpdates];
+    [assemblage openBatchUpdate];
     for ( RZMutableAssemblage *ma in assemblages ) {
         [ma addObject:@1];
     }
-    [assemblage endUpdates];
+    [assemblage closeBatchUpdate];
 
     XCTAssert(self.delegateEvents.count == 3);
     [self.delegateEvents removeAllObjects];
@@ -310,14 +310,14 @@ event.assemblage = assemblage;
     [parent addObject:mutableValues];
 
     parent.delegate = self;
-    [parent beginUpdates];
+    [parent openBatchUpdate];
     [mutableValues addObject:@1];
     [mutableValues removeLastObject];
     [mutableValues insertObject:@2 atIndex:0];
     [mutableValues removeObjectAtIndex:0];
     [mutableValues insertObject:@2 atIndex:0];
     [mutableValues insertObject:@1 atIndex:0];
-    [parent endUpdates];
+    [parent closeBatchUpdate];
     XCTAssert(self.delegateEvents.count == 2);
     [self.delegateEvents removeAllObjects];
 
@@ -338,12 +338,12 @@ event.assemblage = assemblage;
 
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
     s1.delegate = self;
-    [s1 beginUpdates];
+    [s1 openBatchUpdate];
     XCTAssertEqual([s1 numberOfChildren], CHILD_COUNT);
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
         return [n unsignedIntegerValue] % 2 == 0;
     }];
-    [s1 endUpdates];
+    [s1 closeBatchUpdate];
     XCTAssertEqual([s1 numberOfChildren], EVEN_CHILD_COUNT);
     XCTAssert(self.delegateEvents.count == EVEN_CHILD_COUNT);
     for ( NSUInteger i = 0; i < EVEN_CHILD_COUNT; i++ ) {
@@ -353,11 +353,11 @@ event.assemblage = assemblage;
     [self.delegateEvents removeAllObjects];
 
 
-    [s1 beginUpdates];
+    [s1 openBatchUpdate];
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
         return [n unsignedIntegerValue] % 3 == 0;
     }];
-    [s1 endUpdates];
+    [s1 closeBatchUpdate];
     XCTAssert([[s1 objectAtIndex:0] integerValue] == 3);
     XCTAssert([[s1 objectAtIndex:1] integerValue] == 6);
     XCTAssert([[s1 objectAtIndex:2] integerValue] == 9);
@@ -407,10 +407,10 @@ event.assemblage = assemblage;
     RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:assemblages];
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
     s1.delegate = self;
-    [s1 beginUpdates];
+    [s1 openBatchUpdate];
     XCTAssertEqual([s1 numberOfChildren], values.count * assemblages.count);
     s1.filter = aFilter;
-    [s1 endUpdates];
+    [s1 closeBatchUpdate];
     NSUInteger removeInAssemblageCount = (values.count - aValues.count);
     XCTAssertEqual(self.delegateEvents.count, removeInAssemblageCount * assemblages.count);
     XCTAssertEqual([s1 numberOfChildren], aValues.count * assemblages.count);
@@ -434,9 +434,9 @@ event.assemblage = assemblage;
     }];
     NSArray *bValues = [values filteredArrayUsingPredicate:bFilter];
 
-    [s1 beginUpdates];
+    [s1 openBatchUpdate];
     s1.filter = bFilter;
-    [s1 endUpdates];
+    [s1 closeBatchUpdate];
 
     for ( NSUInteger assemblageIndex = 0; assemblageIndex < assemblages.count; assemblageIndex++ ) {
         // Ensure all A values were removed

@@ -164,12 +164,12 @@ _Pragma("clang diagnostic pop")                                         \
     NSUInteger section = [self randomSectionIndex];
     RZMutableAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
-    [assemblage beginUpdates];
+    [assemblage openBatchUpdate];
     [assemblage removeObjectAtIndex:row];
     if ( [assemblage numberOfChildren] == 0 ) {
         [assemblage addObject:@"Went Empty, Add an item"];
     }
-    [assemblage endUpdates];
+    [assemblage closeBatchUpdate];
 }
 
 - (void)random
@@ -192,13 +192,13 @@ _Pragma("clang diagnostic pop")                                         \
 
 - (void)clear
 {
-    [self.assemblage beginUpdates];
+    [self.assemblage openBatchUpdate];
     for ( RZMutableAssemblage *assemblage in self.mutableAssemblages ) {
         while ( [assemblage numberOfChildren] > 2 ) {
             [assemblage removeLastObject];
         }
     }
-    [self.assemblage endUpdates];
+    [self.assemblage closeBatchUpdate];
 }
 
 @end

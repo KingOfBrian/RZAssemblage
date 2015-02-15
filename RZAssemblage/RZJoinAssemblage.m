@@ -92,7 +92,7 @@
 {
     NSUInteger index = [indexPath indexAtPosition:0];
     NSUInteger assemblageIndex = [self indexOfAssemblageContainingParentIndex:index];
-    id<RZAssemblage> nextAssemblage = [self.store objectAtIndex:assemblageIndex];
+    id<RZAssemblageMutationRelay> nextAssemblage = [self.store objectAtIndex:assemblageIndex];
     indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
 
     NSUInteger newIndex = index - [self indexOffsetForAssemblage:nextAssemblage];
@@ -115,7 +115,7 @@
         NSUInteger offset = [self indexOffsetForAssemblage:assemblage];
         return [indexPath rz_indexPathWithLastIndexShiftedBy:offset];
     }];
-    [self endUpdates];
+    [self closeBatchUpdate];
 }
 
 @end

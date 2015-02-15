@@ -8,9 +8,9 @@
 
 #import "RZAssemblage.h"
 #import "RZAssemblageChangeSet.h"
+#import "RZAssemblageMutationRelay.h"
 
-
-@interface RZAssemblage() <RZAssemblageDelegate> {
+@interface RZAssemblage() <RZAssemblageMutationRelay, RZAssemblageDelegate> {
 @protected
     NSArray *_store;
 }
