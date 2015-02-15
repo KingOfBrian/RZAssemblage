@@ -12,8 +12,6 @@
 
 @interface RZMutableAssemblage : RZAssemblage
 
-- (instancetype)initWithArray:(NSArray *)array;
-
 // Remote change notification
 - (void)notifyObjectUpdate:(id)object;
 

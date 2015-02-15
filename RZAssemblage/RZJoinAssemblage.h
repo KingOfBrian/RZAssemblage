@@ -10,7 +10,7 @@
 #import "RZAssemblage.h"
 
 /**
- *  A Join Assemblage jointens multiple assemblages into one.
+ *  A Join Assemblage represents multiple assemblages as one flat index space.
  */
 @interface RZJoinAssemblage : RZAssemblage
 

@@ -11,7 +11,6 @@
 @protocol RZAssemblageDelegate;
 @class RZAssemblageChangeSet;
 
-// This protocol is the API used by data sources
 @protocol RZAssemblage <NSObject, NSCopying>
 
 - (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;

@@ -18,10 +18,6 @@
 
 - (instancetype)initWithArray:(NSArray *)array;
 
-- (id)objectAtIndex:(NSUInteger)index;
-
-- (NSUInteger)numberOfChildren;
-
 - (void)beginUpdates;
 
 - (void)endUpdates;
