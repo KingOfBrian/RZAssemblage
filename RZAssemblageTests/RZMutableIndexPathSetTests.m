@@ -42,12 +42,16 @@
 
 - (id)indexSetWithRange:(NSRange)range
 {
-    //    return [[NSMutableIndexSet alloc] initWithIndexesInRange:range];
+//#define TEST_FOUNDATION
+#ifdef TEST_FOUNDATION
+    return [[NSMutableIndexSet alloc] initWithIndexesInRange:range];
+#else
     NSMutableSet *set = [NSMutableSet set];
     for ( NSUInteger i = range.location; i < range.location + range.length; i++ ) {
         [set addObject:[NSIndexPath indexPathWithIndex:i]];
     }
     return [RZMutableIndexPathSet setWithIndexPaths:set];
+#endif
 }
 
 - (void)testIndexSetPositiveShift
@@ -110,6 +114,21 @@
     // _ _ _ - -
     indexSet = [self indexSetWithRange:NSMakeRange(1, 2)];
     [indexSet shiftIndexesStartingAtIndex:3 by:-2];
+    XCTAssert([indexSet count] == 0);
+
+    // Shift Range below zero
+    // X X
+    // -
+    indexSet = [self indexSetWithRange:NSMakeRange(0, 2)];
+    [indexSet shiftIndexesStartingAtIndex:0 by:-1];
+    XCTAssert([indexSet count] == 1);
+    XCTAssert([indexSet containsIndex:0]);
+
+    // Shift Range below zero
+    // X X
+    // - -
+    indexSet = [self indexSetWithRange:NSMakeRange(0, 2)];
+    [indexSet shiftIndexesStartingAtIndex:0 by:-2];
     XCTAssert([indexSet count] == 0);
 }
 
