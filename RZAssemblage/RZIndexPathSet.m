@@ -169,7 +169,8 @@
 
 - (void)shiftIndexesStartingAtIndex:(NSUInteger)idx by:(NSInteger)delta
 {
-    for ( NSUInteger i = MAX((NSInteger)idx + delta, 0); i < idx; i++ ) {
+    NSUInteger indexStart = MAX((NSInteger)idx + delta, 0);
+    for ( NSUInteger i = indexStart; delta < 0 && i < indexStart - delta; i++ ) {
         RZIndexNode *shiftedNode = [self childForIndex:i createNew:NO];
 
         if ( shiftedNode != nil ) {
