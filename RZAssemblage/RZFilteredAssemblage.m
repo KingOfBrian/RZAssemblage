@@ -159,47 +159,45 @@
 {
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
+        NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
+
         id object = [assemblage objectAtIndexPath:indexPath];
-        BOOL filtered = [self isObjectFiltered:object];
-        if ( filtered ) {
-            [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
-            [self.filteredIndexes addIndex:idx];
-            [changeSet clearInsertAtIndexPath:indexPath];
+        if ( [self isObjectFiltered:object] == NO ) {
+            [self.changeSet insertAtIndexPath:parentIndexPath];
         }
         else {
             [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
+            [self.filteredIndexes addIndex:idx];
         }
     }
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
+        NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
         NSUInteger idx = [indexPath indexAtPosition:0];
-        id object = [changeSet.startingAssemblage objectAtIndexPath:indexPath];
 
-        BOOL filtered = [self isObjectFiltered:object];
-        if ( filtered ) {
-            [changeSet clearRemoveAtIndexPath:indexPath];
+        if ( [self isIndexFiltered:idx] == NO ) {
+            [self.changeSet removeAtIndexPath:parentIndexPath];
         }
         [self.filteredIndexes shiftIndexesStartingAtIndex:idx + 1 by:-1];
     }
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
         id object = [assemblage objectAtIndexPath:indexPath];
+
         NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
         if ( [self isIndexFiltered:idx] && [self isObjectFiltered:object] == NO ) {
             [self.filteredIndexes removeIndex:idx];
 
-            [changeSet clearUpdateAtIndexPath:parentIndexPath];
-            [changeSet insertAtIndexPath:parentIndexPath];
+            [self.changeSet insertAtIndexPath:parentIndexPath];
         }
         else if ( [self isIndexFiltered:idx] == NO && [self isObjectFiltered:object] ) {
             [self.filteredIndexes addIndex:idx];
-            [changeSet clearUpdateAtIndexPath:parentIndexPath];
 
-            [changeSet removeAtIndexPath:parentIndexPath];
+            [self.changeSet removeAtIndexPath:parentIndexPath];
+        }
+        else {
+            [self.changeSet updateAtIndexPath:parentIndexPath];
         }
     }
-    [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
-        return [self indexPathFromRealIndexPath:indexPath];
-    }];
     [self closeBatchUpdate];
 }
 
