@@ -139,14 +139,14 @@ withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
 {
     NSParameterAssert(transform);
 
-    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
-        NSIndexPath *newIndexPath = transform(indexPath);
-        [self insertAtIndexPath:newIndexPath];
-    }
-
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         NSIndexPath *newIndexPath = transform(indexPath);
         [self removeAtIndexPath:newIndexPath];
+    }
+
+    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
+        NSIndexPath *newIndexPath = transform(indexPath);
+        [self insertAtIndexPath:newIndexPath];
     }
 
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {

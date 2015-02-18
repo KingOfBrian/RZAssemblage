@@ -461,6 +461,49 @@ event.assemblage = assemblage;
     [self.delegateEvents removeAllObjects];
 }
 
+- (void)testFilteredRemoval
+{
+    RZMutableAssemblage *m = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
+    RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m];
+    filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
+        return [numberString integerValue] % 2;
+    }];
+    filtered.delegate = self;
+
+    [m removeObjectAtIndex:2]; // 9
+    XCTAssert([filtered numberOfChildren] == 2);
+    XCTAssert([[filtered objectAtIndex:0] isEqual:@"7"]);
+    XCTAssert([[filtered objectAtIndex:1] isEqual:@"11"]);
+}
+
+- (void)testFilteredAddition
+{
+    RZMutableAssemblage *m = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m];
+    filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
+        return [numberString integerValue] % 2;
+    }];
+
+    XCTAssert([filtered numberOfChildren] == 0);
+    for ( NSUInteger i = 0; i < 5; i++ ) {
+        [m addObject:@(i)];
+    }
+    XCTAssert([filtered numberOfChildren] == 2);
+    for ( NSUInteger i = 0; i < 5; i++ ) {
+        [m addObject:@(i)];
+    }
+    XCTAssert([filtered numberOfChildren] == 4);
+
+    [m openBatchUpdate];
+    while ( [m numberOfChildren] != 0 ) {
+        //        [self.data removeObjectAtIndex:[self.data numberOfChildren] - 1];
+        [m removeObjectAtIndex:0];
+    }
+    [m closeBatchUpdate];
+
+    XCTAssert([filtered numberOfChildren] == 0);
+}
+
 - (void)testMutation
 {
     RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]];

@@ -160,13 +160,13 @@
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
         NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
+        [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
 
         id object = [assemblage objectAtIndexPath:indexPath];
         if ( [self isObjectFiltered:object] == NO ) {
             [self.changeSet insertAtIndexPath:parentIndexPath];
         }
         else {
-            [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
             [self.filteredIndexes addIndex:idx];
         }
     }
@@ -177,6 +177,15 @@
         if ( [self isIndexFiltered:idx] == NO ) {
             [self.changeSet removeAtIndexPath:parentIndexPath];
         }
+    }
+    // Clean up the index set.   If we shift a lot of items sequentially,
+    // indexes can get improperly preserved, so remove them, and then shift them.
+    for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
+        NSUInteger idx = [indexPath indexAtPosition:0];
+        [self.filteredIndexes removeIndex:idx];
+    }
+    for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
+        NSUInteger idx = [indexPath indexAtPosition:0];
         [self.filteredIndexes shiftIndexesStartingAtIndex:idx + 1 by:-1];
     }
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {

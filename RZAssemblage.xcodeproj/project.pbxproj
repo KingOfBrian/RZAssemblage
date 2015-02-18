@@ -219,8 +219,8 @@
 				ABAC828D1A7B339F001CDC27 /* TestParentEntity.m */,
 				ABAC828E1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld */,
 				ABADD3541A776C7C00397031 /* RZAssemblageTests.m */,
-				ABADD3521A776C7C00397031 /* Supporting Files */,
 				ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */,
+				ABADD3521A776C7C00397031 /* Supporting Files */,
 			);
 			path = RZAssemblageTests;
 			sourceTree = "<group>";
