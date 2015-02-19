@@ -7,13 +7,13 @@
 //
 
 #import "FilteredAssemblageTableViewController.h"
-#import "RZMutableAssemblage.h"
 #import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblage+Mutation.h"
 #import "RZFilteredAssemblage.h"
 
 @interface FilteredAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
 
-@property (strong, nonatomic) RZMutableAssemblage *data;
+@property (strong, nonatomic) RZAssemblage *data;
 @property (strong, nonatomic) RZAssemblage *assemblage;
 @property (strong, nonatomic) RZFilteredAssemblage *filtered;
 
@@ -42,7 +42,7 @@
     for ( NSUInteger i = 0; i < 100; i++ ) {
         [oneHundered addObject:@(i+1)];
     }
-    self.data = [[RZMutableAssemblage alloc] initWithArray:oneHundered];
+    self.data = [[RZAssemblage alloc] initWithArray:oneHundered];
     self.filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:self.data];
     self.assemblage = [[RZAssemblage alloc] initWithArray:@[self.filtered]];
 

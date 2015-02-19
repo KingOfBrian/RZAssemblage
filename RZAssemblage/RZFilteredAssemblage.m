@@ -47,6 +47,8 @@
     return [NSString stringWithFormat:@"<%@: %p %@ filtering indexes %@ with %@", self.class, self, self.filteredAssemblage, self.filteredIndexes, self.filter];
 }
 
+#pragma mark - RZAssemblage
+
 - (NSUInteger)numberOfChildren
 {
     return [self.filteredAssemblage numberOfChildren] - self.filteredIndexes.count;
@@ -62,6 +64,20 @@
 {
     return [[self.filteredAssemblage allObjects] filteredArrayUsingPredicate:self.filter];
 }
+
+#pragma mark - RZAssemblageMutationRelay
+
+- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
+             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
+{
+    id<RZAssemblageMutationRelay>assemblageRelay = (id)self.filteredAssemblage;
+    RZRaize([assemblageRelay conformsToProtocol:@protocol(RZAssemblageMutationRelay)], @"Contained assemblage does not support mutation relay");
+    indexPath = [self realIndexPathFromIndexPath:indexPath];
+    [assemblageRelay lookupIndexPath:indexPath forRemoval:forRemoval
+                          assemblage:assemblage newIndexPath:newIndexPath];
+}
+
+#pragma mark - Filter Mutation
 
 - (void)setFilter:(NSPredicate *)filter
 {
@@ -100,60 +116,7 @@
     [self closeBatchUpdate];
 }
 
-- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
-             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
-{
-    id<RZAssemblageMutationRelay>assemblageRelay = (id)self.filteredAssemblage;
-    RZRaize([assemblageRelay conformsToProtocol:@protocol(RZAssemblageMutationRelay)], @"Contained assemblage does not support mutation relay");
-    indexPath = [self realIndexPathFromIndexPath:indexPath];
-    [assemblageRelay lookupIndexPath:indexPath forRemoval:forRemoval
-                          assemblage:assemblage newIndexPath:newIndexPath];
-}
-
-- (NSUInteger)indexFromRealIndexPath:(NSIndexPath *)indexPath
-{
-    NSUInteger index = [indexPath indexAtPosition:0];
-    index -= [self.filteredIndexes countOfIndexesInRange:NSMakeRange(0, index)];
-    return index;
-}
-
-- (NSUInteger)realIndexFromIndexPath:(NSIndexPath *)indexPath
-{
-    __block NSUInteger index = [indexPath indexAtPosition:0];
-    [self.filteredIndexes enumerateRangesUsingBlock:^(NSRange range, BOOL *stop) {
-        if ( index >=  range.location ) {
-            index += range.length;
-        }
-    }];
-
-    return index;
-}
-
-- (NSIndexPath *)indexPathFromRealIndexPath:(NSIndexPath *)indexPath
-{
-    NSUInteger index = [self indexFromRealIndexPath:indexPath];
-    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-    indexPath = [indexPath indexPathByAddingIndex:index];
-    return indexPath;
-}
-
-- (NSIndexPath *)realIndexPathFromIndexPath:(NSIndexPath *)indexPath
-{
-    NSUInteger index = [self realIndexFromIndexPath:indexPath];
-    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-    indexPath = [indexPath indexPathByAddingIndex:index];
-    return indexPath;
-}
-
-- (BOOL)isObjectFiltered:(id)object
-{
-    return self.filter && [self.filter evaluateWithObject:object] == NO;
-}
-
-- (BOOL)isIndexFiltered:(NSUInteger)index
-{
-    return [self.filteredIndexes containsIndex:index];
-}
+#pragma mark - RZAssemblageDelegate
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
@@ -208,6 +171,53 @@
         }
     }
     [self closeBatchUpdate];
+}
+
+#pragma mark - Private
+
+- (NSUInteger)indexFromRealIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger index = [indexPath indexAtPosition:0];
+    index -= [self.filteredIndexes countOfIndexesInRange:NSMakeRange(0, index)];
+    return index;
+}
+
+- (NSUInteger)realIndexFromIndexPath:(NSIndexPath *)indexPath
+{
+    __block NSUInteger index = [indexPath indexAtPosition:0];
+    [self.filteredIndexes enumerateRangesUsingBlock:^(NSRange range, BOOL *stop) {
+        if ( index >=  range.location ) {
+            index += range.length;
+        }
+    }];
+
+    return index;
+}
+
+- (NSIndexPath *)indexPathFromRealIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger index = [self indexFromRealIndexPath:indexPath];
+    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+    indexPath = [indexPath indexPathByAddingIndex:index];
+    return indexPath;
+}
+
+- (NSIndexPath *)realIndexPathFromIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger index = [self realIndexFromIndexPath:indexPath];
+    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+    indexPath = [indexPath indexPathByAddingIndex:index];
+    return indexPath;
+}
+
+- (BOOL)isObjectFiltered:(id)object
+{
+    return self.filter && [self.filter evaluateWithObject:object] == NO;
+}
+
+- (BOOL)isIndexFiltered:(NSUInteger)index
+{
+    return [self.filteredIndexes containsIndex:index];
 }
 
 @end

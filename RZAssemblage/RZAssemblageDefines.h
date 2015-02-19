@@ -24,8 +24,9 @@
 
 #define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
 #define RZConformTraversal(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblageMutationTraversal)], @"Index Path attempted to traverse %@, which does not conform to RZAssemblageMutationTraversal", assemblage);
-#define RZConformMutationSupport(assemblage) RZRaize([assemblage conformsToProtocol:@protocol(RZMutableAssemblageSupport)], @"Index Path landed on %@, which does not support mutation.", self);
+#define RZConformMutationSupportAtIndexPath(assemblage, indexPath) RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblageMutation)], @"IndexPath %@ must be mutable, not %@", indexPath, assemblage);
 
 #define RZIndexPathWithLength(indexPath) RZRaize(indexPath.length > 0, @"Index Path is empty")
+
 
 

@@ -27,6 +27,8 @@
     return [NSString stringWithFormat:@"<%@: %p join %@", self.class, self, self.store];
 }
 
+#pragma mark - RZAssemblage
+
 - (id)objectAtIndex:(NSUInteger)index
 {
     NSUInteger offset = 0;
@@ -61,6 +63,43 @@
     return allObjects;
 }
 
+#pragma mark - RZAssemblageMutationRelay
+
+- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
+             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
+{
+    NSUInteger index = [indexPath indexAtPosition:0];
+    NSUInteger assemblageIndex = [self indexOfAssemblageContainingParentIndex:index];
+    id<RZAssemblageMutationRelay> nextAssemblage = [self.store objectAtIndex:assemblageIndex];
+    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
+
+    NSUInteger newIndex = index - [self indexOffsetForAssemblage:nextAssemblage];
+    // If this is for a removal, move to the next index if the removal index will not fit in the selected assemblage
+    while ( forRemoval && [nextAssemblage numberOfChildren] <= newIndex ) {
+        assemblageIndex++;
+        nextAssemblage = [self.store objectAtIndex:assemblageIndex];
+        newIndex = index - [self indexOffsetForAssemblage:nextAssemblage];
+    }
+
+    indexPath = [indexPath rz_indexPathByPrependingIndex:newIndex];
+
+    [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
+                         assemblage:assemblage newIndexPath:newIndexPath];
+}
+
+#pragma mark - RZAssemblageDelegate
+
+- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+{
+    [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
+        NSUInteger offset = [self indexOffsetForAssemblage:assemblage];
+        return [indexPath rz_indexPathWithLastIndexShiftedBy:offset];
+    }];
+    [self closeBatchUpdate];
+}
+
+#pragma mark - Private
+
 - (NSUInteger)indexOffsetForAssemblage:(id<RZAssemblage>)childAssemblage
 {
     NSUInteger count = 0;
@@ -85,37 +124,6 @@
         parentIndex -= count;
     }
     return index;
-}
-
-- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
-             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
-{
-    NSUInteger index = [indexPath indexAtPosition:0];
-    NSUInteger assemblageIndex = [self indexOfAssemblageContainingParentIndex:index];
-    id<RZAssemblageMutationRelay> nextAssemblage = [self.store objectAtIndex:assemblageIndex];
-    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-
-    NSUInteger newIndex = index - [self indexOffsetForAssemblage:nextAssemblage];
-    // If this is for a removal, move to the next index if the removal index will not fit in the selected assemblage
-    while ( forRemoval && [nextAssemblage numberOfChildren] <= newIndex ) {
-        assemblageIndex++;
-        nextAssemblage = [self.store objectAtIndex:assemblageIndex];
-        newIndex = index - [self indexOffsetForAssemblage:nextAssemblage];
-    }
-
-    indexPath = [indexPath rz_indexPathByPrependingIndex:newIndex];
-
-    [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
-                         assemblage:assemblage newIndexPath:newIndexPath];
-}
-
-- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
-{
-    [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
-        NSUInteger offset = [self indexOffsetForAssemblage:assemblage];
-        return [indexPath rz_indexPathWithLastIndexShiftedBy:offset];
-    }];
-    [self closeBatchUpdate];
 }
 
 @end

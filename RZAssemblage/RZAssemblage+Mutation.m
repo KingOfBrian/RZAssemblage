@@ -1,38 +1,19 @@
 //
-//  RZMutableAssemblage.m
+//  RZAssemblage+Mutation.m
 //  RZAssemblage
 //
 //  Created by Brian King on 1/27/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZMutableAssemblage.h"
+#import "RZAssemblage+Mutation.h"
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
 #import "RZAssemblageMutationRelay.h"
 
 
-@interface RZMutableAssemblage()
-
-@property (copy, nonatomic) NSMutableArray *store;
-
-@end
-
-@implementation RZMutableAssemblage
-
-- (instancetype)initWithArray:(NSArray *)array
-{
-    NSParameterAssert(array);
-    self = [super initWithArray:array];
-    if ( self ) {
-        _store = [array mutableCopy];
-    }
-    return self;
-}
-
-#pragma mark - Basic Mutation
-
+@implementation RZAssemblage (RZAssemblageMutation)
 
 - (void)addObject:(id)anObject
 {
@@ -79,10 +60,6 @@
     [self closeBatchUpdate];
 }
 
-@end
-
-@implementation RZAssemblage (RZAssemblageMutation)
-
 - (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
 {
     RZAssemblageLog(@"Insert %@ at %@", anObject, indexPath);
@@ -92,8 +69,8 @@
     [self lookupIndexPath:indexPath forRemoval:NO
                assemblage:&assemblage newIndexPath:&newIndexPath];
 
-    RZRaize([assemblage isKindOfClass:[RZMutableAssemblage class]], @"IndexPath %@ must be mutable, not %@", indexPath, assemblage);
-    RZMutableAssemblage *mutable = (id)assemblage;
+    RZConformMutationSupportAtIndexPath(assemblage, indexPath);
+    id<RZAssemblageMutation> mutable = (id)assemblage;
     [mutable insertObject:anObject atIndex:[newIndexPath rz_lastIndex]];
 }
 
@@ -106,8 +83,8 @@
     [self lookupIndexPath:indexPath forRemoval:YES
                assemblage:&assemblage newIndexPath:&newIndexPath];
 
-    RZRaize([assemblage isKindOfClass:[RZMutableAssemblage class]], @"IndexPath %@ must be mutable, not %@", indexPath, assemblage);
-    RZMutableAssemblage *mutable = (id)assemblage;
+    RZConformMutationSupportAtIndexPath(assemblage, indexPath);
+    id<RZAssemblageMutation> mutable = (id)assemblage;
     [mutable removeObjectAtIndex:[newIndexPath rz_lastIndex]];
 }
 

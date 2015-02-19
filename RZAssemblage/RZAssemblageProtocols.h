@@ -45,11 +45,34 @@
  */
 @property (copy, nonatomic, readonly) NSArray *allObjects;
 
+/**
+ * The delegate to inform of changes.
+ */
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
 @end
 
-// This protocol is used by assemblage's to notify changes
+/**
+ * The RZAssemblageMutation protocol is adopted by assemblages that support
+ * direct mutation.
+ */
+@protocol RZAssemblageMutation <NSObject>
+
+- (void)insertObject:(id)anObject atIndex:(NSUInteger)index;
+- (void)addObject:(id)anObject;
+- (void)removeObjectAtIndex:(NSUInteger)index;
+- (void)removeLastObject;
+
+/**
+ * This method is not a mutation method, but will inform the delegate that the object has been updated.
+ */
+- (void)notifyObjectUpdate:(id)object;
+
+@end
+
+/**
+ *  This protocol informs the delegate of changes to the assemblage.
+ */
 @protocol RZAssemblageDelegate <NSObject>
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet;

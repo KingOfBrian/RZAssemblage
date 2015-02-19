@@ -9,7 +9,7 @@
 @import UIKit;
 #import <XCTest/XCTest.h>
 #import "RZAssemblage.h"
-#import "RZMutableAssemblage.h"
+#import "RZAssemblage+Mutation.h"
 #import "RZJoinAssemblage.h"
 #import "RZFilteredAssemblage.h"
 #import "RZAssemblageChangeSet.h"
@@ -25,7 +25,7 @@ event.assemblage = assemblage;
 
 @interface RZAssemblageDelegateEvent : NSObject
 
-@property (strong, nonatomic) RZAssemblage *assemblage;
+@property (strong, nonatomic) id<RZAssemblage> assemblage;
 @property (assign, nonatomic) SEL delegateSelector;
 @property (assign, nonatomic) RZAssemblageMutationType type;
 @property (strong, nonatomic) id object;
@@ -152,7 +152,7 @@ event.assemblage = assemblage;
     XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]], @1);
     XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:1]], @2);
     XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:2]], @3);
-    RZAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
     XCTAssertEqual([mutableValues numberOfChildrenAtIndexPath:nil], 0);
 
     RZAssemblage *sectioned = [[RZAssemblage alloc] initWithArray:@[staticValues, mutableValues]];
@@ -164,7 +164,7 @@ event.assemblage = assemblage;
 
 - (void)testMutableDelegation
 {
-    RZMutableAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
     mutableValues.delegate = self;
 
     [mutableValues addObject:@1];
@@ -196,7 +196,7 @@ event.assemblage = assemblage;
 
 - (void)testGroupedMutableDelegationNoOp
 {
-    RZMutableAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
     mutableValues.delegate = self;
     [mutableValues openBatchUpdate];
 
@@ -210,15 +210,15 @@ event.assemblage = assemblage;
 
 - (void)testJoinDelegation
 {
-    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[]];
-    RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[]];
-    RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *m2 = [[RZAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *m3 = [[RZAssemblage alloc] initWithArray:@[]];
     NSArray *assemblages = @[m1, m2, m3];
     RZJoinAssemblage *assemblage = [[RZJoinAssemblage alloc] initWithArray:@[m1, m2, m3]];
     assemblage.delegate = self;
 
     [assemblage openBatchUpdate];
-    for ( RZMutableAssemblage *ma in assemblages ) {
+    for ( RZAssemblage *ma in assemblages ) {
         [ma addObject:@1];
         [ma removeLastObject];
     }
@@ -227,7 +227,7 @@ event.assemblage = assemblage;
     [self.delegateEvents removeAllObjects];
 
     [assemblage openBatchUpdate];
-    for ( RZMutableAssemblage *ma in assemblages ) {
+    for ( RZAssemblage *ma in assemblages ) {
         [ma addObject:@1];
     }
     [assemblage closeBatchUpdate];
@@ -239,14 +239,14 @@ event.assemblage = assemblage;
 
 - (void)testJoinIndexPathMutation
 {
-    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[]];
-    RZMutableAssemblage *f1m1 = [[RZMutableAssemblage alloc] initWithArray:@[]];
-    RZMutableAssemblage *f1m2 = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *f1m1 = [[RZAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *f1m2 = [[RZAssemblage alloc] initWithArray:@[]];
     RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:@[f1m1, f1m2]];
-    RZMutableAssemblage *assemblage = [[RZMutableAssemblage alloc] initWithArray:@[m1, f1]];
+    RZAssemblage *assemblage = [[RZAssemblage alloc] initWithArray:@[m1, f1]];
     assemblage.delegate = self;
 
-    for ( RZMutableAssemblage *ma in @[m1, f1m1] ) {
+    for ( RZAssemblage *ma in @[m1, f1m1] ) {
         [ma addObject:@1];
         [ma addObject:@2];
         [ma addObject:@3];
@@ -304,9 +304,9 @@ event.assemblage = assemblage;
 
 - (void)testNestedGroupedMutableDelegation
 {
-    RZMutableAssemblage *parent = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *parent = [[RZAssemblage alloc] initWithArray:@[]];
     [parent addObject:[[RZAssemblage alloc] initWithArray:@[]]];
-    RZMutableAssemblage *mutableValues = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
     [parent addObject:mutableValues];
 
     parent.delegate = self;
@@ -330,7 +330,7 @@ event.assemblage = assemblage;
 
 - (void)testFilterNumericA
 {
-    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12]];
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12]];
 #define START_STOP_EVENT_COUNT 2
 #define CHILD_COUNT 12
 #define EVEN_CHILD_COUNT 12 / 2
@@ -463,7 +463,7 @@ event.assemblage = assemblage;
 
 - (void)testFilteredRemoval
 {
-    RZMutableAssemblage *m = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
+    RZAssemblage *m = [[RZAssemblage alloc] initWithArray:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -478,7 +478,7 @@ event.assemblage = assemblage;
 
 - (void)testFilteredAddition
 {
-    RZMutableAssemblage *m = [[RZMutableAssemblage alloc] initWithArray:@[]];
+    RZAssemblage *m = [[RZAssemblage alloc] initWithArray:@[]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -506,16 +506,16 @@ event.assemblage = assemblage;
 
 - (void)testMutation
 {
-    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]];
-    RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
-    RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
-    RZMutableAssemblage *m4 = [[RZMutableAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]];
+    RZAssemblage *m2 = [[RZAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
+    RZAssemblage *m3 = [[RZAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
+    RZAssemblage *m4 = [[RZAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
     RZJoinAssemblage *j1 = [[RZJoinAssemblage alloc] initWithArray:@[m3, m4]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:j1];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
-    RZMutableAssemblage *assemblage = [[RZMutableAssemblage alloc] initWithArray:@[m1, m2, filtered]];
+    RZAssemblage *assemblage = [[RZAssemblage alloc] initWithArray:@[m1, m2, filtered]];
 
     assemblage.delegate = self;
 
@@ -533,7 +533,7 @@ event.assemblage = assemblage;
 
 - (void)testFilterRemoval
 {
-    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;

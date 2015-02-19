@@ -12,10 +12,10 @@
 
 @interface RZAssemblage() <RZAssemblageMutationRelay, RZAssemblageDelegate> {
 @protected
-    NSArray *_store;
+    NSMutableArray *_store;
 }
 
-@property (copy, nonatomic) NSArray *store;
+@property (copy, nonatomic) NSMutableArray *store;
 
 @property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
 

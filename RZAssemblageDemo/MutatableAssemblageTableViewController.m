@@ -13,14 +13,14 @@ code;                                                                   \
 _Pragma("clang diagnostic pop")                                         \
 
 #import "MutatableAssemblageTableViewController.h"
-#import "RZMutableAssemblage.h"
+#import "RZAssemblage+Mutation.h"
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZJoinAssemblage.h"
 #import "RZFilteredAssemblage.h"
 
 @interface MutatableAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
 
-@property (strong, nonatomic) RZMutableAssemblage *assemblage;
+@property (strong, nonatomic) RZAssemblage *assemblage;
 
 @property (strong, nonatomic) RZAssemblageTableViewDataSource *dataSource;
 
@@ -42,10 +42,10 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    RZMutableAssemblage *m1 = [[RZMutableAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]];
-    RZMutableAssemblage *m2 = [[RZMutableAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
-    RZMutableAssemblage *m3 = [[RZMutableAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
-    RZMutableAssemblage *m4 = [[RZMutableAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]];
+    RZAssemblage *m2 = [[RZAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
+    RZAssemblage *m3 = [[RZAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
+    RZAssemblage *m4 = [[RZAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
     self.index = 12;
     self.mutableAssemblages = @[m1, m2, m3, m4];
 
@@ -54,7 +54,7 @@ _Pragma("clang diagnostic pop")                                         \
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
-    self.assemblage = [[RZMutableAssemblage alloc] initWithArray:@[m1, m2, filtered]];
+    self.assemblage = [[RZAssemblage alloc] initWithArray:@[m1, m2, filtered]];
 
     self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
                                                                      forTableView:self.tableView
@@ -143,7 +143,7 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)move
 {
     NSIndexPath *fromIndexPath = [self randomExistingIndexPath];
-    RZMutableAssemblage *assemblage = [self.assemblage objectAtIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
+    RZAssemblage *assemblage = [self.assemblage objectAtIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
     [self.assemblage moveObjectAtIndexPath:fromIndexPath
                                toIndexPath:[self randomExistingIndexPath]];
 
@@ -155,14 +155,14 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)addRow
 {
     NSUInteger section = [self randomSectionIndex];
-    RZMutableAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
+    RZAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
     [assemblage addObject:[self nextValue]];
 }
 
 - (void)removeRow
 {
     NSUInteger section = [self randomSectionIndex];
-    RZMutableAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
+    RZAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
     [assemblage openBatchUpdate];
     [assemblage removeObjectAtIndex:row];
@@ -193,7 +193,7 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)clear
 {
     [self.assemblage openBatchUpdate];
-    for ( RZMutableAssemblage *assemblage in self.mutableAssemblages ) {
+    for ( RZAssemblage *assemblage in self.mutableAssemblages ) {
         while ( [assemblage numberOfChildren] > 2 ) {
             [assemblage removeLastObject];
         }

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /**
- * This protocol allows mutation methods on RZMutableAssemblage to traverse assemblages
+ * This protocol allows mutation methods on RZAssemblage to traverse assemblages
  * that do not support mutation.
  */
 @protocol RZAssemblageMutationRelay <RZAssemblage>

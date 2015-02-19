@@ -10,7 +10,7 @@ A UITableView will often not map directly to an array.  Juggling the data correc
 ```
 RZAssemblage *section1 = [[RZPropertyAssemblage alloc] initWithObject:person keys:@[@"firstName", @"lastName", @"streetAddress"]];
 RZAssemblage *friends  = [[RZFRCAssemblage alloc] initWithFetchedResultsController:friendListFRC];
-RZAssemblage *loading  = [[RZMutableAssemblage alloc] initWithArray:@"Loading"];
+RZAssemblage *loading  = [[RZAssemblage alloc] initWithArray:@"Loading"];
 RZAssemblage *section2 = [[RZJoinAssemblage alloc] initWithArray:@[friends, loading]];
 RZAssemblage *section3 = [[RZAssemblage alloc] initWithArray:@[@"Delete", @"Share"]];
 RZAssemblage *tableAssemblage = [[RZAssemblage alloc] initWithArray:@[section1, section2, section3]];

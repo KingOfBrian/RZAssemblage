@@ -20,7 +20,7 @@
 {
     self = [super init];
     if ( self ) {
-        _store = [array copy];
+        _store = [array mutableCopy];
         for ( id object in _store ) {
             [self assignDelegateIfObjectIsAssemblage:object];
         }
@@ -119,21 +119,6 @@
     *assemblage = self;
 }
 
-#pragma mark - Private
-
-- (NSUInteger)indexForChildAssemblage:(id<RZAssemblage>)assemblage
-{
-    NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"%@ does not conform to <RZAssemblage>", assemblage);
-    return [self.store indexOfObject:assemblage];
-}
-
-- (void)assignDelegateIfObjectIsAssemblage:(id)anObject
-{
-    if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
-        [(id<RZAssemblage>)anObject setDelegate:self];
-    }
-}
-
 #pragma mark - Batching
 
 - (void)openBatchUpdate
@@ -173,6 +158,21 @@
         return [indexPath rz_indexPathByPrependingIndex:assemblageIndex];
     }];
     [self closeBatchUpdate];
+}
+
+#pragma mark - Private
+
+- (NSUInteger)indexForChildAssemblage:(id<RZAssemblage>)assemblage
+{
+    NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"%@ does not conform to <RZAssemblage>", assemblage);
+    return [self.store indexOfObject:assemblage];
+}
+
+- (void)assignDelegateIfObjectIsAssemblage:(id)anObject
+{
+    if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
+        [(id<RZAssemblage>)anObject setDelegate:self];
+    }
 }
 
 @end
