@@ -30,7 +30,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@ - %@", super.description, self.store];
+    return [NSString stringWithFormat:@"<%@:%p - %@>", self.class, self, self.store];
 }
 
 - (id)copyWithZone:(NSZone *)zone;
@@ -100,20 +100,7 @@
     return self.store.count;
 }
 
-#pragma mark - Private
-
-- (NSUInteger)indexForChildAssemblage:(id<RZAssemblage>)assemblage
-{
-    NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"%@ does not conform to <RZAssemblage>", assemblage);
-    return [self.store indexOfObject:assemblage];
-}
-
-- (void)assignDelegateIfObjectIsAssemblage:(id)anObject
-{
-    if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
-        [(id<RZAssemblage>)anObject setDelegate:self];
-    }
-}
+#pragma mark - <RZAssemblageMutationRelay>
 
 - (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
              assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
@@ -132,18 +119,46 @@
     *assemblage = self;
 }
 
-#pragma mark - Delegation
+#pragma mark - Private
+
+- (NSUInteger)indexForChildAssemblage:(id<RZAssemblage>)assemblage
+{
+    NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"%@ does not conform to <RZAssemblage>", assemblage);
+    return [self.store indexOfObject:assemblage];
+}
+
+- (void)assignDelegateIfObjectIsAssemblage:(id)anObject
+{
+    if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
+        [(id<RZAssemblage>)anObject setDelegate:self];
+    }
+}
+
+#pragma mark - Batching
 
 - (void)openBatchUpdate
 {
-    if ( self.changeSet == nil ) {
+    if ( self.updateCount == 0 ) {
         self.changeSet = [[RZAssemblageChangeSet alloc] init];
+        self.changeSet.startingAssemblage = self;
         if ( [self.delegate respondsToSelector:@selector(willBeginUpdatesForAssemblage:)] ) {
-            [self.delegate willBeginUpdatesForAssemblage:self];
+            [self.delegate willBeginUpdatesForAssemblage:self.changeSet.startingAssemblage];
         }
     }
-    [self.changeSet beginUpdateWithAssemblage:self];
+    self.updateCount += 1;
 }
+
+- (void)closeBatchUpdate
+{
+    self.updateCount -= 1;
+    if ( self.updateCount == 0 ) {
+        RZAssemblageLog(@"Change:%@ -> %p:\n%@", self, self.delegate, self.changeSet);
+        [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
+        self.changeSet = nil;
+    }
+}
+
+#pragma mark - RZAssemblageDelegate
 
 - (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
 {
@@ -159,16 +174,5 @@
     }];
     [self closeBatchUpdate];
 }
-
-- (void)closeBatchUpdate
-{
-    [self.changeSet endUpdateWithAssemblage:self];
-    if ( self.changeSet.updateCount == 0 ) {
-        RZAssemblageLog(@"Change:%@ -> %p:\n%@", self, self.delegate, self.changeSet);
-        [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
-        self.changeSet = nil;
-    }
-}
-
 
 @end

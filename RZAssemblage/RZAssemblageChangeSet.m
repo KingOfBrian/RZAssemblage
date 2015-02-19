@@ -12,8 +12,6 @@
 
 @interface RZAssemblageChangeSet ()
 
-@property (copy, nonatomic) id<RZAssemblage> startingAssemblage;
-
 @property (strong, nonatomic) RZMutableIndexPathSet *inserts;
 @property (strong, nonatomic) RZMutableIndexPathSet *updates;
 @property (strong, nonatomic) RZMutableIndexPathSet *removes;
@@ -56,19 +54,6 @@
     return self.updates.sortedIndexPaths;
 }
 
-- (void)beginUpdateWithAssemblage:(id<RZAssemblage>)assemblage
-{
-    if ( self.updateCount == 0 ) {
-        self.startingAssemblage = assemblage;
-    }
-    _updateCount++;
-}
-
-- (void)endUpdateWithAssemblage:(id<RZAssemblage>)assemblage
-{
-    _updateCount--;
-}
-
 - (void)insertAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.updates shiftIndexesStartingAtIndexPath:indexPath by:1];
@@ -109,29 +94,6 @@
         [self.updates addIndexPath:index2];
     }
     [self.moves addIndexPath:index2];
-}
-
-- (void)clearInsertAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self.inserts removeIndexPath:indexPath];
-
-    [self.updates shiftIndexesStartingAtIndexPath:indexPath by:-1];
-    [self.inserts shiftIndexesStartingAtIndexPath:indexPath by:-1];
-    [self.moves shiftIndexesStartingAtIndexPath:indexPath by:-1];
-}
-
-- (void)clearRemoveAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self.updates shiftIndexesStartingAfterIndexPath:indexPath by:1];
-    [self.inserts shiftIndexesStartingAfterIndexPath:indexPath by:1];
-    [self.moves shiftIndexesStartingAfterIndexPath:indexPath by:1];
-
-    [self.removes removeIndexPath:indexPath];
-}
-
-- (void)clearUpdateAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self.updates removeIndexPath:indexPath];
 }
 
 - (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet

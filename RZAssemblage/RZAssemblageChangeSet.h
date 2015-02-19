@@ -21,28 +21,18 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 @interface RZAssemblageChangeSet : NSObject
 
-@property (copy, nonatomic, readonly) id<RZAssemblage> startingAssemblage;
-
-@property (nonatomic, readonly) NSUInteger updateCount;
+@property (copy, nonatomic) id<RZAssemblage> startingAssemblage;
 
 @property (strong, nonatomic, readonly) NSArray *insertedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *updatedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *removedIndexPaths;
 //@property (strong, nonatomic, readonly) NSDictionary *moveIndexPathMap;
 
-- (void)beginUpdateWithAssemblage:(id<RZAssemblage>)assemblage;
-
 - (void)insertAtIndexPath:(NSIndexPath *)indexPath;
 - (void)updateAtIndexPath:(NSIndexPath *)indexPath;
 - (void)removeAtIndexPath:(NSIndexPath *)indexPath;
 - (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2;
 
-- (void)clearInsertAtIndexPath:(NSIndexPath *)indexPath;
-- (void)clearRemoveAtIndexPath:(NSIndexPath *)indexPath;
-- (void)clearUpdateAtIndexPath:(NSIndexPath *)indexPath;
-
 - (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform;
-
-- (void)endUpdateWithAssemblage:(id<RZAssemblage>)assemblage;
 
 @end

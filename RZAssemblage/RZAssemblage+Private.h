@@ -19,6 +19,8 @@
 
 @property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
 
+@property (nonatomic) NSUInteger updateCount;
+
 - (void)assignDelegateIfObjectIsAssemblage:(id)anObject;
 
 @end
