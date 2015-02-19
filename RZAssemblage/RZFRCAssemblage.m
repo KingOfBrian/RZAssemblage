@@ -106,9 +106,10 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
+    NSAssert(self.changeSet == nil, @"Do not support concurrent NSFRC changes");
     RZFRCLog(@"%@", controller);
-    self.changeSet = self.changeSet ?: [[RZAssemblageChangeSet alloc] init];
-    [self.changeSet beginUpdateWithAssemblage:self];
+    self.changeSet = [[RZAssemblageChangeSet alloc] init];
+    [self.delegate willBeginUpdatesForAssemblage:self];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -167,11 +168,8 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     RZFRCLog(@"%@", controller);
-    [self.changeSet endUpdateWithAssemblage:self];
-    if ( self.changeSet.updateCount == 0 ) {
-        [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
-        self.changeSet = nil;
-    }
+    [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
+    self.changeSet = nil;
 }
 
 @end
