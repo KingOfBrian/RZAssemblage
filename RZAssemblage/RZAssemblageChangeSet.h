@@ -26,12 +26,13 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 @property (strong, nonatomic, readonly) NSArray *insertedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *updatedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *removedIndexPaths;
-//@property (strong, nonatomic, readonly) NSDictionary *moveIndexPathMap;
+@property (strong, nonatomic, readonly) NSDictionary *moveIndexPathFromToMap;
+
+- (void)generateMoveEventsFromAssemblage:(id<RZAssemblage>)assemblage;
 
 - (void)insertAtIndexPath:(NSIndexPath *)indexPath;
 - (void)updateAtIndexPath:(NSIndexPath *)indexPath;
 - (void)removeAtIndexPath:(NSIndexPath *)indexPath;
-//- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2;
 
 - (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform;
 

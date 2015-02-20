@@ -52,6 +52,7 @@ event.assemblage = assemblage;
 @interface RZAssemblageTests : XCTestCase <RZAssemblageDelegate>
 
 @property (nonatomic, strong) NSMutableArray *delegateEvents;
+@property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
 
 @end
 
@@ -128,6 +129,7 @@ event.assemblage = assemblage;
 //        event.object = [assemblage objectAtIndexPath:indexPath];
 //        event.indexPath = indexPath;
 //    }];
+    self.changeSet = changeSet;
 }
 
 - (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
@@ -576,7 +578,7 @@ event.assemblage = assemblage;
     [m1 addObject:@"2"];
     [m1 removeObjectAtIndex:0];
     [m1 closeBatchUpdate];
-
+    [self.changeSet generateMoveEventsFromAssemblage:m1];
 }
 
 @end

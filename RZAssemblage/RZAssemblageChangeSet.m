@@ -33,8 +33,8 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@:%p \nI=%@, U=%@, R=%@, M=Not Supported>", self.class, self,
-            self.insertedIndexPaths, self.updatedIndexPaths, self.removedIndexPaths];
+    return [NSString stringWithFormat:@"<%@:%p \nI=%@, U=%@, R=%@, M=%@>", self.class, self,
+            self.insertedIndexPaths, self.updatedIndexPaths, self.removedIndexPaths, self.moveIndexPathFromToMap];
 }
 
 - (NSArray *)insertedIndexPaths
@@ -83,14 +83,47 @@
     }
 }
 
-//- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
-//{
-//    if ( [self.updates containsIndexPath:index1] ) {
-//        [self.updates removeIndexPath:index1];
-//        [self.updates addIndexPath:index2];
-//    }
+- (NSArray *)objectsForIndexPaths:(NSArray *)indexPaths inAssemblage:(id<RZAssemblage>)assemblage
+{
+    NSMutableArray *objects = [NSMutableArray array];
+    for ( NSIndexPath *indexPath in indexPaths ) {
+        [objects addObject:[assemblage objectAtIndexPath:indexPath]];
+    }
+    return [objects copy];
+}
+
+- (void)generateMoveEventsFromAssemblage:(id<RZAssemblage>)assemblage
+{
+    NSArray *insertedIndexPaths = self.insertedIndexPaths;
+    NSArray *removedIndexPaths = self.removedIndexPaths;
+
+    NSArray *insertedObjects = [self objectsForIndexPaths:insertedIndexPaths inAssemblage:assemblage];
+    NSArray *removedObjects  = [self objectsForIndexPaths:removedIndexPaths inAssemblage:self.startingAssemblage];
+
+    NSMutableDictionary *moveIndexPathFromToMap = [NSMutableDictionary dictionary];
+    [insertedObjects enumerateObjectsUsingBlock:^(id insertedObject, NSUInteger insertedIndex, BOOL *stop) {
+        NSUInteger removedIndex = [removedObjects indexOfObject:insertedObject];
+        if ( removedIndex != NSNotFound ) {
+            NSIndexPath *removedIndexPath = removedIndexPaths[removedIndex];
+            NSIndexPath *insertedIndexPath = insertedIndexPaths[insertedIndex];
+            moveIndexPathFromToMap[removedIndexPath] = insertedIndexPath;
+            [self.inserts removeIndexPath:insertedIndexPath];
+            [self.removes removeIndexPath:removedIndexPath];
+            
+        }
+    }];
+    _moveIndexPathFromToMap = [moveIndexPathFromToMap copy];
+}
+
+- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
+{
+    if ( [self.updates containsIndexPath:index1] ) {
+        [self.updates removeIndexPath:index1];
+        [self.updates addIndexPath:index2];
+    }
+//    [self.moves ]
 //    [self.moves addIndexPath:index2];
-//}
+}
 
 - (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet
 withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
