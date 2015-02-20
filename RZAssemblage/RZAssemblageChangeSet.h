@@ -31,7 +31,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)insertAtIndexPath:(NSIndexPath *)indexPath;
 - (void)updateAtIndexPath:(NSIndexPath *)indexPath;
 - (void)removeAtIndexPath:(NSIndexPath *)indexPath;
-- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2;
+//- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2;
 
 - (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform;
 

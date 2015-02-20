@@ -566,4 +566,17 @@ event.assemblage = assemblage;
     XCTAssert(self.delegateEvents.count == 0);
 }
 
+- (void)testMoveWithIndexConcerns
+{
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4"]];
+    m1.delegate = self;
+    [m1 openBatchUpdate];
+    [m1 removeObjectAtIndex:0];
+    [m1 removeObjectAtIndex:0];
+    [m1 addObject:@"2"];
+    [m1 removeObjectAtIndex:0];
+    [m1 closeBatchUpdate];
+
+}
+
 @end

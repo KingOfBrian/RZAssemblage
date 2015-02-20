@@ -15,7 +15,6 @@
 @property (strong, nonatomic) RZMutableIndexPathSet *inserts;
 @property (strong, nonatomic) RZMutableIndexPathSet *updates;
 @property (strong, nonatomic) RZMutableIndexPathSet *removes;
-@property (strong, nonatomic) RZMutableIndexPathSet *moves;
 
 @end
 
@@ -28,7 +27,6 @@
         _inserts = [RZMutableIndexPathSet set];
         _updates = [RZMutableIndexPathSet set];
         _removes = [RZMutableIndexPathSet set];
-        _moves   = [RZMutableIndexPathSet set];
     }
     return self;
 }
@@ -58,7 +56,6 @@
 {
     [self.updates shiftIndexesStartingAtIndexPath:indexPath by:1];
     [self.inserts shiftIndexesStartingAtIndexPath:indexPath by:1];
-    [self.moves shiftIndexesStartingAtIndexPath:indexPath by:1];
 
     [self.inserts addIndexPath:indexPath];
 }
@@ -74,7 +71,6 @@
 
     [self.updates shiftIndexesStartingAfterIndexPath:indexPath by:-1];
     [self.inserts shiftIndexesStartingAfterIndexPath:indexPath by:-1];
-    [self.moves shiftIndexesStartingAfterIndexPath:indexPath by:-1];
 
     // Do nothing if the removal was an un-propagated insertion
     if ( insertWasRemoved == NO) {
@@ -87,14 +83,14 @@
     }
 }
 
-- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
-{
-    if ( [self.updates containsIndexPath:index1] ) {
-        [self.updates removeIndexPath:index1];
-        [self.updates addIndexPath:index2];
-    }
-    [self.moves addIndexPath:index2];
-}
+//- (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
+//{
+//    if ( [self.updates containsIndexPath:index1] ) {
+//        [self.updates removeIndexPath:index1];
+//        [self.updates addIndexPath:index2];
+//    }
+//    [self.moves addIndexPath:index2];
+//}
 
 - (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet
 withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform

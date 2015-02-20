@@ -42,7 +42,7 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", ]];
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4"]];
     RZAssemblage *m2 = [[RZAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
     RZAssemblage *m3 = [[RZAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
     RZAssemblage *m4 = [[RZAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
@@ -152,6 +152,18 @@ _Pragma("clang diagnostic pop")                                         \
     }
 }
 
+- (void)testRob
+{
+    RZAssemblage *m1 = self.mutableAssemblages[0];
+    [m1 openBatchUpdate];
+    [m1 removeObjectAtIndex:0];
+    [m1 removeObjectAtIndex:0];
+    [m1 addObject:@"2"];
+    [m1 removeObjectAtIndex:0];
+    [m1 closeBatchUpdate];
+
+}
+
 - (void)addRow
 {
     NSUInteger section = [self randomSectionIndex];
@@ -177,6 +189,7 @@ _Pragma("clang diagnostic pop")                                         \
     NSArray *actions = @[
 //                         [NSValue valueWithPointer:@selector(move)],
 //                         [NSValue valueWithPointer:@selector(move)],
+//                         [NSValue valueWithPointer:@selector(testRob)],
                          [NSValue valueWithPointer:@selector(addRow)],
                          [NSValue valueWithPointer:@selector(addRow)],
                          [NSValue valueWithPointer:@selector(addRow)],
