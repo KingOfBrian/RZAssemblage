@@ -47,8 +47,13 @@
 		ABC57BB21A911C9000E97873 /* RZIndexPathSet.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC57BB01A911C9000E97873 /* RZIndexPathSet.h */; };
 		ABC57BB31A911C9000E97873 /* RZIndexPathSet.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC57BB11A911C9000E97873 /* RZIndexPathSet.m */; };
 		ABC57BB61A912B7F00E97873 /* RZAssemblageMutationRelay.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC57BB51A912B7F00E97873 /* RZAssemblageMutationRelay.h */; };
+		ABCB41D71A96D71200784037 /* RZAssemblagePropertyTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCB41D61A96D71200784037 /* RZAssemblagePropertyTestCase.m */; };
+		ABCB41DA1A96ECA500784037 /* RZAssemblageDelegateEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCB41D91A96ECA500784037 /* RZAssemblageDelegateEvent.m */; };
 		ABE1FA501A86ED700069B37F /* RZMutableIndexPathSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */; };
 		ABFE4D251A80A17700A73BA3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFE4D241A80A17700A73BA3 /* UIKit.framework */; };
+		E4BD55ACA96FDB4672CC8CC2 /* libPods-RZAssemblageTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA41BDE53DE69D9C935440B0 /* libPods-RZAssemblageTests.a */; };
+		EC9925AC53F0916462DEB94F /* libPods-RZAssemblage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8614A58D95CCC51BB1D22614 /* libPods-RZAssemblage.a */; };
+		FB7B6BF8877A57779CE5FDB0 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3120D1C25265F3EF4BD8E841 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +74,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3120D1C25265F3EF4BD8E841 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D6AF49E9F8147BF84ABF72F /* Pods-RZAssemblage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RZAssemblage.release.xcconfig"; path = "Pods/Target Support Files/Pods-RZAssemblage/Pods-RZAssemblage.release.xcconfig"; sourceTree = "<group>"; };
+		702BA26A32314E8D41E4490F /* Pods-RZAssemblage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RZAssemblage.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RZAssemblage/Pods-RZAssemblage.debug.xcconfig"; sourceTree = "<group>"; };
+		73423960A4277859F83DC361 /* Pods-RZAssemblageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RZAssemblageTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RZAssemblageTests/Pods-RZAssemblageTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7D1DEA2E39891711588415F8 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		8614A58D95CCC51BB1D22614 /* libPods-RZAssemblage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RZAssemblage.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		968F5FE7824182A4323EFB05 /* Pods-RZAssemblageTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RZAssemblageTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RZAssemblageTests/Pods-RZAssemblageTests.release.xcconfig"; sourceTree = "<group>"; };
 		AB0279041A789FA600AF66DB /* MutatableAssemblageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MutatableAssemblageTableViewController.h; sourceTree = "<group>"; };
 		AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MutatableAssemblageTableViewController.m; sourceTree = "<group>"; };
 		AB05610B1A7B25D200B5C17E /* RZFRCAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFRCAssemblage.h; sourceTree = "<group>"; };
@@ -117,8 +129,14 @@
 		ABC57BB01A911C9000E97873 /* RZIndexPathSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZIndexPathSet.h; sourceTree = "<group>"; };
 		ABC57BB11A911C9000E97873 /* RZIndexPathSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZIndexPathSet.m; sourceTree = "<group>"; };
 		ABC57BB51A912B7F00E97873 /* RZAssemblageMutationRelay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageMutationRelay.h; sourceTree = "<group>"; };
+		ABCB41D51A96D5D100784037 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		ABCB41D61A96D71200784037 /* RZAssemblagePropertyTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblagePropertyTestCase.m; sourceTree = "<group>"; };
+		ABCB41D81A96ECA500784037 /* RZAssemblageDelegateEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageDelegateEvent.h; sourceTree = "<group>"; };
+		ABCB41D91A96ECA500784037 /* RZAssemblageDelegateEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageDelegateEvent.m; sourceTree = "<group>"; };
 		ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZMutableIndexPathSetTests.m; sourceTree = "<group>"; };
 		ABFE4D241A80A17700A73BA3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		DA41BDE53DE69D9C935440B0 /* libPods-RZAssemblageTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RZAssemblageTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E3214C9F3225ED0F2F8C15EB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +145,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABFE4D251A80A17700A73BA3 /* UIKit.framework in Frameworks */,
+				FB7B6BF8877A57779CE5FDB0 /* libPods.a in Frameworks */,
+				EC9925AC53F0916462DEB94F /* libPods-RZAssemblage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABADD34E1A776C7C00397031 /* RZAssemblage.framework in Frameworks */,
+				E4BD55ACA96FDB4672CC8CC2 /* libPods-RZAssemblageTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,11 +173,14 @@
 		ABADD3381A776C7C00397031 = {
 			isa = PBXGroup;
 			children = (
+				ABCB41D51A96D5D100784037 /* Podfile */,
 				ABADD3721A77DF9200397031 /* README.md */,
 				ABADD3441A776C7C00397031 /* RZAssemblage */,
 				ABADD3511A776C7C00397031 /* RZAssemblageTests */,
 				ABADD3A81A787F1900397031 /* RZAssemblageDemo */,
 				ABADD3431A776C7C00397031 /* Products */,
+				E143334570BBEB002C7B75EB /* Pods */,
+				F67E217154154C5676752016 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -217,7 +241,10 @@
 				ABAC828B1A7B339F001CDC27 /* TestChildEntity.m */,
 				ABAC828C1A7B339F001CDC27 /* TestParentEntity.h */,
 				ABAC828D1A7B339F001CDC27 /* TestParentEntity.m */,
+				ABCB41D81A96ECA500784037 /* RZAssemblageDelegateEvent.h */,
+				ABCB41D91A96ECA500784037 /* RZAssemblageDelegateEvent.m */,
 				ABAC828E1A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld */,
+				ABCB41D61A96D71200784037 /* RZAssemblagePropertyTestCase.m */,
 				ABADD3541A776C7C00397031 /* RZAssemblageTests.m */,
 				ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */,
 				ABADD3521A776C7C00397031 /* Supporting Files */,
@@ -259,6 +286,29 @@
 				ABADD3AB1A787F1900397031 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E143334570BBEB002C7B75EB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E3214C9F3225ED0F2F8C15EB /* Pods.debug.xcconfig */,
+				7D1DEA2E39891711588415F8 /* Pods.release.xcconfig */,
+				702BA26A32314E8D41E4490F /* Pods-RZAssemblage.debug.xcconfig */,
+				6D6AF49E9F8147BF84ABF72F /* Pods-RZAssemblage.release.xcconfig */,
+				73423960A4277859F83DC361 /* Pods-RZAssemblageTests.debug.xcconfig */,
+				968F5FE7824182A4323EFB05 /* Pods-RZAssemblageTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		F67E217154154C5676752016 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3120D1C25265F3EF4BD8E841 /* libPods.a */,
+				8614A58D95CCC51BB1D22614 /* libPods-RZAssemblage.a */,
+				DA41BDE53DE69D9C935440B0 /* libPods-RZAssemblageTests.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -310,9 +360,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = ABADD35B1A776C7C00397031 /* Build configuration list for PBXNativeTarget "RZAssemblageTests" */;
 			buildPhases = (
+				82E5240B82D3BFFD403AC8FF /* Check Pods Manifest.lock */,
 				ABADD3491A776C7C00397031 /* Sources */,
 				ABADD34A1A776C7C00397031 /* Frameworks */,
 				ABADD34B1A776C7C00397031 /* Resources */,
+				CD0F279135F1FF15D71BE46C /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -409,6 +461,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		82E5240B82D3BFFD403AC8FF /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		CD0F279135F1FF15D71BE46C /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RZAssemblageTests/Pods-RZAssemblageTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		ABADD33D1A776C7C00397031 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -432,6 +517,8 @@
 			files = (
 				ABAC82921A7B339F001CDC27 /* TestParentEntity.m in Sources */,
 				ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */,
+				ABCB41DA1A96ECA500784037 /* RZAssemblageDelegateEvent.m in Sources */,
+				ABCB41D71A96D71200784037 /* RZAssemblagePropertyTestCase.m in Sources */,
 				ABE1FA501A86ED700069B37F /* RZMutableIndexPathSetTests.m in Sources */,
 				ABAC82941A7B339F001CDC27 /* RZAssemblageDemo.xcdatamodeld in Sources */,
 				ABAC82901A7B339F001CDC27 /* TestChildEntity.m in Sources */,
@@ -604,6 +691,7 @@
 		};
 		ABADD35C1A776C7C00397031 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 73423960A4277859F83DC361 /* Pods-RZAssemblageTests.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -621,6 +709,7 @@
 		};
 		ABADD35D1A776C7C00397031 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 968F5FE7824182A4323EFB05 /* Pods-RZAssemblageTests.release.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

@@ -7,6 +7,7 @@
 //
 
 @import UIKit;
+
 #import <XCTest/XCTest.h>
 #import "RZAssemblage.h"
 #import "RZAssemblage+Mutation.h"
@@ -16,38 +17,14 @@
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
 
+#import "RZAssemblageDelegateEvent.h"
+
 #define TRACE_DELEGATE_EVENT \
 RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \
 [self.delegateEvents addObject:event]; \
 event.delegateSelector = _cmd;\
 event.assemblage = assemblage;
 
-
-@interface RZAssemblageDelegateEvent : NSObject
-
-@property (strong, nonatomic) id<RZAssemblage> assemblage;
-@property (assign, nonatomic) SEL delegateSelector;
-@property (assign, nonatomic) RZAssemblageMutationType type;
-@property (strong, nonatomic) id object;
-@property (strong, nonatomic) NSIndexPath *indexPath;
-@property (strong, nonatomic) NSIndexPath *toIndexPath;
-
-@end
-
-@implementation RZAssemblageDelegateEvent
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"<%@, %p, %@ T=%zd O=%@ I=%@ %@>",
-            [super description], self.assemblage,
-            NSStringFromSelector(self.delegateSelector),
-            self.type,
-            self.object,
-            [self.indexPath rz_shortDescription],
-            self.toIndexPath ? [self.toIndexPath rz_shortDescription] : @""];
-}
-
-@end
 
 @interface RZAssemblageTests : XCTestCase <RZAssemblageDelegate>
 
