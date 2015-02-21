@@ -190,7 +190,7 @@
 
 - (void)enumerateIndexesFromIndexPath:(NSIndexPath *)indexPath withBlock:(void (^)(NSIndexPath *parentPath, NSIndexSet *indexes, BOOL *stop))block stop:(BOOL *)stop
 {
-    if ( indexPath.length == 0 ) {
+    if ( indexPath == nil ) {
         indexPath = [[NSIndexPath alloc] init];
     }
     else {
