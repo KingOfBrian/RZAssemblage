@@ -129,31 +129,34 @@ _Pragma("clang diagnostic pop")                                         \
 - (NSUInteger)randomIndexForAssemblage:(RZAssemblage *)assemblage
 {
     NSUInteger count = [assemblage numberOfChildren];
-    return arc4random() % count;
+    return count == 0 ? NSNotFound : arc4random() % count;
 }
 
 - (NSIndexPath *)randomExistingIndexPath
 {
-    NSUInteger section = 2;//[self randomSectionIndex];
-    RZAssemblage *assemblage = [self.assemblage objectAtIndex:section];
-    NSUInteger row = [self randomIndexForAssemblage:assemblage];
-    return [NSIndexPath indexPathForRow:row inSection:section];
+    NSIndexPath *indexPath = nil;
+    // Find an indexPath.  If the section we point to has no items, pick another section.
+    while ( indexPath == nil ) {
+        NSUInteger section = [self randomSectionIndex];
+        RZAssemblage *assemblage = [self.assemblage objectAtIndex:section];
+        NSUInteger row = [self randomIndexForAssemblage:assemblage];
+        indexPath = row == NSNotFound ? nil : [NSIndexPath indexPathForRow:row inSection:section];
+    }
+
+    return indexPath;
 }
 
 - (void)move
 {
     NSIndexPath *fromIndexPath = [self randomExistingIndexPath];
-    RZAssemblage *assemblage = [self.assemblage objectAtIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
+
     [self.assemblage moveObjectAtIndexPath:fromIndexPath
                                toIndexPath:[self randomExistingIndexPath]];
-
-    if ( [assemblage numberOfChildrenAtIndexPath:nil] == 0 ) {
-        [assemblage addObject:@"Move went Empty, Add an item"];
-    }
 }
 
-- (void)testRob
+- (void)testHowDoesItWorkMove
 {
+    // This move actually works, but a move from 0:1 -> 0:1 doesn't appear like it should work.
     RZAssemblage *m1 = self.mutableAssemblages[0];
     [m1 openBatchUpdate];
     [m1 removeObjectAtIndex:0];
@@ -161,7 +164,6 @@ _Pragma("clang diagnostic pop")                                         \
     [m1 addObject:@"2"];
     [m1 removeObjectAtIndex:0];
     [m1 closeBatchUpdate];
-
 }
 
 - (void)addRow
@@ -176,24 +178,20 @@ _Pragma("clang diagnostic pop")                                         \
     NSUInteger section = [self randomSectionIndex];
     RZAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
-    [assemblage openBatchUpdate];
-    [assemblage removeObjectAtIndex:row];
-    if ( [assemblage numberOfChildren] == 0 ) {
-        [assemblage addObject:@"Went Empty, Add an item"];
+    if ( row != NSNotFound ) {
+        [assemblage openBatchUpdate];
+        [assemblage removeObjectAtIndex:row];
+        [assemblage closeBatchUpdate];
     }
-    [assemblage closeBatchUpdate];
 }
 
 - (void)random
 {
     NSArray *actions = @[
-//                         [NSValue valueWithPointer:@selector(move)],
-//                         [NSValue valueWithPointer:@selector(move)],
-//                         [NSValue valueWithPointer:@selector(testRob)],
+//                         [NSValue valueWithPointer:@selector(testHowDoesItWorkMove)],
+                         [NSValue valueWithPointer:@selector(move)],
                          [NSValue valueWithPointer:@selector(addRow)],
-                         [NSValue valueWithPointer:@selector(addRow)],
-                         [NSValue valueWithPointer:@selector(addRow)],
-                         [NSValue valueWithPointer:@selector(removeRow)], // Weight remove less
+                         [NSValue valueWithPointer:@selector(removeRow)],
                          ];
 
     NSUInteger index = arc4random() % actions.count;
@@ -209,6 +207,9 @@ _Pragma("clang diagnostic pop")                                         \
     for ( RZAssemblage *assemblage in self.mutableAssemblages ) {
         while ( [assemblage numberOfChildren] > 2 ) {
             [assemblage removeLastObject];
+        }
+        while ( [assemblage numberOfChildren] < 2 ) {
+            [assemblage addObject:[self nextValue]];
         }
     }
     [self.assemblage closeBatchUpdate];
