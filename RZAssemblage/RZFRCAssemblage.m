@@ -133,7 +133,7 @@
             break;
         }
         case NSFetchedResultsChangeMove: {
-//            [self.changeSet moveAtIndexPath:indexPath toIndexPath:newIndexPath];
+            [self.changeSet moveAtIndexPath:indexPath toIndexPath:newIndexPath];
             break;
         }
         case NSFetchedResultsChangeUpdate: {

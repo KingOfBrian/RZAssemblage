@@ -7,13 +7,10 @@
 //
 
 #import "RZAssemblage.h"
-#import "RZAssemblageChangeSet.h"
+#import "RZAssemblageChangeSet+Private.h"
 #import "RZAssemblageMutationRelay.h"
 
-@interface RZAssemblage() <RZAssemblageMutationRelay, RZAssemblageDelegate> {
-@protected
-    NSMutableArray *_store;
-}
+@interface RZAssemblage() <RZAssemblageMutationRelay, RZAssemblageDelegate>
 
 @property (copy, nonatomic) NSMutableArray *store;
 

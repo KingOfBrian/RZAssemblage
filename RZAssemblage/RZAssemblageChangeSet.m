@@ -6,20 +6,10 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZAssemblageChangeSet.h"
+#import "RZAssemblageChangeSet+Private.h"
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
-
-@interface RZAssemblageChangeSet ()
-
-@property (strong, nonatomic) RZMutableIndexPathSet *inserts;
-@property (strong, nonatomic) RZMutableIndexPathSet *updates;
-@property (strong, nonatomic) RZMutableIndexPathSet *removes;
-
-@property (strong, nonatomic) NSMutableDictionary *moveFromToIndexPathMap;
-
-@end
 
 @implementation RZAssemblageChangeSet
 
@@ -176,7 +166,11 @@ withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
         NSIndexPath *newIndexPath = transform(indexPath);
         [self updateAtIndexPath:newIndexPath];
     }
-#warning Moves
+    [changeSet.moveFromToIndexPathMap enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *fromIndexPath, NSIndexPath *toIndexPath, BOOL *stop) {
+        NSIndexPath *newFromIndexPath = transform(fromIndexPath);
+        NSIndexPath *newToIndexPath = transform(toIndexPath);
+        [self moveAtIndexPath:newFromIndexPath toIndexPath:newToIndexPath];
+    }];
 }
 
 @end
