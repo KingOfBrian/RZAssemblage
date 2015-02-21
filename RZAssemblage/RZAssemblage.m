@@ -82,6 +82,9 @@
         NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
         object = [assemblage objectAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
+    else if ( length == 0 && indexPath != nil ) {
+        object = self;
+    }
     return object;
 }
 
