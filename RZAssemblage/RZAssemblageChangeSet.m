@@ -9,12 +9,15 @@
 #import "RZAssemblageChangeSet.h"
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
+#import "RZAssemblageDefines.h"
 
 @interface RZAssemblageChangeSet ()
 
 @property (strong, nonatomic) RZMutableIndexPathSet *inserts;
 @property (strong, nonatomic) RZMutableIndexPathSet *updates;
 @property (strong, nonatomic) RZMutableIndexPathSet *removes;
+
+@property (strong, nonatomic) NSMutableDictionary *moveFromToIndexPathMap;
 
 @end
 
@@ -27,6 +30,7 @@
         _inserts = [RZMutableIndexPathSet set];
         _updates = [RZMutableIndexPathSet set];
         _removes = [RZMutableIndexPathSet set];
+        self.moveFromToIndexPathMap = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -34,7 +38,7 @@
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<%@:%p \nI=%@, U=%@, R=%@, M=%@>", self.class, self,
-            self.insertedIndexPaths, self.updatedIndexPaths, self.removedIndexPaths, self.moveIndexPathFromToMap];
+            self.insertedIndexPaths, self.updatedIndexPaths, self.removedIndexPaths, self.moveFromToIndexPathMap];
 }
 
 - (NSArray *)insertedIndexPaths
@@ -50,6 +54,11 @@
 - (NSArray *)updatedIndexPaths
 {
     return self.updates.sortedIndexPaths;
+}
+
+- (NSDictionary *)moveFromToIndexPaths
+{
+    return [self.moveFromToIndexPathMap copy];
 }
 
 - (void)insertAtIndexPath:(NSIndexPath *)indexPath
@@ -100,19 +109,43 @@
     NSArray *insertedObjects = [self objectsForIndexPaths:insertedIndexPaths inAssemblage:assemblage];
     NSArray *removedObjects  = [self objectsForIndexPaths:removedIndexPaths inAssemblage:self.startingAssemblage];
 
-    NSMutableDictionary *moveIndexPathFromToMap = [NSMutableDictionary dictionary];
+    // Save the index state of the removes
+    NSMutableDictionary *parentIndexPathToIndexes = [NSMutableDictionary dictionary];
+    [self.removes enumerateIndexesUsingBlock:^(NSIndexPath *parentPath, NSIndexSet *indexes, BOOL *stop) {
+        parentIndexPathToIndexes[parentPath] = indexes;
+    }];
+
+    NSMutableDictionary *moveFromToIndexPathMap = [NSMutableDictionary dictionary];
     [insertedObjects enumerateObjectsUsingBlock:^(id insertedObject, NSUInteger insertedIndex, BOOL *stop) {
         NSUInteger removedIndex = [removedObjects indexOfObject:insertedObject];
         if ( removedIndex != NSNotFound ) {
             NSIndexPath *removedIndexPath = removedIndexPaths[removedIndex];
             NSIndexPath *insertedIndexPath = insertedIndexPaths[insertedIndex];
-            moveIndexPathFromToMap[removedIndexPath] = insertedIndexPath;
+            moveFromToIndexPathMap[removedIndexPath] = insertedIndexPath;
             [self.inserts removeIndexPath:insertedIndexPath];
             [self.removes removeIndexPath:removedIndexPath];
-            
         }
     }];
-    _moveIndexPathFromToMap = [moveIndexPathFromToMap copy];
+
+#ifdef CORRECT_MOVE_NOTIFICATIONS_FOR_SHIFT_WHOLE
+    // Iterate over the to destinations, and if the index path lands inside a remove hole (More than 1 remove), correct it.
+    [[moveFromToIndexPathMap copy] enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *fromIndexPath, NSIndexPath *toIndexPath, BOOL *stop) {
+        NSIndexPath *parentFromIndexPath = [fromIndexPath indexPathByRemovingLastIndex];
+        NSIndexPath *parentToIndexPath   = [toIndexPath indexPathByRemovingLastIndex];
+        if ( [parentFromIndexPath isEqual:parentToIndexPath] ) {
+            NSIndexSet *indexes = parentIndexPathToIndexes[parentFromIndexPath];
+            __block NSUInteger index = [toIndexPath rz_lastIndex];
+            [indexes enumerateRangesUsingBlock:^(NSRange range, BOOL *stop) {
+                if ( range.length > 2 && index > range.location && index < range.location + range.length ) {
+                    // The to index is inside of a shift-hole.   Subtract the range
+                    index -= range.length - 2;
+                }
+            }];
+            moveFromToIndexPathMap[fromIndexPath] = [parentToIndexPath indexPathByAddingIndex:index];
+        }
+    }];
+#endif
+    [self.moveFromToIndexPathMap setValuesForKeysWithDictionary:moveFromToIndexPathMap];
 }
 
 - (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
@@ -121,8 +154,7 @@
         [self.updates removeIndexPath:index1];
         [self.updates addIndexPath:index2];
     }
-//    [self.moves ]
-//    [self.moves addIndexPath:index2];
+    self.moveFromToIndexPathMap[index1] = index2;
 }
 
 - (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet

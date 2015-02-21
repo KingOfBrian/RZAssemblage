@@ -73,6 +73,7 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
+    [changeSet generateMoveEventsFromAssemblage:assemblage];
     RZDataSourceLog(@"Update = %@", changeSet);
     // The RZAssemblageChangeSet needs a better API here.
     [self.tableView beginUpdates];
@@ -100,6 +101,12 @@
             [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:self.addObjectAnimation];
         }
     }
+    [changeSet.moveFromToIndexPaths enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *fromIndexPath, NSIndexPath *toIndexPath, BOOL *stop) {
+        if ( fromIndexPath.length == 2 ) {
+            [self.tableView moveRowAtIndexPath:fromIndexPath
+                                   toIndexPath:toIndexPath];
+        }
+    }];
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSAssert(indexPath.length == 2, @"");
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
@@ -109,7 +116,6 @@
                          forObject:object
                        atIndexPath:indexPath];
     }
-#warning moves
 
     [self.tableView endUpdates];
 }

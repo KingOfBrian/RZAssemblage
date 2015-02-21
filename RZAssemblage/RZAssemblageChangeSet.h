@@ -26,7 +26,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 @property (strong, nonatomic, readonly) NSArray *insertedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *updatedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *removedIndexPaths;
-@property (strong, nonatomic, readonly) NSDictionary *moveIndexPathFromToMap;
+@property (strong, nonatomic, readonly) NSDictionary *moveFromToIndexPaths;
 
 - (void)generateMoveEventsFromAssemblage:(id<RZAssemblage>)assemblage;
 
