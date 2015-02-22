@@ -9,7 +9,6 @@
 @import UIKit;
 #import <XCTest/XCTest.h>
 #import "RZAssemblage.h"
-#import "RZAssemblage+Mutation.h"
 #import "RZJoinAssemblage.h"
 #import "RZFilteredAssemblage.h"
 #import "RZAssemblageChangeSet.h"

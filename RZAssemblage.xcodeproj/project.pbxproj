@@ -29,8 +29,6 @@
 		ABADD34E1A776C7C00397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 		ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3541A776C7C00397031 /* RZAssemblageTests.m */; };
 		ABADD3601A776CBF00397031 /* RZAssemblageProtocols.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD35E1A776CBF00397031 /* RZAssemblageProtocols.h */; };
-		ABADD3641A776E2600397031 /* RZAssemblage+Mutation.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD3621A776E2600397031 /* RZAssemblage+Mutation.h */; };
-		ABADD3651A776E2600397031 /* RZAssemblage+Mutation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3631A776E2600397031 /* RZAssemblage+Mutation.m */; };
 		ABADD3681A776EE100397031 /* RZAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD3661A776EE100397031 /* RZAssemblage.h */; };
 		ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3671A776EE100397031 /* RZAssemblage.m */; };
 		ABADD36C1A77758600397031 /* RZAssemblageTableViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */; };
@@ -96,8 +94,6 @@
 		ABADD3531A776C7C00397031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ABADD3541A776C7C00397031 /* RZAssemblageTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTests.m; sourceTree = "<group>"; };
 		ABADD35E1A776CBF00397031 /* RZAssemblageProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageProtocols.h; sourceTree = "<group>"; };
-		ABADD3621A776E2600397031 /* RZAssemblage+Mutation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RZAssemblage+Mutation.h"; sourceTree = "<group>"; };
-		ABADD3631A776E2600397031 /* RZAssemblage+Mutation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RZAssemblage+Mutation.m"; sourceTree = "<group>"; };
 		ABADD3661A776EE100397031 /* RZAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblage.h; sourceTree = "<group>"; };
 		ABADD3671A776EE100397031 /* RZAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblage.m; sourceTree = "<group>"; };
 		ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableViewDataSource.h; sourceTree = "<group>"; };
@@ -185,8 +181,6 @@
 				ABADD3661A776EE100397031 /* RZAssemblage.h */,
 				ABADD36E1A77808100397031 /* RZAssemblage+Private.h */,
 				ABADD3671A776EE100397031 /* RZAssemblage.m */,
-				ABADD3621A776E2600397031 /* RZAssemblage+Mutation.h */,
-				ABADD3631A776E2600397031 /* RZAssemblage+Mutation.m */,
 				ABAC829A1A7B3CC0001CDC27 /* RZJoinAssemblage.h */,
 				ABAC829B1A7B3CC0001CDC27 /* RZJoinAssemblage.m */,
 				ABAC82D81A7CA8A4001CDC27 /* RZFilteredAssemblage.h */,
@@ -279,7 +273,6 @@
 				AB05610D1A7B25D200B5C17E /* RZFRCAssemblage.h in Headers */,
 				ABAC829C1A7B3CC0001CDC27 /* RZJoinAssemblage.h in Headers */,
 				ABADD3481A776C7C00397031 /* RZAssemblagePublic.h in Headers */,
-				ABADD3641A776E2600397031 /* RZAssemblage+Mutation.h in Headers */,
 				ABAC82DA1A7CA8A5001CDC27 /* RZFilteredAssemblage.h in Headers */,
 				ABADD36F1A77808100397031 /* RZAssemblage+Private.h in Headers */,
 				ABC504F01A7E9AB200DE4C16 /* RZAssemblageDefines.h in Headers */,
@@ -425,7 +418,6 @@
 				ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */,
 				AB9B31B71A8679FB00C39876 /* RZAssemblageChangeSet.m in Sources */,
 				ABC57BB31A911C9000E97873 /* RZIndexPathSet.m in Sources */,
-				ABADD3651A776E2600397031 /* RZAssemblage+Mutation.m in Sources */,
 				AB05610E1A7B25D200B5C17E /* RZFRCAssemblage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

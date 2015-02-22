@@ -12,13 +12,17 @@
 
 @protocol RZAssemblageDelegate;
 
-@interface RZAssemblage : NSObject <RZAssemblage>
+@interface RZAssemblage : NSObject <RZAssemblage, RZAssemblageMutation>
 
 - (instancetype)init __attribute__((unavailable));
 
 - (instancetype)initWithArray:(NSArray *)array;
 
 - (void)openBatchUpdate;
+
+- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath;
+- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
+- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2;
 
 - (void)closeBatchUpdate;
 

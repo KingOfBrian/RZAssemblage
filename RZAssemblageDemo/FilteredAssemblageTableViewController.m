@@ -8,7 +8,6 @@
 
 #import "FilteredAssemblageTableViewController.h"
 #import "RZAssemblageTableViewDataSource.h"
-#import "RZAssemblage+Mutation.h"
 #import "RZFilteredAssemblage.h"
 
 @interface FilteredAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
