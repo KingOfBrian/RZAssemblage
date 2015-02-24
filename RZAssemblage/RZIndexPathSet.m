@@ -28,6 +28,7 @@
 //
 
 #import "RZIndexPathSet.h"
+#import "NSIndexPath+RZAssemblage.h"
 
 #pragma mark - RZIndexNode
 
@@ -471,80 +472,6 @@
 - (void)removeAllIndexPaths
 {
     self.rootNode = [[RZIndexNode alloc] init];
-}
-
-@end
-
-#pragma mark - NSIndexPath+RZExtensions
-
-@implementation NSIndexPath (RZExtensions)
-
-- (NSIndexPath *)rz_indexPathByRemovingFirstIndex
-{
-    NSIndexPath *indexPath = nil;
-
-    if ( self.length > 0 ) {
-        NSUInteger *indexes = (NSUInteger *)malloc(self.length * sizeof(NSUInteger));
-        [self getIndexes:indexes];
-
-        indexPath = [NSIndexPath indexPathWithIndexes:indexes + 1 length:self.length - 1];
-
-        free(indexes);
-    }
-    else {
-        indexPath = [[NSIndexPath alloc] init];
-    }
-
-    return indexPath;
-}
-
-- (NSIndexPath *)rz_indexPathByPrependingIndex:(NSUInteger)index
-{
-    return [self rz_indexPathByInsertingIndex:index atPosition:0];
-}
-
-- (NSIndexPath *)rz_indexPathByInsertingIndex:(NSUInteger)index atPosition:(NSUInteger)position
-{
-    if ( position > self.length ) {
-        [NSException raise:NSInvalidArgumentException format:@"NSIndexPath index %lu out of bounds of index path %@", (unsigned long)index, self];
-    }
-
-    NSUInteger *indexes = (NSUInteger *)malloc(self.length * sizeof(NSUInteger));
-    [self getIndexes:indexes];
-
-    NSUInteger *newIndexes = (NSUInteger *)malloc((self.length + 1) * sizeof(NSUInteger));
-    memcpy(newIndexes, indexes, position * sizeof(NSUInteger));
-    newIndexes[position] = index;
-    memcpy(newIndexes + position + 1, indexes + position, (self.length - position) * sizeof(NSUInteger));
-
-    NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:newIndexes length:self.length + 1];
-
-    free(indexes);
-    free(newIndexes);
-
-    return indexPath;
-}
-
-- (NSIndexPath *)rz_indexPathByReplacingIndexAtPosition:(NSUInteger)position withIndex:(NSUInteger)index
-{
-    if ( position >= self.length ) {
-        [NSException raise:NSInvalidArgumentException format:@"NSIndexPath index %lu out of bounds of index path %@", (unsigned long)index, self];
-    }
-
-    NSUInteger *indexes = (NSUInteger *)malloc(self.length * sizeof(NSUInteger));
-    [self getIndexes:indexes];
-    indexes[position] = index;
-
-    NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:indexes length:self.length];
-
-    free(indexes);
-
-    return indexPath;
-}
-
-- (NSUInteger)rz_lastIndex
-{
-    return (self.length == 0 ? NSNotFound : [self indexAtPosition:self.length - 1]);
 }
 
 @end

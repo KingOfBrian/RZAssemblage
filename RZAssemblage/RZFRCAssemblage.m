@@ -102,6 +102,41 @@
     return object;
 }
 
+- (NSArray *)allObjects
+{
+    NSMutableArray *allObjects = [NSMutableArray array];
+    for ( NSUInteger i = 0; i < [self numberOfChildren]; i++ ) {
+        [allObjects addObject:[self objectAtIndex:i]];
+    }
+    return [allObjects copy];
+}
+
+// Fake our implementation of copy by returning an array backed assemblage.
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [self arrayAssemblageForCurrentState];
+}
+
+- (id<RZAssemblage>)arrayAssemblageForCurrentState
+{
+    // I don't want to support this for NSFRC, but we have to do this to keep the API correct.
+    // Investigate documenting and returning an error proxy object.
+    NSArray *contents = nil;
+    if ( self.hasSections ) {
+        NSMutableArray *sections = [NSMutableArray array];
+        for ( NSUInteger i = 0; i < [self numberOfChildren]; i++ ) {
+            NSArray *childContent = self.fetchedResultsController.sections[i];
+            RZAssemblage *childAssemblage = [[RZAssemblage alloc] initWithArray:childContent];
+            [sections addObject:childAssemblage];
+        }
+        contents = sections;
+    }
+    else {
+        contents = [self allObjects];
+    }
+    return [[RZAssemblage alloc] initWithArray:contents];
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
@@ -109,6 +144,7 @@
     NSAssert(self.changeSet == nil, @"Do not support concurrent NSFRC changes");
     RZFRCLog(@"%@", controller);
     self.changeSet = [[RZAssemblageChangeSet alloc] init];
+    self.changeSet.startingAssemblage = [self arrayAssemblageForCurrentState];
     [self.delegate willBeginUpdatesForAssemblage:self];
 }
 

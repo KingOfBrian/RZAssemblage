@@ -13,36 +13,62 @@
 
 - (NSIndexPath *)rz_indexPathByRemovingFirstIndex
 {
-    NSIndexPath *remainingIndexPath = nil;
+    NSIndexPath *indexPath = nil;
+
     if ( self.length > 0 ) {
-        NSUInteger *indexes = calloc(self.length, sizeof(NSUInteger));
+        NSUInteger *indexes = (NSUInteger *)malloc(self.length * sizeof(NSUInteger));
         [self getIndexes:indexes];
-        remainingIndexPath = [NSIndexPath indexPathWithIndexes:indexes + 1 length:self.length - 1];
+
+        indexPath = [NSIndexPath indexPathWithIndexes:indexes + 1 length:self.length - 1];
+
         free(indexes);
     }
-    return remainingIndexPath;
+    else {
+        indexPath = [[NSIndexPath alloc] init];
+    }
+
+    return indexPath;
 }
 
 - (NSIndexPath *)rz_indexPathByPrependingIndex:(NSUInteger)index
 {
-    NSIndexPath *indexPath = nil;
-    NSUInteger *indexes = calloc(self.length + 1, sizeof(NSUInteger));
-    [self getIndexes:indexes + 1];
-    indexes[0] = index;
-    indexPath = [NSIndexPath indexPathWithIndexes:indexes length:self.length + 1];
+    return [self rz_indexPathByInsertingIndex:index atPosition:0];
+}
+
+- (NSIndexPath *)rz_indexPathByInsertingIndex:(NSUInteger)index atPosition:(NSUInteger)position
+{
+    if ( position > self.length ) {
+        [NSException raise:NSInvalidArgumentException format:@"NSIndexPath index %lu out of bounds of index path %@", (unsigned long)index, self];
+    }
+
+    NSUInteger *indexes = (NSUInteger *)malloc(self.length * sizeof(NSUInteger));
+    [self getIndexes:indexes];
+
+    NSUInteger *newIndexes = (NSUInteger *)malloc((self.length + 1) * sizeof(NSUInteger));
+    memcpy(newIndexes, indexes, position * sizeof(NSUInteger));
+    newIndexes[position] = index;
+    memcpy(newIndexes + position + 1, indexes + position, (self.length - position) * sizeof(NSUInteger));
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:newIndexes length:self.length + 1];
+
     free(indexes);
+    free(newIndexes);
+
     return indexPath;
 }
 
-- (NSIndexPath *)rz_indexPathByUpdatingIndex:(NSUInteger)index atPosition:(NSUInteger)position
+- (NSIndexPath *)rz_indexPathByReplacingIndexAtPosition:(NSUInteger)position withIndex:(NSUInteger)index
 {
-    RZRaize(position < self.length, @"Position is larger than the length of the index path.")
-    NSIndexPath *indexPath = nil;
-    NSUInteger *indexes = calloc(self.length, sizeof(NSUInteger));
+    RZRaize(position < self.length, @"NSIndexPath index %lu out of bounds of index path %@", (unsigned long)index, self);
+
+    NSUInteger *indexes = (NSUInteger *)malloc(self.length * sizeof(NSUInteger));
     [self getIndexes:indexes];
     indexes[position] = index;
-    indexPath = [NSIndexPath indexPathWithIndexes:indexes length:self.length];
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:indexes length:self.length];
+
     free(indexes);
+
     return indexPath;
 }
 
@@ -54,7 +80,7 @@
         NSUInteger mutationIndex = [indexPath indexAtPosition:indexPosition];
         NSUInteger indexAtDepth = [self indexAtPosition:indexPosition];
         if ( mutationIndex <= indexAtDepth ) {
-            result = [self rz_indexPathByUpdatingIndex:indexAtDepth + change atPosition:indexPosition];
+            result = [self rz_indexPathByReplacingIndexAtPosition:indexPosition withIndex:indexAtDepth + change];
         }
     }
     return result;
@@ -64,7 +90,7 @@
 {
     NSUInteger end = self.length - 1;
     NSUInteger index = [self indexAtPosition:end];
-    return [self rz_indexPathByUpdatingIndex:index + shift atPosition:end];
+    return [self rz_indexPathByReplacingIndexAtPosition:end withIndex:index + shift];
 }
 
 - (NSUInteger)rz_lastIndex

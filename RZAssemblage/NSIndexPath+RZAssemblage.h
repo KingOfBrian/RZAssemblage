@@ -16,7 +16,7 @@ typedef void(^RZIndexPathIndexBlock)(NSUInteger index, BOOL *stop);
 
 - (NSIndexPath *)rz_indexPathByPrependingIndex:(NSUInteger)index;
 
-- (NSIndexPath *)rz_indexPathByUpdatingIndex:(NSUInteger)index atPosition:(NSUInteger)position;
+- (NSIndexPath *)rz_indexPathByReplacingIndexAtPosition:(NSUInteger)position withIndex:(NSUInteger)index;
 
 - (NSIndexPath *)rz_indexPathShiftedAtIndexPath:(NSIndexPath *)indexPath by:(NSUInteger)change;
 
