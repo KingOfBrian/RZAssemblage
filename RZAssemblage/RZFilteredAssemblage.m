@@ -116,19 +116,6 @@
 
 - (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
-    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
-        NSUInteger idx = [indexPath indexAtPosition:0];
-        NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
-        [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
-
-        id object = [assemblage childAtIndexPath:indexPath];
-        if ( [self isObjectFiltered:object] == NO ) {
-            [self.changeSet insertAtIndexPath:parentIndexPath];
-        }
-        else {
-            [self.filteredIndexes addIndex:idx];
-        }
-    }
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
         NSUInteger idx = [indexPath indexAtPosition:0];
@@ -147,6 +134,21 @@
         NSUInteger idx = [indexPath indexAtPosition:0];
         [self.filteredIndexes shiftIndexesStartingAtIndex:idx + 1 by:-1];
     }
+
+    for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
+        NSUInteger idx = [indexPath indexAtPosition:0];
+        NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
+        [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
+
+        id object = [assemblage childAtIndexPath:indexPath];
+        if ( [self isObjectFiltered:object] == NO ) {
+            [self.changeSet insertAtIndexPath:parentIndexPath];
+        }
+        else {
+            [self.filteredIndexes addIndex:idx];
+        }
+    }
+
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
         id object = [assemblage childAtIndexPath:indexPath];
