@@ -75,7 +75,7 @@
     for ( id<RZAssemblage>assemblage in self.childrenStorage ) {
         NSUInteger count = [assemblage childCountAtIndexPath:nil];
         NSUInteger currentIndex = index - offset;
-        if ( index - offset < count) {
+        if ( currentIndex <= count) {
             NSMutableArray *joinedProxy = [assemblage mutableArrayProxyForIndexPath:nil];
             [joinedProxy insertObject:object atIndex:currentIndex];
             break;
