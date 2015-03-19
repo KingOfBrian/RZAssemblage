@@ -169,7 +169,7 @@ event.assemblage = assemblage;
     RZAssemblage *mutableAssemblage = [[RZAssemblage alloc] initWithArray:@[]];
     mutableAssemblage.delegate = self;
 
-    NSMutableArray *mutableValues = [mutableAssemblage mutableArrayProxyForIndexPath:nil];
+    NSMutableArray *mutableValues = [mutableAssemblage proxyArrayForIndexPath:nil];
     [mutableValues addObject:@1];
     XCTAssert(self.delegateEvents.count == 1);
     XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
@@ -202,7 +202,7 @@ event.assemblage = assemblage;
     RZAssemblage *mutableAssemblage = [[RZAssemblage alloc] initWithArray:@[]];
     mutableAssemblage.delegate = self;
 
-    NSMutableArray *mutableValues = [mutableAssemblage mutableArrayProxyForIndexPath:nil];
+    NSMutableArray *mutableValues = [mutableAssemblage proxyArrayForIndexPath:nil];
     [mutableAssemblage openBatchUpdate];
 
     [mutableValues addObject:@1];
@@ -224,7 +224,7 @@ event.assemblage = assemblage;
 
     [assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in assemblages ) {
-        NSMutableArray *ma = [assemblage mutableArrayProxyForIndexPath:nil];
+        NSMutableArray *ma = [assemblage proxyArrayForIndexPath:nil];
         [ma addObject:@1];
         [ma removeLastObject];
     }
@@ -234,7 +234,7 @@ event.assemblage = assemblage;
 
     [assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in assemblages ) {
-        NSMutableArray *ma = [assemblage mutableArrayProxyForIndexPath:nil];
+        NSMutableArray *ma = [assemblage proxyArrayForIndexPath:nil];
         [ma addObject:@1];
     }
     [assemblage closeBatchUpdate];
@@ -254,7 +254,7 @@ event.assemblage = assemblage;
     assemblage.delegate = self;
 
     for ( RZAssemblage *assemblage in @[m1, f1m1] ) {
-        NSMutableArray *ma = [assemblage mutableArrayProxyForIndexPath:nil];
+        NSMutableArray *ma = [assemblage proxyArrayForIndexPath:nil];
         [ma addObject:@1];
         [ma addObject:@2];
         [ma addObject:@3];
@@ -388,14 +388,14 @@ event.assemblage = assemblage;
     for ( NSUInteger i = 6; i < 12; i++ ) {
         XCTAssert([[s1 objectAtIndex:i] hasPrefix:@"c"]);
     }
-    NSArray *objects = [s1 arrayProxyForIndexPath:nil];
+    NSArray *objects = [s1 proxyArrayForIndexPath:nil];
     for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
         XCTAssertEqual([s1 objectAtIndex:i], objects[i]);
     }
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasSuffix:@"b"] || [s hasSuffix:@"d"] || [s hasSuffix:@"f"];
     }];
-    objects = [s1 arrayProxyForIndexPath:nil];
+    objects = [s1 proxyArrayForIndexPath:nil];
     for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
         XCTAssertEqual([s1 objectAtIndex:i], objects[i]);
     }
@@ -407,9 +407,9 @@ event.assemblage = assemblage;
     RZAssemblage *a1 = [[RZAssemblage alloc] initWithArray:values];
     a1.delegate = self;
 
-    NSArray *array = [a1 mutableArrayProxyForIndexPath:nil];
+    NSArray *array = [a1 proxyArrayForIndexPath:nil];
     [a1 openBatchUpdate];
-    [[a1 mutableArrayProxyForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
+    [[a1 proxyArrayForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
         return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
     }];
     [a1 closeBatchUpdate];
@@ -432,10 +432,10 @@ event.assemblage = assemblage;
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
     }];
-    NSArray *array = [f1 mutableArrayProxyForIndexPath:nil];
+    NSArray *array = [f1 proxyArrayForIndexPath:nil];
     f1.delegate = self;
     [a1 openBatchUpdate];
-    [[a1 mutableArrayProxyForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
+    [[a1 proxyArrayForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
         return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
     }];
     [a1 closeBatchUpdate];

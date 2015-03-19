@@ -61,7 +61,7 @@
         NSUInteger count = [assemblage childCountAtIndexPath:nil];
         NSUInteger currentIndex = index - offset;
         if ( index - offset < count) {
-            NSMutableArray *joinedProxy = [assemblage mutableArrayProxyForIndexPath:nil];
+            NSMutableArray *joinedProxy = [assemblage proxyArrayForIndexPath:nil];
             [joinedProxy removeObjectAtIndex:currentIndex];
             break;
         }
@@ -76,7 +76,7 @@
         NSUInteger count = [assemblage childCountAtIndexPath:nil];
         NSUInteger currentIndex = index - offset;
         if ( currentIndex <= count) {
-            NSMutableArray *joinedProxy = [assemblage mutableArrayProxyForIndexPath:nil];
+            NSMutableArray *joinedProxy = [assemblage proxyArrayForIndexPath:nil];
             [joinedProxy insertObject:object atIndex:currentIndex];
             break;
         }

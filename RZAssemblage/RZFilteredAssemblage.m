@@ -11,7 +11,6 @@
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
-#import "RZAssemblageMutationRelay.h"
 
 @interface RZFilteredAssemblage()
 
@@ -63,13 +62,13 @@
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
 {
     index = [self realIndexFromIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [[self.filteredAssemblage mutableArrayProxyForIndexPath:nil] removeObjectAtIndex:index];
+    [[self.filteredAssemblage proxyArrayForIndexPath:nil] removeObjectAtIndex:index];
 }
 
 - (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
 {
     index = [self realIndexFromIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [[self.filteredAssemblage mutableArrayProxyForIndexPath:nil] insertObject:object atIndex:index];
+    [[self.filteredAssemblage proxyArrayForIndexPath:nil] insertObject:object atIndex:index];
 }
 
 #pragma mark - Filter Mutation
@@ -86,7 +85,7 @@
     // Process removals first, and do not modify the internal
     // index state, to ensure that the indexes generated are valid when used on the
     // assemblage before the filter change.
-    NSArray *allObjects = [self.filteredAssemblage arrayProxyForIndexPath:nil];
+    NSArray *allObjects = [self.filteredAssemblage proxyArrayForIndexPath:nil];
     [allObjects enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
             NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];

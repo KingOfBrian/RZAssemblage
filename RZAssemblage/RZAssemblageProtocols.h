@@ -21,16 +21,11 @@
 - (id)representedObject;
 
 /**
- *  Return an array representing all the children of the assemblage at indexPath.
- */
-- (NSArray *)arrayProxyForIndexPath:(NSIndexPath *)indexPath;
-
-/**
  *  Return a mutable array representing all the children of the assemblage at indexPath.
  *
  *  If the assemblage does not support mutation, this will return nil.
  */
-- (NSMutableArray *)mutableArrayProxyForIndexPath:(NSIndexPath *)indexPath;
+- (NSMutableArray *)proxyArrayForIndexPath:(NSIndexPath *)indexPath;
 
 /**
  *  Return the number of children at the indexPath
@@ -46,8 +41,6 @@
  * The delegate to inform of changes.
  */
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
-
-- (void)notifyObjectUpdate:(id)object;
 
 @end
 

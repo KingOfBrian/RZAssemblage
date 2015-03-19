@@ -48,7 +48,6 @@
 		ABC504F01A7E9AB200DE4C16 /* RZAssemblageDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC504EF1A7E9AB200DE4C16 /* RZAssemblageDefines.h */; };
 		ABC57BB21A911C9000E97873 /* RZIndexPathSet.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC57BB01A911C9000E97873 /* RZIndexPathSet.h */; };
 		ABC57BB31A911C9000E97873 /* RZIndexPathSet.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC57BB11A911C9000E97873 /* RZIndexPathSet.m */; };
-		ABC57BB61A912B7F00E97873 /* RZAssemblageMutationRelay.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC57BB51A912B7F00E97873 /* RZAssemblageMutationRelay.h */; };
 		ABE1FA501A86ED700069B37F /* RZMutableIndexPathSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */; };
 		ABFE4D251A80A17700A73BA3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFE4D241A80A17700A73BA3 /* UIKit.framework */; };
 /* End PBXBuildFile section */
@@ -120,7 +119,6 @@
 		ABC504EF1A7E9AB200DE4C16 /* RZAssemblageDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageDefines.h; sourceTree = "<group>"; };
 		ABC57BB01A911C9000E97873 /* RZIndexPathSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZIndexPathSet.h; sourceTree = "<group>"; };
 		ABC57BB11A911C9000E97873 /* RZIndexPathSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZIndexPathSet.m; sourceTree = "<group>"; };
-		ABC57BB51A912B7F00E97873 /* RZAssemblageMutationRelay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageMutationRelay.h; sourceTree = "<group>"; };
 		ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZMutableIndexPathSetTests.m; sourceTree = "<group>"; };
 		ABFE4D241A80A17700A73BA3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -195,7 +193,6 @@
 				ABC504EF1A7E9AB200DE4C16 /* RZAssemblageDefines.h */,
 				ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */,
 				ABADD35E1A776CBF00397031 /* RZAssemblageProtocols.h */,
-				ABC57BB51A912B7F00E97873 /* RZAssemblageMutationRelay.h */,
 				ABAC82961A7B3737001CDC27 /* NSIndexPath+RZAssemblage.h */,
 				ABAC82971A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m */,
 				ABADD3661A776EE100397031 /* RZAssemblage.h */,
@@ -296,7 +293,6 @@
 				ABC504F01A7E9AB200DE4C16 /* RZAssemblageDefines.h in Headers */,
 				ABADD3681A776EE100397031 /* RZAssemblage.h in Headers */,
 				ABC57BB21A911C9000E97873 /* RZIndexPathSet.h in Headers */,
-				ABC57BB61A912B7F00E97873 /* RZAssemblageMutationRelay.h in Headers */,
 				AB0578811AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

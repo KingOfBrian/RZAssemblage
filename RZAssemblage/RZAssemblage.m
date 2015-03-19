@@ -59,23 +59,7 @@
     return self;
 }
 
-- (NSArray *)arrayProxyForIndexPath:(NSIndexPath *)indexPath
-{
-    NSUInteger length = [indexPath length];
-
-    NSArray *proxy = nil;
-
-    if ( length == 0 ) {
-        proxy = [self mutableArrayValueForKey:@"children"];
-    }
-    else {
-        id<RZAssemblage> assemblage = [self objectInChildrenAtIndex:[indexPath indexAtPosition:0]];
-        proxy = [assemblage arrayProxyForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
-    }
-    return proxy;
-}
-
-- (NSMutableArray *)mutableArrayProxyForIndexPath:(NSIndexPath *)indexPath
+- (NSMutableArray *)proxyArrayForIndexPath:(NSIndexPath *)indexPath;
 {
     NSUInteger length = [indexPath length];
 
@@ -86,7 +70,7 @@
     }
     else {
         id<RZAssemblage> assemblage = [self objectInChildrenAtIndex:[indexPath indexAtPosition:0]];
-        proxy = [assemblage mutableArrayProxyForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        proxy = [assemblage proxyArrayForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return proxy;
 }
@@ -175,7 +159,11 @@
 
 - (id)objectInChildrenAtIndex:(NSUInteger)index
 {
-    return [self.childrenStorage objectAtIndex:index];
+    id object = [self.childrenStorage objectAtIndex:index];
+    if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
+        object = [object representedObject] ?: object;
+    }
+    return object;
 }
 
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
@@ -229,20 +217,20 @@
 
 - (void)insertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *proxy = [self proxyArrayForIndexPath:[indexPath indexPathByRemovingLastIndex]];
     [proxy insertObject:object atIndex:[indexPath rz_lastIndex]];
 }
 
 - (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *proxy = [self proxyArrayForIndexPath:[indexPath indexPathByRemovingLastIndex]];
     [proxy removeObjectAtIndex:[indexPath rz_lastIndex]];
 }
 
 - (void)moveObjectAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    NSMutableArray *fproxy = [self mutableArrayProxyForIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
-    NSMutableArray *tproxy = [self mutableArrayProxyForIndexPath:[toIndexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *fproxy = [self proxyArrayForIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *tproxy = [self proxyArrayForIndexPath:[toIndexPath indexPathByRemovingLastIndex]];
 
     NSObject *object = [fproxy objectAtIndex:[fromIndexPath rz_lastIndex]];
     [fproxy removeObjectAtIndex:[fromIndexPath rz_lastIndex]];
@@ -255,25 +243,25 @@
 
 - (void)addObject:(id)object
 {
-    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:nil];
+    NSMutableArray *proxy = [self proxyArrayForIndexPath:nil];
     [proxy addObject:object];
 }
 
 - (void)insertObject:(id)object atIndex:(NSUInteger)index
 {
-    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:nil];
+    NSMutableArray *proxy = [self proxyArrayForIndexPath:nil];
     [proxy insertObject:object atIndex:index];
 }
 
 - (void)removeObjectAtIndex:(NSUInteger)index
 {
-    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:nil];
+    NSMutableArray *proxy = [self proxyArrayForIndexPath:nil];
     [proxy removeObjectAtIndex:index];
 }
 
 - (void)removeLastObject
 {
-    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:nil];
+    NSMutableArray *proxy = [self proxyArrayForIndexPath:nil];
     [proxy removeLastObject];
 }
 

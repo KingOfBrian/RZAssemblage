@@ -19,7 +19,7 @@
 - (instancetype)initWithArray:(NSArray *)array;
 
 - (void)openBatchUpdate;
-
+- (void)notifyObjectUpdate:(id)object;
 - (void)closeBatchUpdate;
 
 - (void)insertObject:(id)object atIndexPath:(NSIndexPath *)indexPath;

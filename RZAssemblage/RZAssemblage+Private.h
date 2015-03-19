@@ -8,7 +8,6 @@
 
 #import "RZAssemblage.h"
 #import "RZAssemblageChangeSet+Private.h"
-#import "RZAssemblageMutationRelay.h"
 
 @interface RZAssemblage() <RZAssemblageDelegate>
 

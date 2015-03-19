@@ -92,6 +92,16 @@
     return object;
 }
 
+- (NSMutableArray *)proxyArrayForIndexPath:(NSIndexPath *)indexPath;
+{
+    return nil;
+}
+
+- (id)representedObject
+{
+    return self;
+}
+
 // Fake our implementation of copy by returning an array backed assemblage.
 - (id)copyWithZone:(NSZone *)zone
 {
@@ -113,7 +123,7 @@
         contents = sections;
     }
     else {
-        contents = [[self arrayProxyForIndexPath:nil] copy];
+        contents = [[self proxyArrayForIndexPath:nil] copy];
     }
     return [[RZAssemblage alloc] initWithArray:contents];
 }
