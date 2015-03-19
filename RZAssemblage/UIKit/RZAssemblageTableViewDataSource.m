@@ -25,7 +25,7 @@
 
 - (id)initWithAssemblage:(id<RZAssemblage>)assemblage
             forTableView:(UITableView *)tableView
-             cellFactory:(RZTableViewCellFactory *)cellFactory;
+             cellFactory:(RZAssemblageTableViewCellFactory *)cellFactory;
 {
     self = [super init];
     if ( self ) {

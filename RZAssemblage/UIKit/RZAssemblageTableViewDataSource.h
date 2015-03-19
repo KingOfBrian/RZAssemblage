@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RZAssemblage.h"
-#import "RZTableViewCellFactory.h"
+#import "RZAssemblageTableViewCellFactory.h"
 
 @protocol RZAssemblageTableViewDataSource;
 
@@ -16,11 +16,11 @@
 
 - (id)initWithAssemblage:(id<RZAssemblage>)assemblage
             forTableView:(UITableView *)tableView
-             cellFactory:(RZTableViewCellFactory *)cellFactory;
+             cellFactory:(RZAssemblageTableViewCellFactory *)cellFactory;
 
 @property (strong, nonatomic, readonly) id<RZAssemblage> assemblage;
 
-@property (strong, nonatomic, readonly) RZTableViewCellFactory *cellFactory;
+@property (strong, nonatomic, readonly) RZAssemblageTableViewCellFactory *cellFactory;
 
 @property (weak, nonatomic, readonly) UITableView *tableView;
 

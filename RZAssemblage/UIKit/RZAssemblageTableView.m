@@ -36,10 +36,10 @@
     }
 }
 
-- (RZTableViewCellFactory *)cellFactory
+- (RZAssemblageTableViewCellFactory *)cellFactory
 {
     if ( _cellFactory == nil ) {
-        _cellFactory = [[RZTableViewCellFactory alloc] init];
+        _cellFactory = [[RZAssemblageTableViewCellFactory alloc] init];
     }
     return _cellFactory;
 }

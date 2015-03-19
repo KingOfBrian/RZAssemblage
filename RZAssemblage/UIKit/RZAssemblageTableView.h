@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "RZAssemblageTableViewDataSource.h"
-@class RZTableViewCellFactory;
+@class RZAssemblageTableViewCellFactory;
 
 @interface RZAssemblageTableView : UITableView
 
-@property (strong, nonatomic) RZTableViewCellFactory *cellFactory;
+@property (strong, nonatomic) RZAssemblageTableViewCellFactory *cellFactory;
 
 @property (weak, nonatomic) id<RZAssemblage> assemblage;
 

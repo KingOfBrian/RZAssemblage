@@ -6,16 +6,16 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZTableViewCellFactory.h"
+#import "RZAssemblageTableViewCellFactory.h"
 
-@interface RZTableViewCellFactory ()
+@interface RZAssemblageTableViewCellFactory ()
 
 @property (strong, nonatomic, readonly) NSMutableDictionary *classToReuseIdentifier;
 @property (strong, nonatomic, readonly) NSMutableDictionary *reuseIdentifierToBlock;
 
 @end
 
-@implementation RZTableViewCellFactory
+@implementation RZAssemblageTableViewCellFactory
 
 - (instancetype)init
 {

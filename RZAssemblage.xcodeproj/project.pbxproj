@@ -12,8 +12,8 @@
 		AB05610E1A7B25D200B5C17E /* RZFRCAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */; };
 		AB0578811AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = AB05787F1AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h */; };
 		AB0578821AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578801AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m */; };
-		AB0578851AB7B3D200E5A1E1 /* RZTableViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0578831AB7B3D200E5A1E1 /* RZTableViewCellFactory.h */; };
-		AB0578861AB7B3D200E5A1E1 /* RZTableViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578841AB7B3D200E5A1E1 /* RZTableViewCellFactory.m */; };
+		AB0578851AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0578831AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.h */; };
+		AB0578861AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578841AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m */; };
 		AB0578891AB7BF9E00E5A1E1 /* RZAssemblageTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */; };
 		AB05788A1AB7BF9E00E5A1E1 /* RZAssemblageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */; };
 		AB9B31B61A8679FB00C39876 /* RZAssemblageChangeSet.h in Headers */ = {isa = PBXBuildFile; fileRef = AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */; };
@@ -76,8 +76,8 @@
 		AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFRCAssemblage.m; sourceTree = "<group>"; };
 		AB05787F1AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableViewDataSource.h; sourceTree = "<group>"; };
 		AB0578801AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewDataSource.m; sourceTree = "<group>"; };
-		AB0578831AB7B3D200E5A1E1 /* RZTableViewCellFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZTableViewCellFactory.h; sourceTree = "<group>"; };
-		AB0578841AB7B3D200E5A1E1 /* RZTableViewCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZTableViewCellFactory.m; sourceTree = "<group>"; };
+		AB0578831AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableViewCellFactory.h; sourceTree = "<group>"; };
+		AB0578841AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewCellFactory.m; sourceTree = "<group>"; };
 		AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableView.h; sourceTree = "<group>"; };
 		AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableView.m; sourceTree = "<group>"; };
 		AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageChangeSet.h; sourceTree = "<group>"; };
@@ -154,8 +154,8 @@
 		AB05787E1AB7B27C00E5A1E1 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
-				AB0578831AB7B3D200E5A1E1 /* RZTableViewCellFactory.h */,
-				AB0578841AB7B3D200E5A1E1 /* RZTableViewCellFactory.m */,
+				AB0578831AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.h */,
+				AB0578841AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m */,
 				AB05787F1AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h */,
 				AB0578801AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m */,
 				AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */,
@@ -285,7 +285,7 @@
 				ABADD3601A776CBF00397031 /* RZAssemblageProtocols.h in Headers */,
 				ABBDFA9B1A992CBF008999A1 /* RZAssemblageChangeSet+Private.h in Headers */,
 				AB05610D1A7B25D200B5C17E /* RZFRCAssemblage.h in Headers */,
-				AB0578851AB7B3D200E5A1E1 /* RZTableViewCellFactory.h in Headers */,
+				AB0578851AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.h in Headers */,
 				ABAC829C1A7B3CC0001CDC27 /* RZJoinAssemblage.h in Headers */,
 				ABADD3481A776C7C00397031 /* RZAssemblagePublic.h in Headers */,
 				ABAC82DA1A7CA8A5001CDC27 /* RZFilteredAssemblage.h in Headers */,
@@ -432,7 +432,7 @@
 				ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */,
 				AB9B31B71A8679FB00C39876 /* RZAssemblageChangeSet.m in Sources */,
 				ABC57BB31A911C9000E97873 /* RZIndexPathSet.m in Sources */,
-				AB0578861AB7B3D200E5A1E1 /* RZTableViewCellFactory.m in Sources */,
+				AB0578861AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m in Sources */,
 				AB0578821AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m in Sources */,
 				AB05610E1A7B25D200B5C17E /* RZFRCAssemblage.m in Sources */,
 			);

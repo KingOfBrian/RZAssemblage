@@ -11,7 +11,7 @@
 typedef void(^RZTableViewCellFactoryBlock)(id tableViewCell, id object, NSIndexPath *indexPath);
 typedef void(^RZTableViewReusableViewFactoryBlock)(id reusableView, id object);
 
-@interface RZTableViewCellFactory : NSObject
+@interface RZAssemblageTableViewCellFactory : NSObject
 
 - (void)configureCellForClass:(Class)objectClass reuseIdentifier:(NSString *)reuseIdentifier block:(RZTableViewCellFactoryBlock)block;
 - (void)configureReusableViewForClass:(Class)objectClass reuseIdentifier:(NSString *)reuseIdentifier block:(RZTableViewReusableViewFactoryBlock)block;
