@@ -18,6 +18,12 @@
 
 @property (weak, nonatomic) id<RZAssemblageTableViewDataSource> dataSource;
 
+/**
+ * Ignore assemblage delegate events while set to YES.  This should be enabled
+ * while table view delegate mutation is occurring.
+ *
+ * NOTE: This will crash if you move an object into a filtered section that is filtered.
+ */
 @property (assign, nonatomic) BOOL ignoreAssemblageChanges;
 
 @end
