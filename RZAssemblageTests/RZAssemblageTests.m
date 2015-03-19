@@ -258,7 +258,6 @@ event.assemblage = assemblage;
         [ma addObject:@2];
         [ma addObject:@3];
     }
-    NSMutableArray *proxy = [assemblage mutableArrayProxyForIndexPath:nil];
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
     XCTAssertTrue([m1 childCountAtIndexPath:nil] == 2);
