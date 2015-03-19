@@ -400,6 +400,20 @@ event.assemblage = assemblage;
     }
 }
 
+- (void)testSort
+{
+    NSArray *values = [self.class values];
+    RZAssemblage *a1 = [[RZAssemblage alloc] initWithArray:values];
+    a1.delegate = self;
+    [a1 openBatchUpdate];
+    [[a1 mutableArrayProxyForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
+        return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
+    }];
+    [a1 closeBatchUpdate];
+#warning this is unable to generate proper move events
+    [self.changeSet generateMoveEventsFromAssemblage:a1];
+}
+
 - (void)testFilterJoin
 {
     NSArray *values = [self.class values];
