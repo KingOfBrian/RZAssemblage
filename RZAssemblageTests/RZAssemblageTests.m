@@ -1,3 +1,4 @@
+
 //
 //  RZAssemblageTests.m
 //  RZAssemblageTests
@@ -405,14 +406,54 @@ event.assemblage = assemblage;
     NSArray *values = [self.class values];
     RZAssemblage *a1 = [[RZAssemblage alloc] initWithArray:values];
     a1.delegate = self;
+
+    NSArray *array = [a1 mutableArrayProxyForIndexPath:nil];
     [a1 openBatchUpdate];
     [[a1 mutableArrayProxyForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
         return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
     }];
     [a1 closeBatchUpdate];
-#warning this is unable to generate proper move events
+    NSArray *expected = @[@"aa",@"ba",@"ca",@"da",@"ab",@"bb",@"cb",@"db",@"ac",@"bc",@"cc",@"dc",@"ad",@"bd",@"cd",@"dd",@"ae",@"be",@"ce",@"de",@"af",@"bf",@"cf",@"df"];
+    XCTAssertEqualObjects(array, expected);
+
+    XCTAssert(self.changeSet.insertedIndexPaths.count == expected.count);
+    XCTAssert(self.changeSet.removedIndexPaths.count == expected.count);
     [self.changeSet generateMoveEventsFromAssemblage:a1];
+    XCTAssert(self.changeSet.insertedIndexPaths.count == 0);
+    XCTAssert(self.changeSet.removedIndexPaths.count == 0);
+    XCTAssert(self.changeSet.moveFromToIndexPaths.count == expected.count);
 }
+
+- (void)testFilteredSort
+{
+    NSArray *values = [self.class values];
+    RZAssemblage *a1 = [[RZAssemblage alloc] initWithArray:values];
+    RZFilteredAssemblage *f1 = [[RZFilteredAssemblage alloc] initWithAssemblage:a1];
+    f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
+        return [s hasPrefix:@"b"] == NO;
+    }];
+    NSArray *array = [f1 mutableArrayProxyForIndexPath:nil];
+    f1.delegate = self;
+    [a1 openBatchUpdate];
+    [[a1 mutableArrayProxyForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
+        return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
+    }];
+    [a1 closeBatchUpdate];
+    NSArray *filteredArray = [array filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
+        return [s hasPrefix:@"b"];
+    }]];
+    XCTAssert(filteredArray.count == 0);
+    NSArray *expected = @[@"aa",@"ca",@"da",@"ab",@"cb",@"db",@"ac",@"cc",@"dc",@"ad",@"cd",@"dd",@"ae",@"ce",@"de",@"af",@"cf",@"df"];
+    XCTAssertEqualObjects(array, expected);
+    XCTAssert(self.changeSet.insertedIndexPaths.count == expected.count);
+    XCTAssert(self.changeSet.removedIndexPaths.count == expected.count);
+    [self.changeSet generateMoveEventsFromAssemblage:f1];
+    XCTAssert(self.changeSet.insertedIndexPaths.count == 0);
+    XCTAssert(self.changeSet.removedIndexPaths.count == 0);
+    XCTAssert(self.changeSet.moveFromToIndexPaths.count == expected.count);
+
+}
+
 
 - (void)testFilterJoin
 {
