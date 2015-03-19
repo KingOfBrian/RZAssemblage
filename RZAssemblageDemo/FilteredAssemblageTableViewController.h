@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FilteredAssemblageTableViewController : UITableViewController
+@interface FilteredAssemblageTableViewController : UIViewController
 
 @end

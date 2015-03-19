@@ -7,16 +7,14 @@
 //
 
 #import "FilteredAssemblageTableViewController.h"
-#import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblageTableView.h"
 #import "RZFilteredAssemblage.h"
 
-@interface FilteredAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
+@interface FilteredAssemblageTableViewController () <RZAssemblageTableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) RZAssemblage *data;
 @property (strong, nonatomic) RZAssemblage *assemblage;
 @property (strong, nonatomic) RZFilteredAssemblage *filtered;
-
-@property (strong, nonatomic) RZAssemblageTableViewDataSource *dataSource;
 
 @property (assign, nonatomic) NSUInteger divisbleBy;
 
@@ -34,9 +32,20 @@
     return self;
 }
 
-- (void)viewDidLoad {
+
+- (void)loadView
+{
+    self.view = [[RZAssemblageTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+}
+
+- (RZAssemblageTableView *)tableView
+{
+    return (id)self.view;
+}
+
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     NSMutableArray *oneHundered = [NSMutableArray array];
     for ( NSUInteger i = 0; i < 100; i++ ) {
         [oneHundered addObject:@(i+1)];
@@ -49,9 +58,17 @@
         return YES;
     }];
 
-    self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
-                                                                     forTableView:self.tableView
-                                                                   withDataSource:self];
+    self.tableView.assemblage = self.assemblage;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    [self.tableView.cellFactory configureCellForClass:[NSNumber class] reuseIdentifier:@"Cell" block:^(UITableViewCell *cell, NSNumber *object, NSIndexPath *indexPath) {
+        cell.textLabel.text = [NSString stringWithFormat:@"%@ [%@:%@]",
+                               object,
+                               @([indexPath section]),
+                               @([indexPath row])];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }];
 
     self.navigationItem.rightBarButtonItems = @[
                                                 [[UIBarButtonItem alloc] initWithTitle:@"C" style:UIBarButtonItemStyleDone target:self action:@selector(clearData)],
@@ -64,7 +81,6 @@
 {
     [self.data openBatchUpdate];
     while ( [self.data numberOfChildren] != 0 ) {
-//        [self.data removeObjectAtIndex:[self.data numberOfChildren] - 1];
         [self.data removeObjectAtIndex:0];
     }
     [self.data closeBatchUpdate];
@@ -86,25 +102,6 @@
         return [num integerValue] % self.divisbleBy == 0;
     }];
     NSLog(@"Showing filters divisible by %@ = %@", @(self.divisbleBy + 1), @([self.assemblage numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:0]]));
-}
-
-- (UITableViewCell*)tableView:(UITableView *)tableView
-cellForObject:(id)object
-atIndexPath:(NSIndexPath*)indexPath
-{
-    return [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-}
-
-- (void)tableView:(UITableView *)tableView
-updateCell:(UITableViewCell*)cell
-forObject:(id)object
-atIndexPath:(NSIndexPath*)indexPath
-{
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ [%@:%@]",
-                           object,
-                           @([indexPath section]),
-                           @([indexPath row])];
-    cell.accessoryType = UITableViewCellAccessoryNone;
 }
 
 @end

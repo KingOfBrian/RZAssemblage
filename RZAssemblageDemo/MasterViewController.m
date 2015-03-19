@@ -12,15 +12,26 @@
 #import "FilteredAssemblageTableViewController.h"
 
 #import "RZAssemblage.h"
-#import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblageTableView.h"
 
-@interface MasterViewController () <RZAssemblageTableViewDataSourceProxy>
+@interface MasterViewController () <RZAssemblageTableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) RZAssemblage *assemblage;
-@property (strong, nonatomic) RZAssemblageTableViewDataSource *dataSource;
+
 @end
 
 @implementation MasterViewController
+
+- (void)loadView
+{
+    self.view = [[RZAssemblageTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleHeight;
+}
+
+- (RZAssemblageTableView *)tableView
+{
+    return (id)self.view;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,35 +44,24 @@
 
     UIViewController *mutable = [[MutatableAssemblageTableViewController alloc] init];
     UIViewController *filtered = [[FilteredAssemblageTableViewController alloc] init];
-    self.assemblage = [[RZAssemblage alloc] initWithArray:@[
-                                                            [[RZAssemblage alloc] initWithArray:@[red, blue, mutable, filtered]],
+    self.assemblage = [[RZAssemblage alloc] initWithArray:@[[[RZAssemblage alloc] initWithArray:@[red, blue, mutable, filtered]],
                                                             [[RZAssemblage alloc] initWithArray:@[@"String Value A", @"String Value B"]],
                                                             ]];
-    self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
-                                                                     forTableView:self.tableView
-                                                                   withDataSource:self];
-}
+    self.tableView.assemblage = self.assemblage;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
 
-- (UITableViewCell*)tableView:(UITableView *)tableView
-                cellForObject:(id)object
-                  atIndexPath:(NSIndexPath*)indexPath
-{
-    return [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-}
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell-String"];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell-VC"];
 
-- (void)tableView:(UITableView *)tableView
-       updateCell:(UITableViewCell*)cell
-        forObject:(id)object
-      atIndexPath:(NSIndexPath*)indexPath
-{
-    if ( [object isKindOfClass:[UIViewController class]] ) {
-        cell.textLabel.text = [(UIViewController *)object title];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
-    else {
+    [self.tableView.cellFactory configureCellForClass:[NSString class] reuseIdentifier:@"Cell-String" block:^(UITableViewCell *cell, NSString *object, NSIndexPath *indexPath) {
         cell.textLabel.text = object;
         cell.accessoryType = UITableViewCellAccessoryNone;
-    }
+    }];
+    [self.tableView.cellFactory configureCellForClass:[UIViewController class] reuseIdentifier:@"Cell-VC" block:^(UITableViewCell *cell, UIViewController *object, NSIndexPath *indexPath) {
+        cell.textLabel.text = [object title];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;
@@ -76,7 +76,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.assemblage objectAtIndexPath:indexPath];
+    id object = [self.tableView.assemblage objectAtIndexPath:indexPath];
     if ( [object isKindOfClass:[UIViewController class]] ) {
         [self.navigationController pushViewController:object animated:YES];
     }

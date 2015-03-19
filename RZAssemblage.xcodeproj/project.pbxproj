@@ -10,6 +10,12 @@
 		AB0279061A789FA600AF66DB /* MutatableAssemblageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */; };
 		AB05610D1A7B25D200B5C17E /* RZFRCAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB05610B1A7B25D200B5C17E /* RZFRCAssemblage.h */; };
 		AB05610E1A7B25D200B5C17E /* RZFRCAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */; };
+		AB0578811AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = AB05787F1AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h */; };
+		AB0578821AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578801AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m */; };
+		AB0578851AB7B3D200E5A1E1 /* RZTableViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0578831AB7B3D200E5A1E1 /* RZTableViewCellFactory.h */; };
+		AB0578861AB7B3D200E5A1E1 /* RZTableViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578841AB7B3D200E5A1E1 /* RZTableViewCellFactory.m */; };
+		AB0578891AB7BF9E00E5A1E1 /* RZAssemblageTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */; };
+		AB05788A1AB7BF9E00E5A1E1 /* RZAssemblageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */; };
 		AB9B31B61A8679FB00C39876 /* RZAssemblageChangeSet.h in Headers */ = {isa = PBXBuildFile; fileRef = AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */; };
 		AB9B31B71A8679FB00C39876 /* RZAssemblageChangeSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */; };
 		ABAC82901A7B339F001CDC27 /* TestChildEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC828B1A7B339F001CDC27 /* TestChildEntity.m */; };
@@ -31,13 +37,10 @@
 		ABADD3601A776CBF00397031 /* RZAssemblageProtocols.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD35E1A776CBF00397031 /* RZAssemblageProtocols.h */; };
 		ABADD3681A776EE100397031 /* RZAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD3661A776EE100397031 /* RZAssemblage.h */; };
 		ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3671A776EE100397031 /* RZAssemblage.m */; };
-		ABADD36C1A77758600397031 /* RZAssemblageTableViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */; };
-		ABADD36D1A77758600397031 /* RZAssemblageTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */; };
 		ABADD36F1A77808100397031 /* RZAssemblage+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = ABADD36E1A77808100397031 /* RZAssemblage+Private.h */; };
 		ABADD3AC1A787F1900397031 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3AB1A787F1900397031 /* main.m */; };
 		ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3AE1A787F1900397031 /* AppDelegate.m */; };
 		ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B41A787F1900397031 /* MasterViewController.m */; };
-		ABADD3BB1A787F1900397031 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3B91A787F1900397031 /* Main.storyboard */; };
 		ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BC1A787F1900397031 /* Images.xcassets */; };
 		ABADD3C01A787F1900397031 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BE1A787F1900397031 /* LaunchScreen.xib */; };
 		ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
@@ -72,6 +75,12 @@
 		AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MutatableAssemblageTableViewController.m; sourceTree = "<group>"; };
 		AB05610B1A7B25D200B5C17E /* RZFRCAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFRCAssemblage.h; sourceTree = "<group>"; };
 		AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFRCAssemblage.m; sourceTree = "<group>"; };
+		AB05787F1AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableViewDataSource.h; sourceTree = "<group>"; };
+		AB0578801AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewDataSource.m; sourceTree = "<group>"; };
+		AB0578831AB7B3D200E5A1E1 /* RZTableViewCellFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZTableViewCellFactory.h; sourceTree = "<group>"; };
+		AB0578841AB7B3D200E5A1E1 /* RZTableViewCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZTableViewCellFactory.m; sourceTree = "<group>"; };
+		AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableView.h; sourceTree = "<group>"; };
+		AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableView.m; sourceTree = "<group>"; };
 		AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageChangeSet.h; sourceTree = "<group>"; };
 		AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageChangeSet.m; sourceTree = "<group>"; };
 		ABAC828A1A7B339F001CDC27 /* TestChildEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestChildEntity.h; sourceTree = "<group>"; };
@@ -96,8 +105,6 @@
 		ABADD35E1A776CBF00397031 /* RZAssemblageProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageProtocols.h; sourceTree = "<group>"; };
 		ABADD3661A776EE100397031 /* RZAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblage.h; sourceTree = "<group>"; };
 		ABADD3671A776EE100397031 /* RZAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblage.m; sourceTree = "<group>"; };
-		ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableViewDataSource.h; sourceTree = "<group>"; };
-		ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewDataSource.m; sourceTree = "<group>"; };
 		ABADD36E1A77808100397031 /* RZAssemblage+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RZAssemblage+Private.h"; sourceTree = "<group>"; };
 		ABADD3721A77DF9200397031 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		ABADD3A71A787F1900397031 /* RZAssemblageDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RZAssemblageDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,7 +114,6 @@
 		ABADD3AE1A787F1900397031 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		ABADD3B31A787F1900397031 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
 		ABADD3B41A787F1900397031 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		ABADD3BA1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		ABADD3BC1A787F1900397031 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		ABADD3BF1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		ABBDFA9A1A992CBF008999A1 /* RZAssemblageChangeSet+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RZAssemblageChangeSet+Private.h"; sourceTree = "<group>"; };
@@ -147,6 +153,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB05787E1AB7B27C00E5A1E1 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				AB0578831AB7B3D200E5A1E1 /* RZTableViewCellFactory.h */,
+				AB0578841AB7B3D200E5A1E1 /* RZTableViewCellFactory.m */,
+				AB05787F1AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h */,
+				AB0578801AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m */,
+				AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */,
+				AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */,
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
 		ABADD3381A776C7C00397031 = {
 			isa = PBXGroup;
 			children = (
@@ -171,6 +190,7 @@
 		ABADD3441A776C7C00397031 /* RZAssemblage */ = {
 			isa = PBXGroup;
 			children = (
+				AB05787E1AB7B27C00E5A1E1 /* UIKit */,
 				ABADD3451A776C7C00397031 /* Supporting Files */,
 				ABC504EF1A7E9AB200DE4C16 /* RZAssemblageDefines.h */,
 				ABADD3471A776C7C00397031 /* RZAssemblagePublic.h */,
@@ -187,8 +207,6 @@
 				ABAC82D91A7CA8A4001CDC27 /* RZFilteredAssemblage.m */,
 				AB05610B1A7B25D200B5C17E /* RZFRCAssemblage.h */,
 				AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */,
-				ABADD36A1A77758600397031 /* RZAssemblageTableViewDataSource.h */,
-				ABADD36B1A77758600397031 /* RZAssemblageTableViewDataSource.m */,
 				AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */,
 				ABBDFA9A1A992CBF008999A1 /* RZAssemblageChangeSet+Private.h */,
 				AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */,
@@ -241,7 +259,6 @@
 				AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */,
 				ABAC82DC1A7DF252001CDC27 /* FilteredAssemblageTableViewController.h */,
 				ABAC82DD1A7DF252001CDC27 /* FilteredAssemblageTableViewController.m */,
-				ABADD3B91A787F1900397031 /* Main.storyboard */,
 				ABADD3BC1A787F1900397031 /* Images.xcassets */,
 				ABADD3BE1A787F1900397031 /* LaunchScreen.xib */,
 				ABADD3A91A787F1900397031 /* Supporting Files */,
@@ -265,12 +282,13 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABADD36C1A77758600397031 /* RZAssemblageTableViewDataSource.h in Headers */,
+				AB0578891AB7BF9E00E5A1E1 /* RZAssemblageTableView.h in Headers */,
 				ABAC82981A7B3737001CDC27 /* NSIndexPath+RZAssemblage.h in Headers */,
 				AB9B31B61A8679FB00C39876 /* RZAssemblageChangeSet.h in Headers */,
 				ABADD3601A776CBF00397031 /* RZAssemblageProtocols.h in Headers */,
 				ABBDFA9B1A992CBF008999A1 /* RZAssemblageChangeSet+Private.h in Headers */,
 				AB05610D1A7B25D200B5C17E /* RZFRCAssemblage.h in Headers */,
+				AB0578851AB7B3D200E5A1E1 /* RZTableViewCellFactory.h in Headers */,
 				ABAC829C1A7B3CC0001CDC27 /* RZJoinAssemblage.h in Headers */,
 				ABADD3481A776C7C00397031 /* RZAssemblagePublic.h in Headers */,
 				ABAC82DA1A7CA8A5001CDC27 /* RZFilteredAssemblage.h in Headers */,
@@ -279,6 +297,7 @@
 				ABADD3681A776EE100397031 /* RZAssemblage.h in Headers */,
 				ABC57BB21A911C9000E97873 /* RZIndexPathSet.h in Headers */,
 				ABC57BB61A912B7F00E97873 /* RZAssemblageMutationRelay.h in Headers */,
+				AB0578811AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,7 +417,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABADD3BB1A787F1900397031 /* Main.storyboard in Resources */,
 				ABADD3C01A787F1900397031 /* LaunchScreen.xib in Resources */,
 				ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */,
 			);
@@ -412,12 +430,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABAC82991A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m in Sources */,
-				ABADD36D1A77758600397031 /* RZAssemblageTableViewDataSource.m in Sources */,
 				ABAC82DB1A7CA8A5001CDC27 /* RZFilteredAssemblage.m in Sources */,
 				ABAC829D1A7B3CC0001CDC27 /* RZJoinAssemblage.m in Sources */,
+				AB05788A1AB7BF9E00E5A1E1 /* RZAssemblageTableView.m in Sources */,
 				ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */,
 				AB9B31B71A8679FB00C39876 /* RZAssemblageChangeSet.m in Sources */,
 				ABC57BB31A911C9000E97873 /* RZIndexPathSet.m in Sources */,
+				AB0578861AB7B3D200E5A1E1 /* RZTableViewCellFactory.m in Sources */,
+				AB0578821AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.m in Sources */,
 				AB05610E1A7B25D200B5C17E /* RZFRCAssemblage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -465,14 +485,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		ABADD3B91A787F1900397031 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				ABADD3BA1A787F1900397031 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		ABADD3BE1A787F1900397031 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (

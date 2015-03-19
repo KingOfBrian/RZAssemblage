@@ -16,15 +16,15 @@ _Pragma("clang diagnostic pop")                                         \
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZJoinAssemblage.h"
 #import "RZFilteredAssemblage.h"
+#import "RZAssemblageTableView.h"
 
-@interface MutatableAssemblageTableViewController () <RZAssemblageTableViewDataSourceProxy>
+@interface MutatableAssemblageTableViewController () <RZAssemblageTableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) RZAssemblage *assemblage;
 
-@property (strong, nonatomic) RZAssemblageTableViewDataSource *dataSource;
-
 @property (assign, nonatomic) NSUInteger index;
 @property (strong, nonatomic) NSArray *mutableAssemblages;
+
 @end
 
 @implementation MutatableAssemblageTableViewController
@@ -38,9 +38,19 @@ _Pragma("clang diagnostic pop")                                         \
     return self;
 }
 
+- (void)loadView
+{
+    self.view = [[RZAssemblageTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+}
+
+- (RZAssemblageTableView *)tableView
+{
+    return (id)self.view;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4"]];
     RZAssemblage *m2 = [[RZAssemblage alloc] initWithArray:@[@"4", @"5", @"6", ]];
     RZAssemblage *m3 = [[RZAssemblage alloc] initWithArray:@[@"7", @"8", @"9", ]];
@@ -55,10 +65,14 @@ _Pragma("clang diagnostic pop")                                         \
     }];
     self.assemblage = [[RZAssemblage alloc] initWithArray:@[m1, m2, filtered]];
 
-    self.dataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:self.assemblage
-                                                                     forTableView:self.tableView
-                                                                   withDataSource:self];
-
+    self.tableView.assemblage = self.assemblage;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    [self.tableView.cellFactory configureCellForClass:[NSString class] reuseIdentifier:@"Cell" block:^(UITableViewCell *cell, NSString *object, NSIndexPath *indexPath) {
+        cell.textLabel.text = object;
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }];
     self.navigationItem.rightBarButtonItems = @[
                                                 self.editButtonItem,
                                                 [[UIBarButtonItem alloc] initWithTitle:@"R" style:UIBarButtonItemStyleDone target:self action:@selector(random)],
@@ -66,20 +80,10 @@ _Pragma("clang diagnostic pop")                                         \
                                                 ];
 }
 
-- (UITableViewCell*)tableView:(UITableView *)tableView
-                cellForObject:(id)object
-                  atIndexPath:(NSIndexPath*)indexPath
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
-    return [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-}
-
-- (void)tableView:(UITableView *)tableView
-       updateCell:(UITableViewCell*)cell
-        forObject:(id)object
-      atIndexPath:(NSIndexPath*)indexPath
-{
-    cell.textLabel.text = object;
-    cell.accessoryType = UITableViewCellAccessoryNone;
+    [super setEditing:editing animated:animated];
+    [self.tableView setEditing:editing animated:animated];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;
@@ -109,9 +113,9 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
     // Pause the delegate during the move, as the views have already moved.   The data just needs to be kept in sync.
-    self.assemblage.delegate = nil;
+    self.tableView.ignoreAssemblageChanges = YES;
     [self.assemblage moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
-    self.assemblage.delegate = self.dataSource;
+    self.tableView.ignoreAssemblageChanges = NO;
 }
 
 - (NSString *)nextValue

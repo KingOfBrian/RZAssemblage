@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MutatableAssemblageTableViewController : UITableViewController
+@interface MutatableAssemblageTableViewController : UIViewController
 
 @end

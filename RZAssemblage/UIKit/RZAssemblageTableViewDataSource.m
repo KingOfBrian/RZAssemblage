@@ -12,9 +12,7 @@
 #import "RZAssemblageChangeSet.h"
 #import "RZIndexPathSet.h"
 
-@interface RZAssemblageTableViewDataSource() <UITableViewDataSource, RZAssemblageDelegate>
-
-@property (weak, nonatomic, readonly) NSObject<RZAssemblageTableViewDataSourceProxy> *dataSource;
+@interface RZAssemblageTableViewDataSource()
 
 @end
 
@@ -25,17 +23,16 @@
     return indexPath.length == 1;
 }
 
-- (id)initWithAssemblage:(RZAssemblage *)assemblage
+- (id)initWithAssemblage:(id<RZAssemblage>)assemblage
             forTableView:(UITableView *)tableView
-          withDataSource:(id<RZAssemblageTableViewDataSourceProxy>)dataSource
+             cellFactory:(RZTableViewCellFactory *)cellFactory;
 {
     self = [super init];
     if ( self ) {
         _assemblage = assemblage;
         _assemblage.delegate = self;
+        _cellFactory = cellFactory;
         _tableView = tableView;
-        _tableView.dataSource = self;
-        _dataSource = dataSource;
         _addSectionAnimation = UITableViewRowAnimationFade;
         _removeSectionAnimation = UITableViewRowAnimationFade;
         _addObjectAnimation = UITableViewRowAnimationFade;
@@ -64,8 +61,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id object = [self.assemblage objectAtIndexPath:indexPath];
-    UITableViewCell *cell = [self.dataSource tableView:tableView cellForObject:object atIndexPath:indexPath];
-    [self.dataSource tableView:tableView updateCell:cell forObject:object atIndexPath:indexPath];
+    UITableViewCell *cell = [self.cellFactory cellForObject:object atIndexPath:indexPath fromTableView:self.tableView];
     return cell;
 }
 
@@ -111,10 +107,7 @@
         NSAssert(indexPath.length == 2, @"");
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         id object = [assemblage objectAtIndexPath:indexPath];
-        [self.dataSource tableView:self.tableView
-                        updateCell:cell
-                         forObject:object
-                       atIndexPath:indexPath];
+        [self.cellFactory configureCell:cell forObject:object atIndexPath:indexPath];
     }
 
     [self.tableView endUpdates];
@@ -124,34 +117,58 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView titleForHeaderInSection:section] : nil;
+    NSString *result = nil;
+    if ( [self.dataSource respondsToSelector:_cmd] ) {
+        result = [self.dataSource tableView:tableView titleForHeaderInSection:section];
+    }
+    return result;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView titleForFooterInSection:section] : nil;
+    NSString *result = nil;
+    if ( [self.dataSource respondsToSelector:_cmd] ) {
+        result = [self.dataSource tableView:tableView titleForFooterInSection:section];
+    }
+    return result;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView canEditRowAtIndexPath:indexPath] : NO;
+    BOOL result = NO;
+    if ( [self.dataSource respondsToSelector:_cmd] ) {
+        result = [self.dataSource tableView:tableView canEditRowAtIndexPath:indexPath];
+    }
+    return result;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView canMoveRowAtIndexPath:indexPath] : NO;
+    BOOL result = NO;
+    if ( [self.dataSource respondsToSelector:_cmd] ) {
+        result = [self.dataSource tableView:tableView canMoveRowAtIndexPath:indexPath];
+    }
+    return result;
 }
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource sectionIndexTitlesForTableView:tableView] : nil;
+    NSArray *result = nil;
+    if ( [self.dataSource respondsToSelector:_cmd] ) {
+        result = [self.dataSource sectionIndexTitlesForTableView:tableView];
+    }
+    return result;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
 {
-    return [self.dataSource respondsToSelector:_cmd] ? [self.dataSource tableView:tableView
-                                                      sectionForSectionIndexTitle:title
-                                                                          atIndex:index] : index;
+    NSInteger result = NSNotFound;
+    if ( [self.dataSource respondsToSelector:_cmd] ) {
+        result = [self.dataSource tableView:tableView
+                sectionForSectionIndexTitle:title
+                                    atIndex:index];
+    }
+    return result;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
