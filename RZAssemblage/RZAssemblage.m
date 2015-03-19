@@ -180,7 +180,7 @@
 
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
 {
-    RZAssemblageLog(@"%p:Remove at %zd", self, index);
+    RZAssemblageLog(@"%p:Remove %@ at %zd", self, [self objectInChildrenAtIndex:index],  index);
     [self openBatchUpdate];
     [self.childrenStorage removeObjectAtIndex:index];
     [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
