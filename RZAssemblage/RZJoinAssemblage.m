@@ -24,20 +24,29 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p join %@", self.class, self, self.store];
+    return [NSString stringWithFormat:@"<%@: %p join %@", self.class, self, self.childrenStorage];
 }
 
 #pragma mark - RZAssemblage
 
-- (id)objectAtIndex:(NSUInteger)index
+- (NSUInteger)countOfChildren
+{
+    NSUInteger count = 0;
+    for ( id<RZAssemblage>assemblage in self.childrenStorage ) {
+        count += [assemblage childCountAtIndexPath:nil];
+    }
+    return count;
+}
+
+- (id)objectInChildrenAtIndex:(NSUInteger)index
 {
     NSUInteger offset = 0;
     id object = nil;
-    for ( id<RZAssemblage>assemblage in self.store ) {
-        NSUInteger count = [assemblage numberOfChildrenAtIndexPath:nil];
+    for ( id<RZAssemblage>assemblage in self.childrenStorage ) {
+        NSUInteger count = [assemblage childCountAtIndexPath:nil];
         NSUInteger currentIndex = index - offset;
         if ( index - offset < count) {
-            object = [assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:currentIndex]];
+            object = [assemblage childAtIndexPath:[NSIndexPath indexPathWithIndex:currentIndex]];
             break;
         }
         offset += count;
@@ -45,46 +54,34 @@
     return object;
 }
 
-- (NSUInteger)numberOfChildren
+- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
 {
-    NSUInteger count = 0;
-    for ( id<RZAssemblage>assemblage in self.store ) {
-        count += [assemblage numberOfChildrenAtIndexPath:nil];
+    NSUInteger offset = 0;
+    for ( id<RZAssemblage>assemblage in self.childrenStorage ) {
+        NSUInteger count = [assemblage childCountAtIndexPath:nil];
+        NSUInteger currentIndex = index - offset;
+        if ( index - offset < count) {
+            NSMutableArray *joinedProxy = [assemblage mutableArrayProxyForIndexPath:nil];
+            [joinedProxy removeObjectAtIndex:currentIndex];
+            break;
+        }
+        offset += count;
     }
-    return count;
 }
 
-- (NSArray *)allObjects
+- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
 {
-    NSMutableArray *allObjects = [NSMutableArray array];
-    for ( id<RZAssemblage>assemblage in self.store ) {
-        [allObjects addObjectsFromArray:assemblage.allObjects];
+    NSUInteger offset = 0;
+    for ( id<RZAssemblage>assemblage in self.childrenStorage ) {
+        NSUInteger count = [assemblage childCountAtIndexPath:nil];
+        NSUInteger currentIndex = index - offset;
+        if ( index - offset < count) {
+            NSMutableArray *joinedProxy = [assemblage mutableArrayProxyForIndexPath:nil];
+            [joinedProxy insertObject:object atIndex:currentIndex];
+            break;
+        }
+        offset += count;
     }
-    return allObjects;
-}
-
-#pragma mark - RZAssemblageMutationRelay
-
-- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
-             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
-{
-    NSUInteger index = [indexPath indexAtPosition:0];
-    NSUInteger assemblageIndex = [self indexOfAssemblageContainingParentIndex:index];
-    id<RZAssemblageMutationRelay> nextAssemblage = [self.store objectAtIndex:assemblageIndex];
-    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-
-    NSUInteger newIndex = index - [self indexOffsetForAssemblage:nextAssemblage];
-    // If this is for a removal, move to the next index if the removal index will not fit in the selected assemblage
-    while ( forRemoval && [nextAssemblage numberOfChildren] <= newIndex ) {
-        assemblageIndex++;
-        nextAssemblage = [self.store objectAtIndex:assemblageIndex];
-        newIndex = index - [self indexOffsetForAssemblage:nextAssemblage];
-    }
-
-    indexPath = [indexPath rz_indexPathByPrependingIndex:newIndex];
-
-    [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
-                         assemblage:assemblage newIndexPath:newIndexPath];
 }
 
 #pragma mark - RZAssemblageDelegate
@@ -103,11 +100,11 @@
 - (NSUInteger)indexOffsetForAssemblage:(id<RZAssemblage>)childAssemblage
 {
     NSUInteger count = 0;
-    for ( id<RZAssemblage> partAssemblage in self.store ) {
+    for ( id<RZAssemblage> partAssemblage in self.childrenStorage ) {
         if ( partAssemblage == childAssemblage ) {
             break;
         }
-        count += [partAssemblage numberOfChildrenAtIndexPath:nil];
+        count += [partAssemblage childCountAtIndexPath:nil];
     }
     return count;
 }
@@ -115,8 +112,8 @@
 - (NSUInteger)indexOfAssemblageContainingParentIndex:(NSUInteger)parentIndex;
 {
     NSUInteger index = 0;
-    for ( id<RZAssemblage> partAssemblage in self.store ) {
-        NSUInteger count = [partAssemblage numberOfChildrenAtIndexPath:nil];
+    for ( id<RZAssemblage> partAssemblage in self.childrenStorage ) {
+        NSUInteger count = [partAssemblage childCountAtIndexPath:nil];
         if ( parentIndex <= count ) {
             break;
         }

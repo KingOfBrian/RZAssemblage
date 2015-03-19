@@ -20,8 +20,8 @@
 {
     self = [super init];
     if ( self ) {
-        _store = [array mutableCopy];
-        for ( id object in _store ) {
+        _childrenStorage = [array mutableCopy];
+        for ( id object in _childrenStorage ) {
             [self assignDelegateIfObjectIsAssemblage:object];
         }
     }
@@ -30,7 +30,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@:%p - %@>", self.class, self, self.store];
+    return [NSString stringWithFormat:@"<%@:%p - %@>", self.class, self, self.childrenStorage];
 }
 
 - (id)copyWithZone:(NSZone *)zone;
@@ -39,87 +39,90 @@
 
     // Copy the store.   Do a deep copy of any assemblages that are in the store.
     // This is not good.
-    NSMutableArray *store = [NSMutableArray arrayWithArray:self.store];
+    NSMutableArray *children = [NSMutableArray arrayWithArray:self.childrenStorage];
     NSUInteger index = 0;
-    for ( id object in self.store ) {
+    for ( id object in self.childrenStorage ) {
         if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
             id assemblageCopy = [object copy];
-            [store replaceObjectAtIndex:index withObject:assemblageCopy];
+            [children replaceObjectAtIndex:index withObject:assemblageCopy];
         }
         index++;
     }
-    copy->_store = [self.store isKindOfClass:[NSMutableArray class]] ? store : [store copy];
+    copy->_childrenStorage = [self.childrenStorage isKindOfClass:[NSMutableArray class]] ? children : [children copy];
     return copy;
 }
 
 #pragma mark - <RZAssemblage>
 
-- (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
+- (id)representedObject
+{
+    return self;
+}
+
+- (NSArray *)arrayProxyForIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger length = [indexPath length];
+
+    NSArray *proxy = nil;
+
+    if ( length == 0 ) {
+        proxy = [self mutableArrayValueForKey:NSStringFromSelector(@selector(children))];
+    }
+    else {
+        id<RZAssemblage> assemblage = [self objectInChildrenAtIndex:[indexPath indexAtPosition:0]];
+        proxy = [assemblage arrayProxyForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+    }
+    return proxy;
+}
+
+- (NSMutableArray *)mutableArrayProxyForIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger length = [indexPath length];
+
+    NSMutableArray *proxy = nil;
+
+    if ( length == 0 ) {
+        proxy = [self mutableArrayValueForKey:NSStringFromSelector(@selector(children))];
+    }
+    else {
+        id<RZAssemblage> assemblage = [self objectInChildrenAtIndex:[indexPath indexAtPosition:0]];
+        proxy = [assemblage mutableArrayProxyForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+    }
+    return proxy;
+}
+
+- (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath;
 {
     NSUInteger count = NSNotFound;
     NSUInteger length = [indexPath length];
 
     if ( length == 0 ) {
-        count = [self numberOfChildren];
+        count = self.countOfChildren;
     }
     else {
-        id<RZAssemblage> assemblage = [self objectAtIndex:[indexPath indexAtPosition:0]];
+        id<RZAssemblage> assemblage = [self objectInChildrenAtIndex:[indexPath indexAtPosition:0]];
         NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
-        count = [assemblage numberOfChildrenAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        count = [assemblage childCountAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return count;
 }
 
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath
+- (id)childAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger length = [indexPath length];
     id object = nil;
     if ( length == 1 ) {
-        object = [self objectAtIndex:[indexPath indexAtPosition:0]];
+        object = [self objectInChildrenAtIndex:[indexPath indexAtPosition:0]];
     }
     else if ( length > 1 ) {
-        id<RZAssemblage> assemblage = [self.store objectAtIndex:[indexPath indexAtPosition:0]];
+        id<RZAssemblage> assemblage = [self.childrenStorage objectAtIndex:[indexPath indexAtPosition:0]];
         NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
-        object = [assemblage objectAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        object = [assemblage childAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     else if ( length == 0 && indexPath != nil ) {
-        object = self;
+        object = [self representedObject];
     }
     return object;
-}
-
-- (NSArray *)allObjects
-{
-    return [self.store copy];
-}
-
-- (id)objectAtIndex:(NSUInteger)index
-{
-    return [self.store objectAtIndex:index];
-}
-
-- (NSUInteger)numberOfChildren
-{
-    return self.store.count;
-}
-
-#pragma mark - <RZAssemblageMutationRelay>
-
-- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
-             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
-{
-    NSUInteger index = [indexPath indexAtPosition:0];
-    indexPath = [indexPath rz_indexPathByRemovingFirstIndex];
-    if ( index < self.store.count ) {
-        id<RZAssemblageMutationRelay> nextAssemblage = [self.store objectAtIndex:index];
-        if ( [nextAssemblage conformsToProtocol:@protocol(RZAssemblageMutationRelay)] ) {
-            [nextAssemblage lookupIndexPath:indexPath forRemoval:forRemoval
-                                 assemblage:assemblage newIndexPath:newIndexPath];
-            return;
-        }
-    }
-    *newIndexPath = [NSIndexPath indexPathWithIndex:index];
-    *assemblage = self;
 }
 
 #pragma mark - Batching
@@ -163,46 +166,41 @@
     [self closeBatchUpdate];
 }
 
-#pragma mark - Mutation
+#pragma mark - Array Key Value Coding
 
-- (void)addObject:(id)anObject
+- (NSUInteger)countOfChildren
 {
-    [self insertObject:anObject atIndex:self.store.count];
+    return self.childrenStorage.count;
 }
 
-- (void)removeLastObject
+- (id)objectInChildrenAtIndex:(NSUInteger)index
+{
+    return [self.childrenStorage objectAtIndex:index];
+}
+
+- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
 {
     [self openBatchUpdate];
-    NSUInteger index = self.store.count - 1;
-    [self.store removeObjectAtIndex:index];
+    [self.childrenStorage removeObjectAtIndex:index];
     [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self closeBatchUpdate];
 }
 
-- (void)insertObject:(id)anObject atIndex:(NSUInteger)index
+- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
 {
-    RZAssemblageLog(@"%p:Insert %@ at %zd", self, anObject, index);
-    NSParameterAssert(anObject);
-    [self assignDelegateIfObjectIsAssemblage:anObject];
+    RZAssemblageLog(@"%p:Insert %@ at %zd", self, object, index);
+    NSParameterAssert(object);
+    [self assignDelegateIfObjectIsAssemblage:object];
     [self openBatchUpdate];
-    [self.store insertObject:anObject atIndex:index];
+    [self.childrenStorage insertObject:object atIndex:index];
     [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self closeBatchUpdate];
-}
-
-- (void)removeObjectAtIndex:(NSUInteger)index
-{
-    RZAssemblageLog(@"%p:Remove at %zd", self, index);
-    [self openBatchUpdate];
-    [self.store removeObjectAtIndex:index];
-    [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self closeBatchUpdate];
 }
 
 - (void)notifyObjectUpdate:(id)anObject
 {
     NSParameterAssert(anObject);
-    NSUInteger index = [self.store indexOfObject:anObject];
+    NSUInteger index = [self.childrenStorage indexOfObject:anObject];
     RZAssemblageLog(@"%p:Update %@ at %zd", self, anObject, index);
     NSAssert(index != NSNotFound, @"Object is not part of assemblage");
     [self openBatchUpdate];
@@ -210,53 +208,13 @@
     [self closeBatchUpdate];
 }
 
-- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssemblageLog(@"Insert %@ at %@", anObject, indexPath);
-    id<RZAssemblage> assemblage = nil;
-    NSIndexPath *newIndexPath = nil;
-
-    [self lookupIndexPath:indexPath forRemoval:NO
-               assemblage:&assemblage newIndexPath:&newIndexPath];
-
-    RZConformMutationSupportAtIndexPath(assemblage, indexPath);
-    id<RZAssemblageMutation> mutable = (id)assemblage;
-    [mutable insertObject:anObject atIndex:[newIndexPath rz_lastIndex]];
-}
-
-- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssemblageLog(@"Remove %@", indexPath);
-    id<RZAssemblage> assemblage = nil;
-    NSIndexPath *newIndexPath = nil;
-
-    [self lookupIndexPath:indexPath forRemoval:YES
-               assemblage:&assemblage newIndexPath:&newIndexPath];
-
-    RZConformMutationSupportAtIndexPath(assemblage, indexPath);
-    id<RZAssemblageMutation> mutable = (id)assemblage;
-    [mutable removeObjectAtIndex:[newIndexPath rz_lastIndex]];
-}
-
-- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2
-{
-    if ( [indexPath1 isEqual:indexPath2] ) {
-        return;
-    }
-    RZAssemblageLog(@"Move %@ -> %@", indexPath1, indexPath2);
-    [self openBatchUpdate];
-    id object = [self objectAtIndexPath:indexPath1];
-    [self removeObjectAtIndexPath:indexPath1];
-    [self insertObject:object atIndexPath:indexPath2];
-    [self closeBatchUpdate];
-}
 
 #pragma mark - Private
 
 - (NSUInteger)indexForChildAssemblage:(id<RZAssemblage>)assemblage
 {
     NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"%@ does not conform to <RZAssemblage>", assemblage);
-    return [self.store indexOfObject:assemblage];
+    return [self.childrenStorage indexOfObject:assemblage];
 }
 
 - (void)assignDelegateIfObjectIsAssemblage:(id)anObject
@@ -265,5 +223,59 @@
         [(id<RZAssemblage>)anObject setDelegate:self];
     }
 }
+
+#pragma mark - Index Path Helpers
+
+- (void)addObject:(id)object
+{
+    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:nil];
+    [proxy addObject:object];
+}
+
+- (void)insertObject:(id)object atIndex:(NSUInteger)index
+{
+    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:nil];
+    [proxy insertObject:object atIndex:index];
+}
+
+- (void)removeObjectAtIndex:(NSUInteger)index
+{
+    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:nil];
+    [proxy removeObjectAtIndex:index];
+}
+
+- (void)removeLastObject
+{
+    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:nil];
+    [proxy removeLastObject];
+}
+
+- (id)objectAtIndex:(NSUInteger)index
+{
+    return [self childAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+}
+
+- (void)insertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+{
+    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    [proxy insertObject:object atIndex:[indexPath rz_lastIndex]];
+}
+
+- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSMutableArray *proxy = [self mutableArrayProxyForIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    [proxy removeObjectAtIndex:[indexPath rz_lastIndex]];
+}
+
+- (void)moveObjectAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+    NSMutableArray *fproxy = [self mutableArrayProxyForIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *tproxy = [self mutableArrayProxyForIndexPath:[toIndexPath indexPathByRemovingLastIndex]];
+
+    NSObject *object = [fproxy objectAtIndex:[fromIndexPath rz_lastIndex]];
+    [fproxy removeObjectAtIndex:[fromIndexPath rz_lastIndex]];
+    [tproxy insertObject:object atIndex:[toIndexPath rz_lastIndex]];
+}
+
 
 @end

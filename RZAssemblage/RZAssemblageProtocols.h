@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NSIndexPath+RZAssemblage.h"
 
 @protocol RZAssemblageDelegate;
 @class RZAssemblageChangeSet;
@@ -17,55 +18,35 @@
  */
 @protocol RZAssemblage <NSObject, NSCopying>
 
-/**
- * The number of children contained by this assemblage.
- */
-- (NSUInteger)numberOfChildren;
+- (id)representedObject;
 
 /**
- * Return the assemblage at the specified index.
+ *  Return an array representing all the children of the assemblage at indexPath.
  */
-- (id)objectAtIndex:(NSUInteger)index;
+- (NSArray *)arrayProxyForIndexPath:(NSIndexPath *)indexPath;
 
 /**
- * Traverse the assemblage tree to the assemblage at the specified indexPath
- * and return the number of children.
+ *  Return a mutable array representing all the children of the assemblage at indexPath.
  *
- * NOTE: An exception is raised if any object specified in the indexPath does not conform to RZAssemblage
+ *  If the assemblage does not support mutation, this will return nil.
  */
-- (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath;
+- (NSMutableArray *)mutableArrayProxyForIndexPath:(NSIndexPath *)indexPath;
 
 /**
- * Traverse the assemblage tree and return the object at the specified index path
+ *  Return the number of children at the indexPath
  */
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath;
+- (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
- * Return a copy of the objects that are direct descendants of this assemblage
+ *  Return the child at the indexPath.
  */
-@property (copy, nonatomic, readonly) NSArray *allObjects;
+- (id)childAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
  * The delegate to inform of changes.
  */
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
-@end
-
-/**
- * The RZAssemblageMutation protocol is adopted by assemblages that support
- * direct mutation.
- */
-@protocol RZAssemblageMutation <NSObject>
-
-- (void)insertObject:(id)anObject atIndex:(NSUInteger)index;
-- (void)addObject:(id)anObject;
-- (void)removeObjectAtIndex:(NSUInteger)index;
-- (void)removeLastObject;
-
-/**
- * This method is not a mutation method, but will inform the delegate that the object has been updated.
- */
 - (void)notifyObjectUpdate:(id)object;
 
 @end

@@ -46,21 +46,21 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSUInteger count = [self.assemblage numberOfChildrenAtIndexPath:nil];
+    NSUInteger count = [self.assemblage childCountAtIndexPath:nil];
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSUInteger count = [self.assemblage numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    NSUInteger count = [self.assemblage childCountAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.assemblage objectAtIndexPath:indexPath];
+    id object = [self.assemblage childAtIndexPath:indexPath];
     UITableViewCell *cell = [self.cellFactory cellForObject:object atIndexPath:indexPath fromTableView:self.tableView];
     return cell;
 }
@@ -106,7 +106,7 @@
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSAssert(indexPath.length == 2, @"");
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        id object = [assemblage objectAtIndexPath:indexPath];
+        id object = [assemblage childAtIndexPath:indexPath];
         [self.cellFactory configureCell:cell forObject:object atIndexPath:indexPath];
     }
 

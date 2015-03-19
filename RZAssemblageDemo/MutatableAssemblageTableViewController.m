@@ -103,8 +103,10 @@ _Pragma("clang diagnostic pop")                                         \
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSIndexPath *nodeIndexPath = [indexPath indexPathByRemovingLastIndex];
+    NSMutableArray *proxy = [self.assemblage mutableArrayProxyForIndexPath:nodeIndexPath];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.assemblage removeObjectAtIndexPath:indexPath];
+        [proxy removeObjectAtIndex:[indexPath rz_lastIndex]];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
 
     }
@@ -114,7 +116,12 @@ _Pragma("clang diagnostic pop")                                         \
 {
     // Pause the delegate during the move, as the views have already moved.   The data just needs to be kept in sync.
     self.tableView.ignoreAssemblageChanges = YES;
-    [self.assemblage moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
+    NSMutableArray *fromProxy = [self.assemblage mutableArrayProxyForIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *toProxy = [self.assemblage mutableArrayProxyForIndexPath:[toIndexPath indexPathByRemovingLastIndex]];
+
+    NSObject *object = [fromProxy objectAtIndex:[fromIndexPath rz_lastIndex]];
+    [fromProxy removeObjectAtIndex:[fromIndexPath rz_lastIndex]];
+    [toProxy insertObject:object atIndex:[toIndexPath rz_lastIndex]];
     self.tableView.ignoreAssemblageChanges = NO;
 }
 
@@ -131,7 +138,7 @@ _Pragma("clang diagnostic pop")                                         \
 
 - (NSUInteger)randomIndexForAssemblage:(RZAssemblage *)assemblage
 {
-    NSUInteger count = [assemblage numberOfChildren];
+    NSUInteger count = [assemblage childCountAtIndexPath:nil];
     return count == 0 ? NSNotFound : arc4random() % count;
 }
 
@@ -141,7 +148,7 @@ _Pragma("clang diagnostic pop")                                         \
     // Find an indexPath.  If the section we point to has no items, pick another section.
     while ( indexPath == nil ) {
         NSUInteger section = [self randomSectionIndex];
-        RZAssemblage *assemblage = [self.assemblage objectAtIndex:section];
+        RZAssemblage *assemblage = [self.assemblage childAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
         NSUInteger row = [self randomIndexForAssemblage:assemblage];
         indexPath = row == NSNotFound ? nil : [NSIndexPath indexPathForRow:row inSection:section];
     }
@@ -152,28 +159,33 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)move
 {
     NSIndexPath *fromIndexPath = [self randomExistingIndexPath];
+    NSIndexPath *toIndexPath = [self randomExistingIndexPath];
 
-    [self.assemblage moveObjectAtIndexPath:fromIndexPath
-                               toIndexPath:[self randomExistingIndexPath]];
+    NSMutableArray *fromProxy = [self.assemblage mutableArrayProxyForIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *toProxy = [self.assemblage mutableArrayProxyForIndexPath:[toIndexPath indexPathByRemovingLastIndex]];
+
+    NSObject *object = [fromProxy objectAtIndex:[fromIndexPath rz_lastIndex]];
+    [fromProxy removeObjectAtIndex:[fromIndexPath rz_lastIndex]];
+    [toProxy insertObject:object atIndex:[toIndexPath rz_lastIndex]];
 }
 
 - (void)testHowDoesItWorkMove
 {
     // This move actually works, but a move from 0:1 -> 0:1 doesn't appear like it should work.
-    RZAssemblage *m1 = self.mutableAssemblages[0];
-    [m1 openBatchUpdate];
+    NSMutableArray *m1 = [self.mutableAssemblages[0] mutableArrayProxyForIndexPath:nil];
+    [self.mutableAssemblages[0] openBatchUpdate];
     [m1 removeObjectAtIndex:0];
     [m1 removeObjectAtIndex:0];
     [m1 addObject:@"2"];
     [m1 removeObjectAtIndex:0];
-    [m1 closeBatchUpdate];
+    [self.mutableAssemblages[0] closeBatchUpdate];
 }
 
 - (void)addRow
 {
     NSUInteger section = [self randomSectionIndex];
-    RZAssemblage *assemblage = [self.mutableAssemblages objectAtIndex:section];
-    [assemblage addObject:[self nextValue]];
+    NSMutableArray *proxy = [[self.mutableAssemblages objectAtIndex:section] mutableArrayProxyForIndexPath:nil];
+    [proxy addObject:[self nextValue]];
 }
 
 - (void)removeRow
@@ -183,7 +195,7 @@ _Pragma("clang diagnostic pop")                                         \
     NSUInteger row = [self randomIndexForAssemblage:assemblage];
     if ( row != NSNotFound ) {
         [assemblage openBatchUpdate];
-        [assemblage removeObjectAtIndex:row];
+        [[assemblage mutableArrayProxyForIndexPath:nil] removeObjectAtIndex:row];
         [assemblage closeBatchUpdate];
     }
 }
@@ -208,11 +220,12 @@ _Pragma("clang diagnostic pop")                                         \
 {
     [self.assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in self.mutableAssemblages ) {
-        while ( [assemblage numberOfChildren] > 2 ) {
-            [assemblage removeLastObject];
+        NSMutableArray *proxy = [assemblage mutableArrayProxyForIndexPath:nil];
+        while ( [proxy count] > 2 ) {
+            [proxy removeLastObject];
         }
-        while ( [assemblage numberOfChildren] < 2 ) {
-            [assemblage addObject:[self nextValue]];
+        while ( [proxy count] < 2 ) {
+            [proxy addObject:[self nextValue]];
         }
     }
     [self.assemblage closeBatchUpdate];

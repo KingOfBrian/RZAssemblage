@@ -13,7 +13,7 @@
 #import "RZIndexPathSet.h"
 #import "RZAssemblageMutationRelay.h"
 
-@interface RZFilteredAssemblage() <RZAssemblageMutationRelay>
+@interface RZFilteredAssemblage()
 
 @property (copy, nonatomic) NSMutableIndexSet *filteredIndexes;
 @property (strong, nonatomic) id<RZAssemblage>filteredAssemblage;
@@ -49,32 +49,27 @@
 
 #pragma mark - RZAssemblage
 
-- (NSUInteger)numberOfChildren
+- (NSUInteger)countOfChildren
 {
-    return [self.filteredAssemblage numberOfChildren] - self.filteredIndexes.count;
+    return [self.filteredAssemblage childCountAtIndexPath:nil] - self.filteredIndexes.count;
 }
 
-- (id)objectAtIndex:(NSUInteger)index
+- (id)objectInChildrenAtIndex:(NSUInteger)index
 {
     index = [self realIndexFromIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    return [self.filteredAssemblage objectAtIndex:index];
+    return [self.filteredAssemblage childAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
 }
 
-- (NSArray *)allObjects
+- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
 {
-    return [[self.filteredAssemblage allObjects] filteredArrayUsingPredicate:self.filter];
+    index = [self realIndexFromIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [[self.filteredAssemblage mutableArrayProxyForIndexPath:nil] removeObjectAtIndex:index];
 }
 
-#pragma mark - RZAssemblageMutationRelay
-
-- (void)lookupIndexPath:(NSIndexPath *)indexPath forRemoval:(BOOL)forRemoval
-             assemblage:(out id<RZAssemblage> *)assemblage newIndexPath:(out NSIndexPath **)newIndexPath;
+- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
 {
-    id<RZAssemblageMutationRelay>assemblageRelay = (id)self.filteredAssemblage;
-    RZRaize([assemblageRelay conformsToProtocol:@protocol(RZAssemblageMutationRelay)], @"Contained assemblage does not support mutation relay");
-    indexPath = [self realIndexPathFromIndexPath:indexPath];
-    [assemblageRelay lookupIndexPath:indexPath forRemoval:forRemoval
-                          assemblage:assemblage newIndexPath:newIndexPath];
+    index = [self realIndexFromIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [[self.filteredAssemblage mutableArrayProxyForIndexPath:nil] insertObject:object atIndex:index];
 }
 
 #pragma mark - Filter Mutation
@@ -91,21 +86,22 @@
     // Process removals first, and do not modify the internal
     // index state, to ensure that the indexes generated are valid when used on the
     // assemblage before the filter change.
-    [[self.filteredAssemblage allObjects] enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+    NSArray *allObjects = [self.filteredAssemblage arrayProxyForIndexPath:nil];
+    [allObjects enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
             NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
             indexPath = [self indexPathFromRealIndexPath:indexPath];
             [self.changeSet removeAtIndexPath:indexPath];
         }
     }];
-    [[self.filteredAssemblage allObjects] enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+    [allObjects enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
             [self.filteredIndexes addIndex:index];
         }
     }];
     // Next generate insert events and always ensure that the indexes are valid against
     // the current state.
-    [[self.filteredAssemblage allObjects] enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+    [allObjects enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
         if ( [self isIndexFiltered:index] && [self isObjectFiltered:object] == NO) {
             NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
             indexPath = [self indexPathFromRealIndexPath:indexPath];
@@ -125,7 +121,7 @@
         NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
         [self.filteredIndexes shiftIndexesStartingAtIndex:idx by:1];
 
-        id object = [assemblage objectAtIndexPath:indexPath];
+        id object = [assemblage childAtIndexPath:indexPath];
         if ( [self isObjectFiltered:object] == NO ) {
             [self.changeSet insertAtIndexPath:parentIndexPath];
         }
@@ -153,7 +149,7 @@
     }
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSUInteger idx = [indexPath indexAtPosition:0];
-        id object = [assemblage objectAtIndexPath:indexPath];
+        id object = [assemblage childAtIndexPath:indexPath];
 
         NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
         if ( [self isIndexFiltered:idx] && [self isObjectFiltered:object] == NO ) {

@@ -12,7 +12,7 @@
 
 @protocol RZAssemblageDelegate;
 
-@interface RZAssemblage : NSObject <RZAssemblage, RZAssemblageMutation>
+@interface RZAssemblage : NSObject <RZAssemblage>
 
 - (instancetype)init __attribute__((unavailable));
 
@@ -20,10 +20,16 @@
 
 - (void)openBatchUpdate;
 
-- (void)insertObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath;
-- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
-- (void)moveObjectAtIndexPath:(NSIndexPath *)indexPath1 toIndexPath:(NSIndexPath *)indexPath2;
-
 - (void)closeBatchUpdate;
+
+- (void)addObject:(id)object;
+- (void)insertObject:(id)object atIndex:(NSUInteger)index;
+- (void)removeObjectAtIndex:(NSUInteger)index;
+- (void)removeLastObject;
+- (id)objectAtIndex:(NSUInteger)index;
+
+- (void)insertObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
+- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
+- (void)moveObjectAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
 
 @end

@@ -107,25 +107,25 @@ event.assemblage = assemblage;
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeRemove;
-        event.object = [changeSet.startingAssemblage objectAtIndexPath:indexPath];
+        event.object = [changeSet.startingAssemblage childAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeInsert;
-        event.object = [assemblage objectAtIndexPath:indexPath];
+        event.object = [assemblage childAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeUpdate;
-        event.object = [assemblage objectAtIndexPath:indexPath];
+        event.object = [assemblage childAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
 //    [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
 //        TRACE_DELEGATE_EVENT
 //        event.type = RZAssemblageMutationTypeMove;
-//        event.object = [assemblage objectAtIndexPath:indexPath];
+//        event.object = [assemblage childAtIndexPath:indexPath];
 //        event.indexPath = indexPath;
 //    }];
     self.changeSet = changeSet;
@@ -149,25 +149,26 @@ event.assemblage = assemblage;
 - (void)testComposition
 {
     RZAssemblage *staticValues = [[RZAssemblage alloc] initWithArray:@[@1, @2, @3]];
-    XCTAssertEqual([staticValues numberOfChildrenAtIndexPath:nil], 3);
-    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]], @1);
-    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:1]], @2);
-    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:2]], @3);
+    XCTAssertEqual([staticValues childCountAtIndexPath:nil], 3);
+    XCTAssertEqualObjects([staticValues childAtIndexPath:[NSIndexPath indexPathWithIndex:0]], @1);
+    XCTAssertEqualObjects([staticValues childAtIndexPath:[NSIndexPath indexPathWithIndex:1]], @2);
+    XCTAssertEqualObjects([staticValues childAtIndexPath:[NSIndexPath indexPathWithIndex:2]], @3);
     RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
-    XCTAssertEqual([mutableValues numberOfChildrenAtIndexPath:nil], 0);
+    XCTAssertEqual([mutableValues childCountAtIndexPath:nil], 0);
 
     RZAssemblage *sectioned = [[RZAssemblage alloc] initWithArray:@[staticValues, mutableValues]];
 
-    XCTAssertEqual([sectioned numberOfChildrenAtIndexPath:nil], 2);
-    XCTAssertEqual([sectioned numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:0]], 3);
-    XCTAssertEqual([sectioned numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:1]], 0);
+    XCTAssertEqual([sectioned childCountAtIndexPath:nil], 2);
+    XCTAssertEqual([sectioned childCountAtIndexPath:[NSIndexPath indexPathWithIndex:0]], 3);
+    XCTAssertEqual([sectioned childCountAtIndexPath:[NSIndexPath indexPathWithIndex:1]], 0);
 }
 
 - (void)testMutableDelegation
 {
-    RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
-    mutableValues.delegate = self;
+    RZAssemblage *mutableAssemblage = [[RZAssemblage alloc] initWithArray:@[]];
+    mutableAssemblage.delegate = self;
 
+    NSMutableArray *mutableValues = [mutableAssemblage mutableArrayProxyForIndexPath:nil];
     [mutableValues addObject:@1];
     XCTAssert(self.delegateEvents.count == 1);
     XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
@@ -197,15 +198,17 @@ event.assemblage = assemblage;
 
 - (void)testGroupedMutableDelegationNoOp
 {
-    RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
-    mutableValues.delegate = self;
-    [mutableValues openBatchUpdate];
+    RZAssemblage *mutableAssemblage = [[RZAssemblage alloc] initWithArray:@[]];
+    mutableAssemblage.delegate = self;
+
+    NSMutableArray *mutableValues = [mutableAssemblage mutableArrayProxyForIndexPath:nil];
+    [mutableAssemblage openBatchUpdate];
 
     [mutableValues addObject:@1];
     [mutableValues removeLastObject];
     [mutableValues insertObject:@2 atIndex:0];
     [mutableValues removeObjectAtIndex:0];
-    [mutableValues closeBatchUpdate];
+    [mutableAssemblage closeBatchUpdate];
     XCTAssert(self.delegateEvents.count == 0);
 }
 
@@ -219,7 +222,8 @@ event.assemblage = assemblage;
     assemblage.delegate = self;
 
     [assemblage openBatchUpdate];
-    for ( RZAssemblage *ma in assemblages ) {
+    for ( RZAssemblage *assemblage in assemblages ) {
+        NSMutableArray *ma = [assemblage mutableArrayProxyForIndexPath:nil];
         [ma addObject:@1];
         [ma removeLastObject];
     }
@@ -228,7 +232,8 @@ event.assemblage = assemblage;
     [self.delegateEvents removeAllObjects];
 
     [assemblage openBatchUpdate];
-    for ( RZAssemblage *ma in assemblages ) {
+    for ( RZAssemblage *assemblage in assemblages ) {
+        NSMutableArray *ma = [assemblage mutableArrayProxyForIndexPath:nil];
         [ma addObject:@1];
     }
     [assemblage closeBatchUpdate];
@@ -247,60 +252,61 @@ event.assemblage = assemblage;
     RZAssemblage *assemblage = [[RZAssemblage alloc] initWithArray:@[m1, f1]];
     assemblage.delegate = self;
 
-    for ( RZAssemblage *ma in @[m1, f1m1] ) {
+    for ( RZAssemblage *assemblage in @[m1, f1m1] ) {
+        NSMutableArray *ma = [assemblage mutableArrayProxyForIndexPath:nil];
         [ma addObject:@1];
         [ma addObject:@2];
         [ma addObject:@3];
     }
-
+    NSMutableArray *proxy = [assemblage mutableArrayProxyForIndexPath:nil];
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
-    XCTAssertTrue([m1 numberOfChildren] == 2);
-    XCTAssertTrue([f1 numberOfChildren] == 2);
-    XCTAssertTrue([f1m1 numberOfChildren] == 2);
-    XCTAssertTrue([f1m2 numberOfChildren] == 0);
+    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 2);
+    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 2);
+    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 2);
+    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 0);
 
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                           toIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
 
-    XCTAssertTrue([m1 numberOfChildren] == 1);
-    XCTAssertTrue([f1 numberOfChildren] == 3);
-    XCTAssertTrue([f1m1 numberOfChildren] == 3);
-    XCTAssertTrue([f1m2 numberOfChildren] == 0);
+    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
+    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 3);
+    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
+    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 0);
 
     [f1m2 addObject:@4];
-    XCTAssertTrue([m1 numberOfChildren] == 1);
-    XCTAssertTrue([f1 numberOfChildren] == 4);
-    XCTAssertTrue([f1m1 numberOfChildren] == 3);
-    XCTAssertTrue([f1m2 numberOfChildren] == 1);
+    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
+    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 4);
+    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
+    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 1);
 
     [assemblage insertObject:@5 atIndexPath:[NSIndexPath indexPathForRow:4 inSection:1]];
-    XCTAssertTrue([m1 numberOfChildren] == 1);
-    XCTAssertTrue([f1 numberOfChildren] == 5);
-    XCTAssertTrue([f1m1 numberOfChildren] == 3);
-    XCTAssertTrue([f1m2 numberOfChildren] == 2);
+    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
+    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 5);
+    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
+    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 2);
 
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]
                           toIndexPath:[NSIndexPath indexPathForRow:4 inSection:1]];
-    XCTAssertTrue([m1 numberOfChildren] == 1);
-    XCTAssertTrue([f1 numberOfChildren] == 5);
-    XCTAssertTrue([f1m1 numberOfChildren] == 2);
-    XCTAssertTrue([f1m2 numberOfChildren] == 3);
+    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
+    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 5);
+    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 2);
+    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 3);
 
     [f1m1 removeObjectAtIndex:0];
     [f1m1 removeObjectAtIndex:0];
-    XCTAssertTrue([m1 numberOfChildren] == 1);
-    XCTAssertTrue([f1 numberOfChildren] == 3);
-    XCTAssertTrue([f1m1 numberOfChildren] == 0);
-    XCTAssertTrue([f1m2 numberOfChildren] == 3);
+    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
+    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 3);
+    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 0);
+    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 3);
 
     // The first composed assemblage is empty, and we are removing from the head.
     // Ensure that this results in a removal from f1m2, not a index-violation on f1m1
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
-     XCTAssertTrue([m1 numberOfChildren] == 1);
-     XCTAssertTrue([f1 numberOfChildren] == 2);
-     XCTAssertTrue([f1m1 numberOfChildren] == 0);
-     XCTAssertTrue([f1m2 numberOfChildren] == 2);
+     XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
+     XCTAssertTrue([f1 childCountAtIndexPath:nil] == 2);
+     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 0);
+     XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 2);
 }
 
 - (void)testNestedGroupedMutableDelegation
@@ -340,12 +346,12 @@ event.assemblage = assemblage;
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
     s1.delegate = self;
     [s1 openBatchUpdate];
-    XCTAssertEqual([s1 numberOfChildren], CHILD_COUNT);
+    XCTAssertEqual([s1 childCountAtIndexPath:nil], CHILD_COUNT);
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
         return [n unsignedIntegerValue] % 2 == 0;
     }];
     [s1 closeBatchUpdate];
-    XCTAssertEqual([s1 numberOfChildren], EVEN_CHILD_COUNT);
+    XCTAssertEqual([s1 childCountAtIndexPath:nil], EVEN_CHILD_COUNT);
     XCTAssert(self.delegateEvents.count == EVEN_CHILD_COUNT);
     for ( NSUInteger i = 0; i < EVEN_CHILD_COUNT; i++ ) {
         RZAssemblageDelegateEvent *ev = self.delegateEvents[i];
@@ -364,7 +370,7 @@ event.assemblage = assemblage;
     XCTAssert([[s1 objectAtIndex:2] integerValue] == 9);
     XCTAssert([[s1 objectAtIndex:3] integerValue] == 12);
 
-    XCTAssertEqual([s1 numberOfChildren], THIRD_CHILD_COUNT);
+    XCTAssertEqual([s1 childCountAtIndexPath:nil], THIRD_CHILD_COUNT);
 
     [self.delegateEvents removeAllObjects];
 }
@@ -382,14 +388,16 @@ event.assemblage = assemblage;
     for ( NSUInteger i = 6; i < 12; i++ ) {
         XCTAssert([[s1 objectAtIndex:i] hasPrefix:@"c"]);
     }
-    for ( NSUInteger i = 0; i < [s1 numberOfChildren]; i++ ) {
-        XCTAssertEqual([s1 objectAtIndex:i], [s1 allObjects][i]);
+    NSArray *objects = [s1 arrayProxyForIndexPath:nil];
+    for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
+        XCTAssertEqual([s1 objectAtIndex:i], objects[i]);
     }
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasSuffix:@"b"] || [s hasSuffix:@"d"] || [s hasSuffix:@"f"];
     }];
-    for ( NSUInteger i = 0; i < [s1 numberOfChildren]; i++ ) {
-        XCTAssertEqual([s1 objectAtIndex:i], [s1 allObjects][i]);
+    objects = [s1 arrayProxyForIndexPath:nil];
+    for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
+        XCTAssertEqual([s1 objectAtIndex:i], objects[i]);
     }
 }
 
@@ -409,12 +417,12 @@ event.assemblage = assemblage;
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
     s1.delegate = self;
     [s1 openBatchUpdate];
-    XCTAssertEqual([s1 numberOfChildren], values.count * assemblages.count);
+    XCTAssertEqual([s1 childCountAtIndexPath:nil], values.count * assemblages.count);
     s1.filter = aFilter;
     [s1 closeBatchUpdate];
     NSUInteger removeInAssemblageCount = (values.count - aValues.count);
     XCTAssertEqual(self.delegateEvents.count, removeInAssemblageCount * assemblages.count);
-    XCTAssertEqual([s1 numberOfChildren], aValues.count * assemblages.count);
+    XCTAssertEqual([s1 childCountAtIndexPath:nil], aValues.count * assemblages.count);
     for ( NSUInteger assemblageIndex = 0; assemblageIndex < assemblages.count; assemblageIndex++ ) {
         for ( NSUInteger i = 0; i < aValues.count; i++ ) {
             NSUInteger indexInAssemblage = i + assemblageIndex * aValues.count;
@@ -472,7 +480,7 @@ event.assemblage = assemblage;
     filtered.delegate = self;
 
     [m removeObjectAtIndex:2]; // 9
-    XCTAssert([filtered numberOfChildren] == 2);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 2);
     XCTAssert([[filtered objectAtIndex:0] isEqual:@"7"]);
     XCTAssert([[filtered objectAtIndex:1] isEqual:@"11"]);
 }
@@ -485,24 +493,24 @@ event.assemblage = assemblage;
         return [numberString integerValue] % 2;
     }];
 
-    XCTAssert([filtered numberOfChildren] == 0);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 0);
     for ( NSUInteger i = 0; i < 5; i++ ) {
         [m addObject:@(i)];
     }
-    XCTAssert([filtered numberOfChildren] == 2);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 2);
     for ( NSUInteger i = 0; i < 5; i++ ) {
         [m addObject:@(i)];
     }
-    XCTAssert([filtered numberOfChildren] == 4);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 4);
 
     [m openBatchUpdate];
-    while ( [m numberOfChildren] != 0 ) {
-        //        [self.data removeObjectAtIndex:[self.data numberOfChildren] - 1];
+    while ( [m childCountAtIndexPath:nil] != 0 ) {
+        //        [self.data removeObjectAtIndex:[self.data childCountAtIndexPath:nil] - 1];
         [m removeObjectAtIndex:0];
     }
     [m closeBatchUpdate];
 
-    XCTAssert([filtered numberOfChildren] == 0);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 0);
 }
 
 - (void)testMutation
@@ -526,10 +534,10 @@ event.assemblage = assemblage;
     [m3 addObject:@"9"];
     XCTAssert([[filtered objectAtIndex:2] isEqualToString:@"9"]);
     [self.delegateEvents removeAllObjects];
-    id obj = [assemblage objectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+    id obj = [assemblage childAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]
                           toIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]];
-    XCTAssertEqual(obj, [assemblage objectAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]]);
+    XCTAssertEqual(obj, [assemblage childAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]]);
 }
 
 - (void)testFilterRemoval
@@ -540,27 +548,27 @@ event.assemblage = assemblage;
         return [numberString integerValue] % 2;
     }];
     filtered.delegate = self;
-    XCTAssert([filtered numberOfChildren] == 3);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
     }
 
     [m1 removeObjectAtIndex:1];
-    XCTAssert([filtered numberOfChildren] == 3);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
     }
     XCTAssert(self.delegateEvents.count == 0);
 
     [m1 removeObjectAtIndex:2];
-    XCTAssert([filtered numberOfChildren] == 3);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
     }
     XCTAssert(self.delegateEvents.count == 0);
 
     [m1 removeObjectAtIndex:3];
-    XCTAssert([filtered numberOfChildren] == 3);
+    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
     }

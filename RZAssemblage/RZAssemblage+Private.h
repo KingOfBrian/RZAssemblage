@@ -10,14 +10,18 @@
 #import "RZAssemblageChangeSet+Private.h"
 #import "RZAssemblageMutationRelay.h"
 
-@interface RZAssemblage() <RZAssemblageMutationRelay, RZAssemblageDelegate>
+@interface RZAssemblage() <RZAssemblageDelegate>
 
-@property (copy, nonatomic) NSMutableArray *store;
+@property (copy, nonatomic) NSMutableArray *childrenStorage;
 
 @property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
 
 @property (nonatomic) NSUInteger updateCount;
 
-- (void)assignDelegateIfObjectIsAssemblage:(id)anObject;
+// These methods should be implemented by subclasses.
+- (NSUInteger)countOfChildren;
+- (id)objectInChildrenAtIndex:(NSUInteger)index;
+- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index;
+- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index;
 
 @end

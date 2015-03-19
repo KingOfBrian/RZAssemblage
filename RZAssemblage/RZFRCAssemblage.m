@@ -54,36 +54,26 @@
     return [self.fetchedResultsController performFetch:error];
 }
 
-- (NSUInteger)numberOfChildrenAtIndexPath:(NSIndexPath *)indexPath
+- (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath
 {
     RZAssertContainerIndexPath(indexPath);
-    NSUInteger numberOfChildren = NSNotFound;
+    NSUInteger childCount = NSNotFound;
     if ( self.hasSections ) {
         if ( indexPath.length == 0 ) {
-            numberOfChildren = self.fetchedResultsController.sections.count;
+            childCount = self.fetchedResultsController.sections.count;
         }
         else {
-            id<NSFetchedResultsSectionInfo> sectionInfo = [self objectAtIndexPath:indexPath];
-            numberOfChildren = [sectionInfo numberOfObjects];
+            id<NSFetchedResultsSectionInfo> sectionInfo = [self childAtIndexPath:indexPath];
+            childCount = [sectionInfo numberOfObjects];
         }
     }
     else {
         return self.fetchedResultsController.fetchedObjects.count;
     }
-    return numberOfChildren;
+    return childCount;
 }
 
-- (NSUInteger)numberOfChildren
-{
-    return [self numberOfChildrenAtIndexPath:nil];
-}
-
-- (id)objectAtIndex:(NSUInteger)index
-{
-    return [self objectAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-}
-
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath
+- (id)childAtIndexPath:(NSIndexPath *)indexPath
 {
     RZAssertItemIndexPath(indexPath);
     id object = nil;
@@ -102,15 +92,6 @@
     return object;
 }
 
-- (NSArray *)allObjects
-{
-    NSMutableArray *allObjects = [NSMutableArray array];
-    for ( NSUInteger i = 0; i < [self numberOfChildren]; i++ ) {
-        [allObjects addObject:[self objectAtIndex:i]];
-    }
-    return [allObjects copy];
-}
-
 // Fake our implementation of copy by returning an array backed assemblage.
 - (id)copyWithZone:(NSZone *)zone
 {
@@ -124,7 +105,7 @@
     NSArray *contents = nil;
     if ( self.hasSections ) {
         NSMutableArray *sections = [NSMutableArray array];
-        for ( NSUInteger i = 0; i < [self numberOfChildren]; i++ ) {
+        for ( NSUInteger i = 0; i < [self childCountAtIndexPath:nil]; i++ ) {
             NSArray *childContent = self.fetchedResultsController.sections[i];
             RZAssemblage *childAssemblage = [[RZAssemblage alloc] initWithArray:childContent];
             [sections addObject:childAssemblage];
@@ -132,7 +113,7 @@
         contents = sections;
     }
     else {
-        contents = [self allObjects];
+        contents = [[self arrayProxyForIndexPath:nil] copy];
     }
     return [[RZAssemblage alloc] initWithArray:contents];
 }

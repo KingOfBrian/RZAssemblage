@@ -76,7 +76,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.tableView.assemblage objectAtIndexPath:indexPath];
+    id object = [self.tableView.assemblage childAtIndexPath:indexPath];
     if ( [object isKindOfClass:[UIViewController class]] ) {
         [self.navigationController pushViewController:object animated:YES];
     }

@@ -80,8 +80,9 @@
 - (void)clearData
 {
     [self.data openBatchUpdate];
-    while ( [self.data numberOfChildren] != 0 ) {
-        [self.data removeObjectAtIndex:0];
+    NSMutableArray *proxy = [self.data mutableArrayProxyForIndexPath:nil];
+    while ( [proxy count] != 0 ) {
+        [proxy removeObjectAtIndex:0];
     }
     [self.data closeBatchUpdate];
 }
@@ -89,8 +90,9 @@
 - (void)addData
 {
     [self.data openBatchUpdate];
+    NSMutableArray *proxy = [self.data mutableArrayProxyForIndexPath:nil];
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        [self.data addObject:@(i+1)];
+        [proxy addObject:@(i+1)];
     }
     [self.data closeBatchUpdate];
 }
@@ -101,7 +103,7 @@
     self.filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *num, NSDictionary *bindings) {
         return [num integerValue] % self.divisbleBy == 0;
     }];
-    NSLog(@"Showing filters divisible by %@ = %@", @(self.divisbleBy + 1), @([self.assemblage numberOfChildrenAtIndexPath:[NSIndexPath indexPathWithIndex:0]]));
+    NSLog(@"Showing filters divisible by %@ = %@", @(self.divisbleBy + 1), @([self.assemblage childCountAtIndexPath:[NSIndexPath indexPathWithIndex:0]]));
 }
 
 @end

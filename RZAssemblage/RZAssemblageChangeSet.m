@@ -86,7 +86,7 @@
 {
     NSMutableArray *objects = [NSMutableArray array];
     for ( NSIndexPath *indexPath in indexPaths ) {
-        [objects addObject:[assemblage objectAtIndexPath:indexPath]];
+        [objects addObject:[assemblage childAtIndexPath:indexPath]];
     }
     return [objects copy];
 }
