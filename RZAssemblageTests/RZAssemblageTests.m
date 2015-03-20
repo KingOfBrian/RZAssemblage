@@ -281,7 +281,7 @@ event.assemblage = assemblage;
     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
     XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 0);
 
-    [f1m2 addObject:@4];
+    [[f1m2 proxyArrayForIndexPath:nil] addObject:@4];
     XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
     XCTAssertTrue([f1 childCountAtIndexPath:nil] == 4);
     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
@@ -299,9 +299,9 @@ event.assemblage = assemblage;
     XCTAssertTrue([f1 childCountAtIndexPath:nil] == 5);
     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 2);
     XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 3);
-
-    [f1m1 removeObjectAtIndex:0];
-    [f1m1 removeObjectAtIndex:0];
+    NSMutableArray *proxy = [f1m1 proxyArrayForIndexPath:nil];
+    [proxy removeObjectAtIndex:0];
+    [proxy removeObjectAtIndex:0];
     XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
     XCTAssertTrue([f1 childCountAtIndexPath:nil] == 3);
     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 0);
@@ -319,23 +319,25 @@ event.assemblage = assemblage;
 - (void)testNestedGroupedMutableDelegation
 {
     RZAssemblage *parent = [[RZAssemblage alloc] initWithArray:@[]];
-    [parent addObject:[[RZAssemblage alloc] initWithArray:@[]]];
+    NSMutableArray *parentproxy = [parent proxyArrayForIndexPath:nil];
+    [parentproxy addObject:[[RZAssemblage alloc] initWithArray:@[]]];
     RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
-    [parent addObject:mutableValues];
+    [parentproxy addObject:mutableValues];
 
     parent.delegate = self;
     [parent openBatchUpdate];
-    [mutableValues addObject:@1];
-    [mutableValues removeLastObject];
-    [mutableValues insertObject:@2 atIndex:0];
-    [mutableValues removeObjectAtIndex:0];
-    [mutableValues insertObject:@2 atIndex:0];
-    [mutableValues insertObject:@1 atIndex:0];
+    NSMutableArray *proxy = [mutableValues proxyArrayForIndexPath:nil];
+    [proxy addObject:@1];
+    [proxy removeLastObject];
+    [proxy insertObject:@2 atIndex:0];
+    [proxy removeObjectAtIndex:0];
+    [proxy insertObject:@2 atIndex:0];
+    [proxy insertObject:@1 atIndex:0];
     [parent closeBatchUpdate];
     XCTAssert(self.delegateEvents.count == 2);
     [self.delegateEvents removeAllObjects];
 
-    [parent addObject:[[RZAssemblage alloc] initWithArray:@[@"Only the assemblage is notified"]]];
+    [parentproxy addObject:[[RZAssemblage alloc] initWithArray:@[@"Only the assemblage is notified"]]];
     XCTAssert(self.delegateEvents.count == 1);
     XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
     XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:2]);
@@ -351,6 +353,7 @@ event.assemblage = assemblage;
 #define THIRD_CHILD_COUNT 12 / 3
 
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
+    NSMutableArray *s1proxy = [s1 proxyArrayForIndexPath:nil];
     s1.delegate = self;
     [s1 openBatchUpdate];
     XCTAssertEqual([s1 childCountAtIndexPath:nil], CHILD_COUNT);
@@ -372,10 +375,10 @@ event.assemblage = assemblage;
         return [n unsignedIntegerValue] % 3 == 0;
     }];
     [s1 closeBatchUpdate];
-    XCTAssert([[s1 objectAtIndex:0] integerValue] == 3);
-    XCTAssert([[s1 objectAtIndex:1] integerValue] == 6);
-    XCTAssert([[s1 objectAtIndex:2] integerValue] == 9);
-    XCTAssert([[s1 objectAtIndex:3] integerValue] == 12);
+    XCTAssert([[s1proxy objectAtIndex:0] integerValue] == 3);
+    XCTAssert([[s1proxy objectAtIndex:1] integerValue] == 6);
+    XCTAssert([[s1proxy objectAtIndex:2] integerValue] == 9);
+    XCTAssert([[s1proxy objectAtIndex:3] integerValue] == 12);
 
     XCTAssertEqual([s1 childCountAtIndexPath:nil], THIRD_CHILD_COUNT);
 
@@ -386,25 +389,26 @@ event.assemblage = assemblage;
 {
     NSArray *values = [self.class values];
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:[[RZAssemblage alloc] initWithArray:values]];
+    NSMutableArray *s1proxy = [s1 proxyArrayForIndexPath:nil];
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
     }];
     for ( NSUInteger i = 0; i < 6; i++ ) {
-        XCTAssert([[s1 objectAtIndex:i] hasPrefix:@"a"]);
+        XCTAssert([[s1proxy objectAtIndex:i] hasPrefix:@"a"]);
     }
     for ( NSUInteger i = 6; i < 12; i++ ) {
-        XCTAssert([[s1 objectAtIndex:i] hasPrefix:@"c"]);
+        XCTAssert([[s1proxy objectAtIndex:i] hasPrefix:@"c"]);
     }
     NSArray *objects = [s1 proxyArrayForIndexPath:nil];
     for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
-        XCTAssertEqual([s1 objectAtIndex:i], objects[i]);
+        XCTAssertEqual([s1proxy objectAtIndex:i], objects[i]);
     }
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasSuffix:@"b"] || [s hasSuffix:@"d"] || [s hasSuffix:@"f"];
     }];
     objects = [s1 proxyArrayForIndexPath:nil];
     for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
-        XCTAssertEqual([s1 objectAtIndex:i], objects[i]);
+        XCTAssertEqual([s1proxy objectAtIndex:i], objects[i]);
     }
 }
 
@@ -454,13 +458,13 @@ event.assemblage = assemblage;
     XCTAssertEqualObjects(array, expected);
     XCTAssert(self.changeSet.insertedIndexPaths.count == expected.count);
     XCTAssert(self.changeSet.removedIndexPaths.count == expected.count);
+    XCTAssert(self.changeSet.moveFromToIndexPaths.count == 0);
     [self.changeSet generateMoveEventsFromAssemblage:f1];
     XCTAssert(self.changeSet.insertedIndexPaths.count == 0);
     XCTAssert(self.changeSet.removedIndexPaths.count == 0);
     XCTAssert(self.changeSet.moveFromToIndexPaths.count == expected.count);
 
 }
-
 
 - (void)testFilterJoin
 {
@@ -476,6 +480,7 @@ event.assemblage = assemblage;
                              [[RZAssemblage alloc] initWithArray:values]];
     RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:assemblages];
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
+    NSMutableArray *s1proxy = [s1 proxyArrayForIndexPath:nil];
     s1.delegate = self;
     [s1 openBatchUpdate];
     XCTAssertEqual([s1 childCountAtIndexPath:nil], values.count * assemblages.count);
@@ -487,7 +492,7 @@ event.assemblage = assemblage;
     for ( NSUInteger assemblageIndex = 0; assemblageIndex < assemblages.count; assemblageIndex++ ) {
         for ( NSUInteger i = 0; i < aValues.count; i++ ) {
             NSUInteger indexInAssemblage = i + assemblageIndex * aValues.count;
-            XCTAssertEqual([s1 objectAtIndex:indexInAssemblage], [aValues objectAtIndex:i]);
+            XCTAssertEqual([s1proxy objectAtIndex:indexInAssemblage], [aValues objectAtIndex:i]);
         }
         for ( NSUInteger i = 0; i < removeInAssemblageCount; i++ ) {
             NSUInteger eventIndex = i + assemblageIndex * removeInAssemblageCount;
@@ -523,7 +528,7 @@ event.assemblage = assemblage;
         for ( NSUInteger i = 0; i < bValues.count; i++ ) {
             NSUInteger indexInAssemblage = i + assemblageIndex * bValues.count;
             RZAssemblageDelegateEvent *event = self.delegateEvents[i + offset];
-            XCTAssertEqual([s1 objectAtIndex:indexInAssemblage], [bValues objectAtIndex:i]);
+            XCTAssertEqual([s1proxy objectAtIndex:indexInAssemblage], [bValues objectAtIndex:i]);
             XCTAssertEqual(event.type, RZAssemblageMutationTypeInsert);
         }
     }
@@ -534,21 +539,26 @@ event.assemblage = assemblage;
 - (void)testFilteredRemoval
 {
     RZAssemblage *m = [[RZAssemblage alloc] initWithArray:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
+    NSMutableArray *mproxy = [m proxyArrayForIndexPath:nil];
+
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m];
+    NSMutableArray *filteredproxy = [filtered proxyArrayForIndexPath:nil];
+
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
     filtered.delegate = self;
 
-    [m removeObjectAtIndex:2]; // 9
+    [mproxy removeObjectAtIndex:2]; // 9
     XCTAssert([filtered childCountAtIndexPath:nil] == 2);
-    XCTAssert([[filtered objectAtIndex:0] isEqual:@"7"]);
-    XCTAssert([[filtered objectAtIndex:1] isEqual:@"11"]);
+    XCTAssert([[filteredproxy objectAtIndex:0] isEqual:@"7"]);
+    XCTAssert([[filteredproxy objectAtIndex:1] isEqual:@"11"]);
 }
 
 - (void)testFilteredAddition
 {
     RZAssemblage *m = [[RZAssemblage alloc] initWithArray:@[]];
+    NSMutableArray *mproxy = [m proxyArrayForIndexPath:nil];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -556,19 +566,16 @@ event.assemblage = assemblage;
 
     XCTAssert([filtered childCountAtIndexPath:nil] == 0);
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        [m addObject:@(i)];
+        [mproxy addObject:@(i)];
     }
     XCTAssert([filtered childCountAtIndexPath:nil] == 2);
     for ( NSUInteger i = 0; i < 5; i++ ) {
-        [m addObject:@(i)];
+        [mproxy addObject:@(i)];
     }
     XCTAssert([filtered childCountAtIndexPath:nil] == 4);
 
     [m openBatchUpdate];
-    while ( [m childCountAtIndexPath:nil] != 0 ) {
-        //        [self.data removeObjectAtIndex:[self.data childCountAtIndexPath:nil] - 1];
-        [m removeObjectAtIndex:0];
-    }
+    [mproxy removeAllObjects];
     [m closeBatchUpdate];
 
     XCTAssert([filtered childCountAtIndexPath:nil] == 0);
@@ -582,6 +589,8 @@ event.assemblage = assemblage;
     RZAssemblage *m4 = [[RZAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
     RZJoinAssemblage *j1 = [[RZJoinAssemblage alloc] initWithArray:@[m3, m4]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:j1];
+    NSMutableArray *filteredproxy = [filtered proxyArrayForIndexPath:nil];
+
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
@@ -592,8 +601,8 @@ event.assemblage = assemblage;
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
 
     // This is @ 2:2
-    [m3 addObject:@"9"];
-    XCTAssert([[filtered objectAtIndex:2] isEqualToString:@"9"]);
+    [[m3 proxyArrayForIndexPath:nil] addObject:@"9"];
+    XCTAssert([[filteredproxy objectAtIndex:2] isEqualToString:@"9"]);
     [self.delegateEvents removeAllObjects];
     id obj = [assemblage childAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]
@@ -605,33 +614,34 @@ event.assemblage = assemblage;
 {
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
+    NSMutableArray *filteredproxy = [filtered proxyArrayForIndexPath:nil];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
     filtered.delegate = self;
     XCTAssert([filtered childCountAtIndexPath:nil] == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
-        XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
+        XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
     }
-
-    [m1 removeObjectAtIndex:1];
+    NSMutableArray *m1proxy = [m1 proxyArrayForIndexPath:nil];
+    [m1proxy removeObjectAtIndex:1];
     XCTAssert([filtered childCountAtIndexPath:nil] == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
-        XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
-    }
-    XCTAssert(self.delegateEvents.count == 0);
-
-    [m1 removeObjectAtIndex:2];
-    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
-    for ( NSUInteger i = 0; i < 3; i++ ) {
-        XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
+        XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
     }
     XCTAssert(self.delegateEvents.count == 0);
 
-    [m1 removeObjectAtIndex:3];
+    [m1proxy removeObjectAtIndex:2];
     XCTAssert([filtered childCountAtIndexPath:nil] == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
-        XCTAssert([[filtered objectAtIndex:i] integerValue] % 2 == 1);
+        XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
+    }
+    XCTAssert(self.delegateEvents.count == 0);
+
+    [m1proxy removeObjectAtIndex:3];
+    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
+    for ( NSUInteger i = 0; i < 3; i++ ) {
+        XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
     }
     XCTAssert(self.delegateEvents.count == 0);
 }
@@ -639,12 +649,14 @@ event.assemblage = assemblage;
 - (void)testMoveWithIndexConcerns1
 {
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4"]];
+    NSMutableArray *m1proxy = [m1 proxyArrayForIndexPath:nil];
+
     m1.delegate = self;
     [m1 openBatchUpdate];
-    [m1 removeObjectAtIndex:0];
-    [m1 removeObjectAtIndex:0];
-    [m1 addObject:@"2"];
-    [m1 removeObjectAtIndex:0];
+    [m1proxy removeObjectAtIndex:0];
+    [m1proxy removeObjectAtIndex:0];
+    [m1proxy addObject:@"2"];
+    [m1proxy removeObjectAtIndex:0];
     [m1 closeBatchUpdate];
     [self.changeSet generateMoveEventsFromAssemblage:m1];
 }
@@ -652,11 +664,13 @@ event.assemblage = assemblage;
 - (void)testMoveWithIndexConcerns2
 {
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3"]];
+    NSMutableArray *m1proxy = [m1 proxyArrayForIndexPath:nil];
+
     m1.delegate = self;
     [m1 openBatchUpdate];
-    [m1 removeObjectAtIndex:0];
-    [m1 removeObjectAtIndex:0];
-    [m1 addObject:@"2"];
+    [m1proxy removeObjectAtIndex:0];
+    [m1proxy removeObjectAtIndex:0];
+    [m1proxy addObject:@"2"];
     [m1 closeBatchUpdate];
     [self.changeSet generateMoveEventsFromAssemblage:m1];
 }
@@ -664,12 +678,13 @@ event.assemblage = assemblage;
 - (void)testBatchingA
 {
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[]];
+    NSMutableArray *m1proxy = [m1 proxyArrayForIndexPath:nil];
     m1.delegate = self;
     [m1 openBatchUpdate];
-    [m1 addObject:@"2"];
-    [m1 addObject:@"2"];
-    [m1 removeObjectAtIndex:0];
-    [m1 removeObjectAtIndex:0];
+    [m1proxy addObject:@"2"];
+    [m1proxy addObject:@"2"];
+    [m1proxy removeObjectAtIndex:0];
+    [m1proxy removeObjectAtIndex:0];
     [m1 closeBatchUpdate];
     [self.changeSet generateMoveEventsFromAssemblage:m1];
 }

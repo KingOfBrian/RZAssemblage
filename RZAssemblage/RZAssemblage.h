@@ -28,13 +28,3 @@
 - (void)moveObjectAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
 
 @end
-
-@interface RZAssemblage (Legacy)
-
-- (void)addObject:(id)object;
-- (void)insertObject:(id)object atIndex:(NSUInteger)index;
-- (void)removeObjectAtIndex:(NSUInteger)index;
-- (void)removeLastObject;
-- (id)objectAtIndex:(NSUInteger)index;
-
-@end

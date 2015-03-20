@@ -245,36 +245,3 @@
 }
 
 @end
-
-@implementation RZAssemblage (Legacy)
-
-- (void)addObject:(id)object
-{
-    NSMutableArray *proxy = [self proxyArrayForIndexPath:nil];
-    [proxy addObject:object];
-}
-
-- (void)insertObject:(id)object atIndex:(NSUInteger)index
-{
-    NSMutableArray *proxy = [self proxyArrayForIndexPath:nil];
-    [proxy insertObject:object atIndex:index];
-}
-
-- (void)removeObjectAtIndex:(NSUInteger)index
-{
-    NSMutableArray *proxy = [self proxyArrayForIndexPath:nil];
-    [proxy removeObjectAtIndex:index];
-}
-
-- (void)removeLastObject
-{
-    NSMutableArray *proxy = [self proxyArrayForIndexPath:nil];
-    [proxy removeLastObject];
-}
-
-- (id)objectAtIndex:(NSUInteger)index
-{
-    return [self childAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-}
-
-@end
