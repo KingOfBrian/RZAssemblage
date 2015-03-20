@@ -1,4 +1,3 @@
-
 //
 //  RZAssemblageTests.m
 //  RZAssemblageTests
@@ -15,6 +14,7 @@
 #import "RZAssemblageChangeSet.h"
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
+#import "RZProxyAssemblage.h"
 
 #define TRACE_DELEGATE_EVENT \
 RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \
@@ -54,9 +54,16 @@ event.assemblage = assemblage;
 @property (nonatomic, strong) NSMutableArray *delegateEvents;
 @property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
 
+@property (nonatomic, strong) NSArray *testProxyArray;
+
 @end
 
 @implementation RZAssemblageTests
+
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
+{
+    return YES;
+}
 
 + (NSArray *)values
 {
@@ -652,6 +659,75 @@ event.assemblage = assemblage;
     [m1 addObject:@"2"];
     [m1 closeBatchUpdate];
     [self.changeSet generateMoveEventsFromAssemblage:m1];
+}
+
+- (void)testBatchingA
+{
+    RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[]];
+    m1.delegate = self;
+    [m1 openBatchUpdate];
+    [m1 addObject:@"2"];
+    [m1 addObject:@"2"];
+    [m1 removeObjectAtIndex:0];
+    [m1 removeObjectAtIndex:0];
+    [m1 closeBatchUpdate];
+    [self.changeSet generateMoveEventsFromAssemblage:m1];
+}
+
+- (void)testExternalProxy
+{
+    self.testProxyArray = [NSMutableArray array];
+    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self arrayKeyPath:@"testProxyArray"];
+    pa.delegate = self;
+    NSMutableArray *externalProxy = [self mutableArrayValueForKey:@"testProxyArray"];
+    // This only causes the observer change event
+    [pa openBatchUpdate];
+    [externalProxy addObject:@(0)];
+    [externalProxy addObject:@(1)];
+    [externalProxy removeObjectAtIndex:0];
+    [externalProxy removeObjectAtIndex:0];
+    [pa closeBatchUpdate];
+}
+
+- (void)testInternalProxy
+{
+    self.testProxyArray = [NSArray array];
+    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self arrayKeyPath:@"testProxyArray"];
+    pa.delegate = self;
+    NSMutableArray *proxyArray = [pa proxyArrayForIndexPath:nil];
+    [pa openBatchUpdate];
+    // This causes double change events (setter + observer)
+    [proxyArray addObject:@"0"];
+    [proxyArray addObject:@"1"];
+    [proxyArray removeObjectAtIndex:0];
+    [proxyArray removeObjectAtIndex:0];
+    [pa closeBatchUpdate];
+    XCTAssertEqual(proxyArray.count, self.testProxyArray.count);
+}
+
+#define ITERATION_TEST_COUNT 1000//00
+- (void)testArrayProxyPerformance
+{
+    self.testProxyArray = [NSArray array];
+
+    [self measureBlock:^{
+        NSMutableArray *proxy = [self mutableArrayValueForKey:@"testProxyArray"];
+        for ( NSUInteger i = 0; i < ITERATION_TEST_COUNT; i++ ) {
+            [proxy addObject:@(i)];
+        }
+    }];
+}
+
+- (void)testMutableArrayProxyPerformance
+{
+    self.testProxyArray = [NSMutableArray array];
+
+    [self measureBlock:^{
+        NSMutableArray *proxy = [self mutableArrayValueForKey:@"testProxyArray"];
+        for ( NSUInteger i = 0; i < ITERATION_TEST_COUNT; i++ ) {
+            [proxy addObject:@(i)];
+        }
+    }];
 }
 
 @end

@@ -61,6 +61,7 @@
 - (void)addIndexPath:(NSIndexPath *)indexPath;
 - (void)addIndexPathsInArray:(NSArray *)indexPaths;
 - (void)addIndexPaths:(NSSet *)indexPaths;
+- (void)addIndexes:(NSIndexSet *)indexSet;
 
 - (void)removeIndexPath:(NSIndexPath *)indexPath;
 - (void)removeIndexPathsInArray:(NSArray *)indexPaths;

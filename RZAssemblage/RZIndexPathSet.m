@@ -422,6 +422,13 @@
     }];
 }
 
+- (void)addIndexes:(NSIndexSet *)indexSet
+{
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [self addIndexPath:[NSIndexPath indexPathWithIndex:idx]];
+    }];
+}
+
 - (void)removeIndexPath:(NSIndexPath *)indexPath
 {
     NSParameterAssert(indexPath);

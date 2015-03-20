@@ -11,16 +11,27 @@
 
 @interface RZAssemblage() <RZAssemblageDelegate>
 
-@property (copy, nonatomic) NSMutableArray *childrenStorage;
+@property (strong, nonatomic) id representedObject;
+
+@property (strong, nonatomic) NSMutableArray *childrenStorage;
 
 @property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
 
 @property (nonatomic) NSUInteger updateCount;
+
+@end
+
+@interface RZAssemblage (Protected)
 
 // These methods should be implemented by subclasses.
 - (NSUInteger)countOfChildren;
 - (id)objectInChildrenAtIndex:(NSUInteger)index;
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)index;
 - (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index;
+- (NSUInteger)childrenIndexOfObject:(id)object;
+
+
+- (id)assemblageInChildrenAtIndex:(NSUInteger)index;
+- (id)monitoredVersionOfObject:(id)anObject;
 
 @end

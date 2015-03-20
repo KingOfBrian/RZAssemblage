@@ -17,6 +17,7 @@
 - (instancetype)init __attribute__((unavailable));
 
 - (instancetype)initWithArray:(NSArray *)array;
+- (instancetype)initWithArray:(NSArray *)array representingObject:(id)representingObject;
 
 - (void)openBatchUpdate;
 - (void)notifyObjectUpdate:(id)object;
