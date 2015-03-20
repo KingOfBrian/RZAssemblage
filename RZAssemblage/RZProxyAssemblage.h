@@ -11,8 +11,8 @@
 
 @interface RZProxyAssemblage : RZAssemblage
 
-- (instancetype)initWithObject:(id)object arrayKeyPath:(NSString *)keypath;
-
-@property (copy, nonatomic, readonly) NSString *keypath;
+- (instancetype)initWithObject:(id)object keypath:(NSString *)keypath;
+- (instancetype)initWithObject:(id)object keypaths:(NSArray *)keypaths;
+- (instancetype)initWithObject:(id)object childKey:(NSString *)keypaths;
 
 @end

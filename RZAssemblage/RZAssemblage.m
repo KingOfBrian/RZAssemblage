@@ -20,6 +20,7 @@
 {
     self = [super init];
     if ( self ) {
+        _representedObject = representingObject;
         _childrenStorage = [array isKindOfClass:[NSMutableArray class]] ? array : [array mutableCopy];
         [[_childrenStorage copy] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
             id monitored = [self monitoredVersionOfObject:object];
@@ -87,8 +88,13 @@
     }
     else {
         id<RZAssemblage> assemblage = [self nodeInChildrenAtIndex:[indexPath indexAtPosition:0]];
-        NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
-        count = [assemblage childCountAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        if ( assemblage ) {
+            NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
+            count = [assemblage childCountAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        }
+        else {
+            count = 0;
+        }
     }
     return count;
 }

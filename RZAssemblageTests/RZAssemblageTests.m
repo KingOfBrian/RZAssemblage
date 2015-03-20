@@ -692,7 +692,7 @@ event.assemblage = assemblage;
 - (void)testExternalProxy
 {
     self.testProxyArray = [NSMutableArray array];
-    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self arrayKeyPath:@"testProxyArray"];
+    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
     pa.delegate = self;
     NSMutableArray *externalProxy = [self mutableArrayValueForKey:@"testProxyArray"];
     // This only causes the observer change event
@@ -707,7 +707,7 @@ event.assemblage = assemblage;
 - (void)testInternalProxy
 {
     self.testProxyArray = [NSArray array];
-    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self arrayKeyPath:@"testProxyArray"];
+    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
     pa.delegate = self;
     NSMutableArray *proxyArray = [pa mutableArrayForIndexPath:nil];
     [pa openBatchUpdate];
