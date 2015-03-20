@@ -32,6 +32,7 @@
 
 
 - (id)nodeInChildrenAtIndex:(NSUInteger)index;
-- (id)monitoredVersionOfObject:(id)anObject;
+- (void)addMonitorsForObject:(id)anObject;
+- (void)removeMonitorsForObject:(id)anObject;
 
 @end

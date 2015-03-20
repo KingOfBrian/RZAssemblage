@@ -10,6 +10,8 @@
 
 #import "RZAssemblageProtocols.h"
 
+OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
+
 @protocol RZAssemblageDelegate;
 
 @interface RZAssemblage : NSObject <RZAssemblage>

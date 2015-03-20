@@ -12,6 +12,9 @@
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
 
+NSString *const RZAssemblageUpdateKey = @"RZAssemblageUpdateKey";
+static char RZAssemblageUpdateContext;
+
 @implementation RZAssemblage
 
 @synthesize delegate = _delegate;
@@ -21,12 +24,12 @@
     self = [super init];
     if ( self ) {
         _representedObject = representingObject;
+        if ( _representedObject ) {
+            [self addMonitorsForObject:_representedObject];
+        }
         _childrenStorage = [array isKindOfClass:[NSMutableArray class]] ? array : [array mutableCopy];
         [[_childrenStorage copy] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
-            id monitored = [self monitoredVersionOfObject:object];
-            if ( monitored != object ) {
-                [_childrenStorage replaceObjectAtIndex:idx withObject:monitored];
-            }
+            [self addMonitorsForObject:object];
         }];
     }
     return self;
@@ -34,7 +37,17 @@
 
 - (instancetype)initWithArray:(NSArray *)array
 {
-    return [self initWithArray:array representingObject:[NSNull null]];
+    return [self initWithArray:array representingObject:nil];
+}
+
+- (void)dealloc
+{
+    for ( NSObject *object in _childrenStorage ) {
+        [self removeMonitorsForObject:object];
+    }
+    if ( _representedObject ) {
+        [self removeMonitorsForObject:_representedObject];
+    }
 }
 
 - (NSString *)description
@@ -88,13 +101,8 @@
     }
     else {
         id<RZAssemblage> assemblage = [self nodeInChildrenAtIndex:[indexPath indexAtPosition:0]];
-        if ( assemblage ) {
-            NSAssert([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
-            count = [assemblage childCountAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
-        }
-        else {
-            count = 0;
-        }
+        RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
+        count = [assemblage childCountAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return count;
 }
@@ -224,7 +232,7 @@
 {
     RZAssemblageLog(@"%p:Insert %@ at %zd", self, object, index);
     NSParameterAssert(object);
-    object = [self monitoredVersionOfObject:object];
+    [self addMonitorsForObject:object];
     [self openBatchUpdate];
     [self.childrenStorage insertObject:object atIndex:index];
     [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
@@ -241,13 +249,48 @@
     return [self.childrenStorage objectAtIndex:index];
 }
 
-- (id)monitoredVersionOfObject:(id)anObject
+- (void)addMonitorsForObject:(NSObject *)anObject
 {
-    id monitored = anObject;
     if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
         [(id<RZAssemblage>)anObject setDelegate:self];
     }
-    return monitored;
+    else if ( [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
+        [anObject addObserver:self
+                   forKeyPath:RZAssemblageUpdateKey
+                      options:NSKeyValueObservingOptionNew
+                      context:&RZAssemblageUpdateContext];
+    }
+}
+
+- (void)removeMonitorsForObject:(NSObject *)anObject;
+{
+    if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
+        [(id<RZAssemblage>)anObject setDelegate:nil];
+    }
+    else if ( [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
+        [anObject addObserver:self
+                   forKeyPath:RZAssemblageUpdateKey
+                      options:NSKeyValueObservingOptionNew
+                      context:&RZAssemblageUpdateContext];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ( context == &RZAssemblageUpdateContext ) {
+        [self openBatchUpdate];
+        if ( object == _representedObject ) {
+            [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndexes:NULL length:0]];
+        }
+        else {
+            NSUInteger index = [self childrenIndexOfObject:object];
+            [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+        }
+        [self closeBatchUpdate];
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end

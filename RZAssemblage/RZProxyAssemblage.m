@@ -72,7 +72,9 @@ static char RZProxyKeyPathContext;
 
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
 {
-    RZAssemblageLog(@"%p:Remove %@ at %zd", self, [self objectInChildrenAtIndex:index],  index);
+    id object = [self objectInChildrenAtIndex:index];
+    RZAssemblageLog(@"%p:Remove %@ at %zd", self, object,  index);
+    [self removeMonitorsForObject:object];
     [self.childrenStorage removeObjectAtIndex:index];
 }
 
@@ -80,20 +82,28 @@ static char RZProxyKeyPathContext;
 {
     RZAssemblageLog(@"%p:Insert %@ at %zd", self, object, index);
     NSParameterAssert(object);
-    object = [self monitoredVersionOfObject:object];
+    [self addMonitorsForObject:object];
     [self.childrenStorage insertObject:object atIndex:index];
 }
 
 - (id)nodeInChildrenAtIndex:(NSUInteger)index
 {
-    id node = nil;
+    id node = [super nodeInChildrenAtIndex:index];
     if ( self.isRepeatingKeyPath ) {
-        id object = [self objectInChildrenAtIndex:index];
-        node = [[RZProxyAssemblage alloc] initWithObject:object childKey:self.keypath];
+        if ( [node conformsToProtocol:@protocol(RZAssemblage)] == NO ) {
+            [self removeMonitorsForObject:node];
+            node = [[RZProxyAssemblage alloc] initWithObject:node childKey:self.keypath];
+            [self addMonitorsForObject:node];
+            [self.childrenStorage replaceObjectAtIndex:index withObject:node];
+        }
     }
     else if ( self.nextKeyPaths.count > 0 ) {
-        id object = [self objectInChildrenAtIndex:index];
-        node = [[RZProxyAssemblage alloc] initWithObject:object keypaths:self.nextKeyPaths];
+        if ( [node conformsToProtocol:@protocol(RZAssemblage)] == NO ) {
+            [self removeMonitorsForObject:node];
+            node = [[RZProxyAssemblage alloc] initWithObject:node keypaths:self.nextKeyPaths];
+            [self addMonitorsForObject:node];
+            [self.childrenStorage replaceObjectAtIndex:index withObject:node];
+        }
     }
     return node;
 }
@@ -114,8 +124,19 @@ static char RZProxyKeyPathContext;
                 [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
             }];
         }
-        else {
-            RZRaize(changeType != NSKeyValueChangeReplacement, @"Have to implement replacement");
+        else if ( changeType == NSKeyValueChangeReplacement ) {
+            id newObject = change[NSKeyValueChangeNewKey];
+            id oldObject = change[NSKeyValueChangeOldKey];
+            BOOL isAssemblageSwap = ([newObject conformsToProtocol:@protocol(RZAssemblage)] &&
+                                     [oldObject conformsToProtocol:@protocol(RZAssemblage)] == NO);
+            if ( isAssemblageSwap == NO && indexes.count == 1 ) {
+                [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:indexes.firstIndex]];
+            }
+            else {
+                RZRaize(changeType != NSKeyValueChangeReplacement, @"Unexpected Replacement");
+            }
+        } else {
+            RZRaize(changeType != NSKeyValueChangeSetting, @"Have to implement setting");
         }
         [self closeBatchUpdate];
     }
