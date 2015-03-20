@@ -13,6 +13,28 @@
 
 @implementation RZAssemblageChangeSet
 
++ (NSIndexSet *)sectionIndexSetFromIndexPaths:(NSArray *)indexPaths
+{
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    for ( NSIndexPath *indexPath in indexPaths ) {
+        if ( indexPath.length == 1 ) {
+            [indexes addIndex:[indexPath indexAtPosition:0]];
+        }
+    }
+    return [indexes copy];
+}
+
++ (NSArray *)rowIndexPathsFromIndexPaths:(NSArray *)indexPaths
+{
+    NSMutableArray *rowIndexPaths = [NSMutableArray array];
+    for ( NSIndexPath *indexPath in indexPaths ) {
+        if ( indexPath.length == 2 ) {
+            [rowIndexPaths addObject:indexPath];
+        }
+    }
+    return [rowIndexPaths copy];
+}
+
 - (instancetype)init
 {
     self = [super init];

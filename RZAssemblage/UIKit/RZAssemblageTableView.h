@@ -22,7 +22,9 @@
  * Ignore assemblage delegate events while set to YES.  This should be enabled
  * while table view delegate mutation is occurring.
  *
- * NOTE: This will crash if you move an object into a filtered section that is filtered.
+ * NOTE: This will crash if you move an object into a filtered section that causes
+ * the item to be filtered in the new section.  This can be fixed by informing the data
+ * source of the expected change, and then reconciling if the change set does not occur.
  */
 @property (assign, nonatomic) BOOL ignoreAssemblageChanges;
 

@@ -21,6 +21,9 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 @interface RZAssemblageChangeSet : NSObject
 
++ (NSIndexSet *)sectionIndexSetFromIndexPaths:(NSArray *)indexPaths;
++ (NSArray *)rowIndexPathsFromIndexPaths:(NSArray *)indexPaths;
+
 @property (copy, nonatomic) id<RZAssemblage> startingAssemblage;
 
 @property (strong, nonatomic, readonly) NSArray *insertedIndexPaths;
