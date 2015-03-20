@@ -176,7 +176,7 @@ event.assemblage = assemblage;
     RZAssemblage *mutableAssemblage = [[RZAssemblage alloc] initWithArray:@[]];
     mutableAssemblage.delegate = self;
 
-    NSMutableArray *mutableValues = [mutableAssemblage proxyArrayForIndexPath:nil];
+    NSMutableArray *mutableValues = [mutableAssemblage mutableArrayForIndexPath:nil];
     [mutableValues addObject:@1];
     XCTAssert(self.delegateEvents.count == 1);
     XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
@@ -209,7 +209,7 @@ event.assemblage = assemblage;
     RZAssemblage *mutableAssemblage = [[RZAssemblage alloc] initWithArray:@[]];
     mutableAssemblage.delegate = self;
 
-    NSMutableArray *mutableValues = [mutableAssemblage proxyArrayForIndexPath:nil];
+    NSMutableArray *mutableValues = [mutableAssemblage mutableArrayForIndexPath:nil];
     [mutableAssemblage openBatchUpdate];
 
     [mutableValues addObject:@1];
@@ -231,7 +231,7 @@ event.assemblage = assemblage;
 
     [assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in assemblages ) {
-        NSMutableArray *ma = [assemblage proxyArrayForIndexPath:nil];
+        NSMutableArray *ma = [assemblage mutableArrayForIndexPath:nil];
         [ma addObject:@1];
         [ma removeLastObject];
     }
@@ -241,7 +241,7 @@ event.assemblage = assemblage;
 
     [assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in assemblages ) {
-        NSMutableArray *ma = [assemblage proxyArrayForIndexPath:nil];
+        NSMutableArray *ma = [assemblage mutableArrayForIndexPath:nil];
         [ma addObject:@1];
     }
     [assemblage closeBatchUpdate];
@@ -261,7 +261,7 @@ event.assemblage = assemblage;
     assemblage.delegate = self;
 
     for ( RZAssemblage *assemblage in @[m1, f1m1] ) {
-        NSMutableArray *ma = [assemblage proxyArrayForIndexPath:nil];
+        NSMutableArray *ma = [assemblage mutableArrayForIndexPath:nil];
         [ma addObject:@1];
         [ma addObject:@2];
         [ma addObject:@3];
@@ -281,7 +281,7 @@ event.assemblage = assemblage;
     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
     XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 0);
 
-    [[f1m2 proxyArrayForIndexPath:nil] addObject:@4];
+    [[f1m2 mutableArrayForIndexPath:nil] addObject:@4];
     XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
     XCTAssertTrue([f1 childCountAtIndexPath:nil] == 4);
     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
@@ -299,7 +299,7 @@ event.assemblage = assemblage;
     XCTAssertTrue([f1 childCountAtIndexPath:nil] == 5);
     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 2);
     XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 3);
-    NSMutableArray *proxy = [f1m1 proxyArrayForIndexPath:nil];
+    NSMutableArray *proxy = [f1m1 mutableArrayForIndexPath:nil];
     [proxy removeObjectAtIndex:0];
     [proxy removeObjectAtIndex:0];
     XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
@@ -319,14 +319,14 @@ event.assemblage = assemblage;
 - (void)testNestedGroupedMutableDelegation
 {
     RZAssemblage *parent = [[RZAssemblage alloc] initWithArray:@[]];
-    NSMutableArray *parentproxy = [parent proxyArrayForIndexPath:nil];
+    NSMutableArray *parentproxy = [parent mutableArrayForIndexPath:nil];
     [parentproxy addObject:[[RZAssemblage alloc] initWithArray:@[]]];
     RZAssemblage *mutableValues = [[RZAssemblage alloc] initWithArray:@[]];
     [parentproxy addObject:mutableValues];
 
     parent.delegate = self;
     [parent openBatchUpdate];
-    NSMutableArray *proxy = [mutableValues proxyArrayForIndexPath:nil];
+    NSMutableArray *proxy = [mutableValues mutableArrayForIndexPath:nil];
     [proxy addObject:@1];
     [proxy removeLastObject];
     [proxy insertObject:@2 atIndex:0];
@@ -353,7 +353,7 @@ event.assemblage = assemblage;
 #define THIRD_CHILD_COUNT 12 / 3
 
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
-    NSMutableArray *s1proxy = [s1 proxyArrayForIndexPath:nil];
+    NSMutableArray *s1proxy = [s1 mutableArrayForIndexPath:nil];
     s1.delegate = self;
     [s1 openBatchUpdate];
     XCTAssertEqual([s1 childCountAtIndexPath:nil], CHILD_COUNT);
@@ -389,7 +389,7 @@ event.assemblage = assemblage;
 {
     NSArray *values = [self.class values];
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:[[RZAssemblage alloc] initWithArray:values]];
-    NSMutableArray *s1proxy = [s1 proxyArrayForIndexPath:nil];
+    NSMutableArray *s1proxy = [s1 mutableArrayForIndexPath:nil];
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
     }];
@@ -399,14 +399,14 @@ event.assemblage = assemblage;
     for ( NSUInteger i = 6; i < 12; i++ ) {
         XCTAssert([[s1proxy objectAtIndex:i] hasPrefix:@"c"]);
     }
-    NSArray *objects = [s1 proxyArrayForIndexPath:nil];
+    NSArray *objects = [s1 mutableArrayForIndexPath:nil];
     for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
         XCTAssertEqual([s1proxy objectAtIndex:i], objects[i]);
     }
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasSuffix:@"b"] || [s hasSuffix:@"d"] || [s hasSuffix:@"f"];
     }];
-    objects = [s1 proxyArrayForIndexPath:nil];
+    objects = [s1 mutableArrayForIndexPath:nil];
     for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
         XCTAssertEqual([s1proxy objectAtIndex:i], objects[i]);
     }
@@ -418,9 +418,9 @@ event.assemblage = assemblage;
     RZAssemblage *a1 = [[RZAssemblage alloc] initWithArray:values];
     a1.delegate = self;
 
-    NSArray *array = [a1 proxyArrayForIndexPath:nil];
+    NSArray *array = [a1 mutableArrayForIndexPath:nil];
     [a1 openBatchUpdate];
-    [[a1 proxyArrayForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
+    [[a1 mutableArrayForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
         return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
     }];
     [a1 closeBatchUpdate];
@@ -443,10 +443,10 @@ event.assemblage = assemblage;
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
     }];
-    NSArray *array = [f1 proxyArrayForIndexPath:nil];
+    NSArray *array = [f1 mutableArrayForIndexPath:nil];
     f1.delegate = self;
     [a1 openBatchUpdate];
-    [[a1 proxyArrayForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
+    [[a1 mutableArrayForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
         return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
     }];
     [a1 closeBatchUpdate];
@@ -480,7 +480,7 @@ event.assemblage = assemblage;
                              [[RZAssemblage alloc] initWithArray:values]];
     RZJoinAssemblage *f1 = [[RZJoinAssemblage alloc] initWithArray:assemblages];
     RZFilteredAssemblage *s1 = [[RZFilteredAssemblage alloc] initWithAssemblage:f1];
-    NSMutableArray *s1proxy = [s1 proxyArrayForIndexPath:nil];
+    NSMutableArray *s1proxy = [s1 mutableArrayForIndexPath:nil];
     s1.delegate = self;
     [s1 openBatchUpdate];
     XCTAssertEqual([s1 childCountAtIndexPath:nil], values.count * assemblages.count);
@@ -539,10 +539,10 @@ event.assemblage = assemblage;
 - (void)testFilteredRemoval
 {
     RZAssemblage *m = [[RZAssemblage alloc] initWithArray:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
-    NSMutableArray *mproxy = [m proxyArrayForIndexPath:nil];
+    NSMutableArray *mproxy = [m mutableArrayForIndexPath:nil];
 
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m];
-    NSMutableArray *filteredproxy = [filtered proxyArrayForIndexPath:nil];
+    NSMutableArray *filteredproxy = [filtered mutableArrayForIndexPath:nil];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -558,7 +558,7 @@ event.assemblage = assemblage;
 - (void)testFilteredAddition
 {
     RZAssemblage *m = [[RZAssemblage alloc] initWithArray:@[]];
-    NSMutableArray *mproxy = [m proxyArrayForIndexPath:nil];
+    NSMutableArray *mproxy = [m mutableArrayForIndexPath:nil];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -589,7 +589,7 @@ event.assemblage = assemblage;
     RZAssemblage *m4 = [[RZAssemblage alloc] initWithArray:@[@"10", @"11", @"12", ]];
     RZJoinAssemblage *j1 = [[RZJoinAssemblage alloc] initWithArray:@[m3, m4]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:j1];
-    NSMutableArray *filteredproxy = [filtered proxyArrayForIndexPath:nil];
+    NSMutableArray *filteredproxy = [filtered mutableArrayForIndexPath:nil];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -601,7 +601,7 @@ event.assemblage = assemblage;
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
 
     // This is @ 2:2
-    [[m3 proxyArrayForIndexPath:nil] addObject:@"9"];
+    [[m3 mutableArrayForIndexPath:nil] addObject:@"9"];
     XCTAssert([[filteredproxy objectAtIndex:2] isEqualToString:@"9"]);
     [self.delegateEvents removeAllObjects];
     id obj = [assemblage childAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
@@ -614,7 +614,7 @@ event.assemblage = assemblage;
 {
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
     RZFilteredAssemblage *filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:m1];
-    NSMutableArray *filteredproxy = [filtered proxyArrayForIndexPath:nil];
+    NSMutableArray *filteredproxy = [filtered mutableArrayForIndexPath:nil];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
@@ -623,7 +623,7 @@ event.assemblage = assemblage;
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
     }
-    NSMutableArray *m1proxy = [m1 proxyArrayForIndexPath:nil];
+    NSMutableArray *m1proxy = [m1 mutableArrayForIndexPath:nil];
     [m1proxy removeObjectAtIndex:1];
     XCTAssert([filtered childCountAtIndexPath:nil] == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
@@ -649,7 +649,7 @@ event.assemblage = assemblage;
 - (void)testMoveWithIndexConcerns1
 {
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3", @"4"]];
-    NSMutableArray *m1proxy = [m1 proxyArrayForIndexPath:nil];
+    NSMutableArray *m1proxy = [m1 mutableArrayForIndexPath:nil];
 
     m1.delegate = self;
     [m1 openBatchUpdate];
@@ -664,7 +664,7 @@ event.assemblage = assemblage;
 - (void)testMoveWithIndexConcerns2
 {
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[@"1", @"2", @"3"]];
-    NSMutableArray *m1proxy = [m1 proxyArrayForIndexPath:nil];
+    NSMutableArray *m1proxy = [m1 mutableArrayForIndexPath:nil];
 
     m1.delegate = self;
     [m1 openBatchUpdate];
@@ -678,7 +678,7 @@ event.assemblage = assemblage;
 - (void)testBatchingA
 {
     RZAssemblage *m1 = [[RZAssemblage alloc] initWithArray:@[]];
-    NSMutableArray *m1proxy = [m1 proxyArrayForIndexPath:nil];
+    NSMutableArray *m1proxy = [m1 mutableArrayForIndexPath:nil];
     m1.delegate = self;
     [m1 openBatchUpdate];
     [m1proxy addObject:@"2"];
@@ -709,7 +709,7 @@ event.assemblage = assemblage;
     self.testProxyArray = [NSArray array];
     RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self arrayKeyPath:@"testProxyArray"];
     pa.delegate = self;
-    NSMutableArray *proxyArray = [pa proxyArrayForIndexPath:nil];
+    NSMutableArray *proxyArray = [pa mutableArrayForIndexPath:nil];
     [pa openBatchUpdate];
     // This causes double change events (setter + observer)
     [proxyArray addObject:@"0"];

@@ -31,7 +31,7 @@
 - (NSUInteger)childrenIndexOfObject:(id)object;
 
 
-- (id)assemblageInChildrenAtIndex:(NSUInteger)index;
+- (id)nodeInChildrenAtIndex:(NSUInteger)index;
 - (id)monitoredVersionOfObject:(id)anObject;
 
 @end

@@ -92,7 +92,7 @@
     return object;
 }
 
-- (NSMutableArray *)proxyArrayForIndexPath:(NSIndexPath *)indexPath;
+- (NSMutableArray *)mutableArrayForIndexPath:(NSIndexPath *)indexPath;
 {
     return nil;
 }
@@ -123,7 +123,7 @@
         contents = sections;
     }
     else {
-        contents = [[self proxyArrayForIndexPath:nil] copy];
+        contents = [[self mutableArrayForIndexPath:nil] copy];
     }
     return [[RZAssemblage alloc] initWithArray:contents];
 }

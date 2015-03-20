@@ -21,11 +21,11 @@
 - (id)representedObject;
 
 /**
- *  Return a mutable array representing all the children of the assemblage at indexPath.
+ *  Return a mutable array proxy representing the children of the indexPath
  *
  *  If the assemblage does not support mutation, this will return nil.
  */
-- (NSMutableArray *)proxyArrayForIndexPath:(NSIndexPath *)indexPath;
+- (NSMutableArray *)mutableArrayForIndexPath:(NSIndexPath *)indexPath;
 
 /**
  *  Return the number of children at the indexPath
@@ -33,7 +33,8 @@
 - (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
- *  Return the child at the indexPath.
+ *  Return the child at the indexPath.  If the child is an assemblage,
+ *  this will return the represented object.
  */
 - (id)childAtIndexPath:(NSIndexPath *)indexPath;
 
