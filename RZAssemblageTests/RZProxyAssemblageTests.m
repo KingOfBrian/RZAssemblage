@@ -11,6 +11,8 @@
 #import "TestModels.h"
 #import <XCTest/XCTest.h>
 
+NSUInteger topSongPath[2] = {0,0};
+NSUInteger firstWriterPath[3] = {0,0,0};
 
 @interface RZProxyAssemblageTests : XCTestCase<RZAssemblageDelegate>
 
@@ -55,8 +57,6 @@
 - (void)testMutliKeyProxy
 {
     Artist *pf = [Artist pinkFloyd];
-    NSUInteger topSongPath[2] = {0,0};
-    NSUInteger firstWriterPath[3] = {0,0,0};
 
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
     Albumn *darkSide = [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
@@ -86,6 +86,16 @@
         a.delegate = self;
 
         pf.name = @"Pink-ish Floyd";
+        XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 1);
+
+        [a openBatchUpdate];
+        Albumn *dsom = [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
+        dsom.name = @"Which Side of The Moon?";
+
+        Song *s = [a childAtIndexPath:[NSIndexPath indexPathWithIndexes:topSongPath length:2]];
+        s.name = @"Not Sure";
+        [a closeBatchUpdate];
+        XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 2);
     }
 
 }

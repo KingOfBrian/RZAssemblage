@@ -216,7 +216,7 @@
 
 - (void)enumerateIndexPathsFromIndexPath:(NSIndexPath *)indexPath withBlock:(void (^)(NSIndexPath *indexPath, BOOL *stop))block stop:(BOOL *)stop
 {
-    if ( indexPath.length > 0 && self.present ) {
+    if ( self.present ) {
         block(indexPath, stop);
     }
 
@@ -361,7 +361,7 @@
     NSParameterAssert(block);
 
     BOOL stop = NO;
-    [self.rootNode enumerateIndexPathsFromIndexPath:nil withBlock:block stop:&stop];
+    [self.rootNode enumerateIndexPathsFromIndexPath:[NSIndexPath indexPathWithIndexes:NULL length:0] withBlock:block stop:&stop];
 }
 
 - (id)copyWithZone:(NSZone *)zone
