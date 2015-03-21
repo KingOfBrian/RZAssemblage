@@ -28,7 +28,7 @@
 - (NSUInteger)childrenIndexOfObject:(id)object;
 
 
-- (id<RZAssemblage>)nodeInChildrenAtIndex:(NSUInteger)index;
+- (RZAssemblage *)nodeInChildrenAtIndex:(NSUInteger)index;
 - (void)addMonitorsForObject:(id)anObject;
 - (void)removeMonitorsForObject:(id)anObject;
 

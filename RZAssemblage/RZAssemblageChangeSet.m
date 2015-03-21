@@ -10,6 +10,7 @@
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
+#import "RZAssemblage.h"
 
 @implementation RZAssemblageChangeSet
 
@@ -104,7 +105,7 @@
     }
 }
 
-- (NSArray *)objectsForIndexPaths:(NSArray *)indexPaths inAssemblage:(id<RZAssemblage>)assemblage
+- (NSArray *)objectsForIndexPaths:(NSArray *)indexPaths inAssemblage:(RZAssemblage *)assemblage
 {
     NSMutableArray *objects = [NSMutableArray array];
     for ( NSIndexPath *indexPath in indexPaths ) {
@@ -113,13 +114,13 @@
     return [objects copy];
 }
 
-- (void)generateMoveEventsFromAssemblage:(id<RZAssemblage>)assemblage
+- (void)generateMoveEventsFromAssemblage:(RZAssemblage *)assemblage
 {
     NSArray *insertedIndexPaths = self.insertedIndexPaths;
     NSArray *removedIndexPaths = self.removedIndexPaths;
 
     NSArray *insertedObjects = [self objectsForIndexPaths:insertedIndexPaths inAssemblage:assemblage];
-    NSArray *removedObjects  = [self objectsForIndexPaths:removedIndexPaths inAssemblage:self.startingAssemblage];
+    NSArray *removedObjects  = [self objectsForIndexPaths:removedIndexPaths inAssemblage:self.snapshot];
 
     // Save the index state of the removes
     NSMutableDictionary *parentIndexPathToIndexes = [NSMutableDictionary dictionary];

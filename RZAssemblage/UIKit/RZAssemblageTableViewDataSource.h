@@ -14,11 +14,11 @@
 
 @interface RZAssemblageTableViewDataSource : NSObject <UITableViewDataSource, RZAssemblageDelegate>
 
-- (id)initWithAssemblage:(id<RZAssemblage>)assemblage
+- (id)initWithAssemblage:(RZAssemblage *)assemblage
             forTableView:(UITableView *)tableView
              cellFactory:(RZAssemblageTableViewCellFactory *)cellFactory;
 
-@property (strong, nonatomic, readonly) id<RZAssemblage> assemblage;
+@property (strong, nonatomic, readonly) RZAssemblage *assemblage;
 
 @property (strong, nonatomic, readonly) RZAssemblageTableViewCellFactory *cellFactory;
 

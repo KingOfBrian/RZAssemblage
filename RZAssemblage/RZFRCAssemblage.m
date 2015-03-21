@@ -102,13 +102,7 @@
     return self.fetchedResultsController;
 }
 
-// Fake our implementation of copy by returning an array backed assemblage.
-- (id)copyWithZone:(NSZone *)zone
-{
-    return [self arrayAssemblageForCurrentState];
-}
-
-- (id<RZAssemblage>)arrayAssemblageForCurrentState
+- (RZAssemblage *)snapshotTree
 {
     // I don't want to support this for NSFRC, but we have to do this to keep the API correct.
     // Investigate documenting and returning an error proxy object.
@@ -117,7 +111,7 @@
         NSMutableArray *sections = [NSMutableArray array];
         for ( NSUInteger i = 0; i < [self childCountAtIndexPath:nil]; i++ ) {
             id<NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[i];
-            id<RZAssemblage> childAssemblage = [[RZCopyAssemblage alloc] initWithArray:sectionInfo.objects
+            RZAssemblage *childAssemblage = [[RZSnapshotAssemblage alloc] initWithArray:sectionInfo.objects
                                                                     representingObject:sectionInfo];
             [sections addObject:childAssemblage];
         }
@@ -126,7 +120,7 @@
     else {
         contents = [[self mutableArrayForIndexPath:nil] copy];
     }
-    return [[RZCopyAssemblage alloc] initWithArray:contents representingObject:self.fetchedResultsController];
+    return [[RZSnapshotAssemblage alloc] initWithArray:contents representingObject:self.fetchedResultsController];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -135,9 +129,7 @@
 {
     NSAssert(self.changeSet == nil, @"Do not support concurrent NSFRC changes");
     RZFRCLog(@"%@", controller);
-    self.changeSet = [[RZAssemblageChangeSet alloc] init];
-    self.changeSet.startingAssemblage = [self arrayAssemblageForCurrentState];
-    [self.delegate willBeginUpdatesForAssemblage:self];
+    [self openBatchUpdate];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -196,8 +188,7 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     RZFRCLog(@"%@", controller);
-    [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
-    self.changeSet = nil;
+    [self closeBatchUpdate];
 }
 
 @end

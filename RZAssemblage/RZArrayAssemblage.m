@@ -143,7 +143,7 @@ static char RZAssemblageUpdateContext;
 
 @end
 
-@implementation RZCopyAssemblage
+@implementation RZSnapshotAssemblage
 
 + (BOOL)shouldObserveContents
 {

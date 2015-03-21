@@ -8,7 +8,6 @@
 
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
-#import "RZAssemblageProtocols.h"
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
 
@@ -16,6 +15,8 @@
 #import "RZFilteredAssemblage.h"
 #import "RZArrayAssemblage.h"
 #import "RZProxyAssemblage.h"
+
+static NSString *RZAssemblageChildrenKey = @"children";
 
 @implementation RZAssemblage
 
@@ -44,24 +45,23 @@
     return [[RZProxyAssemblage alloc] initWithObject:object childKey:keypath];
 }
 
-
 @synthesize delegate = _delegate;
 
-- (id)copyWithZone:(NSZone *)zone;
+- (RZAssemblage *)snapshotTree
 {
     NSMutableArray *children = [NSMutableArray array];
     NSUInteger childCount = [self countOfChildren];
 
     for ( NSUInteger i = 0; i < childCount; i++ ) {
         id object = [self nodeInChildrenAtIndex:i];
-        if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
-            object = [object copy];
+        if ( [object isKindOfClass:[RZAssemblage class]] ) {
+            object = [object snapshotTree];
         }
         [children addObject:object];
     }
 
-    return [[RZCopyAssemblage alloc] initWithArray:children
-                                representingObject:[self representedObject]];
+    return [[RZSnapshotAssemblage alloc] initWithArray:children
+                                    representingObject:[self representedObject]];
 }
 
 - (id)representedObject
@@ -71,56 +71,45 @@
 
 #pragma mark - <RZAssemblage>
 
-- (NSMutableArray *)mutableArrayForIndexPath:(NSIndexPath *)indexPath;
+- (id)nodeForIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger length = [indexPath length];
+    id node = self;
 
-    NSMutableArray *proxy = nil;
-
-    if ( length == 0 ) {
-        proxy = [self mutableArrayValueForKey:@"children"];
+    if ( length > 0 ) {
+        node = [self nodeInChildrenAtIndex:[indexPath indexAtPosition:0]];
+        if ( [node isKindOfClass:[RZAssemblage class]] ) {
+            node = [node nodeForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        }
     }
-    else {
-        id<RZAssemblage> assemblage = [self nodeInChildrenAtIndex:[indexPath indexAtPosition:0]];
-        RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
-        proxy = [assemblage mutableArrayForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
-    }
-    return proxy;
+    return node;
 }
 
+- (NSMutableArray *)mutableArrayForIndexPath:(NSIndexPath *)indexPath
+{
+    RZAssemblage *node = [self nodeForIndexPath:indexPath];
+    RZRaize([node isKindOfClass:[RZAssemblage class]], @"Invalid Index Path: %@", indexPath);
+    return [node mutableArrayValueForKey:RZAssemblageChildrenKey];
+}
+
+- (NSArray *)arrayForIndexPath:(NSIndexPath *)indexPath;
+{
+    RZAssemblage *node = [self nodeForIndexPath:indexPath];
+    RZRaize([node isKindOfClass:[RZAssemblage class]], @"Invalid Index Path: %@", indexPath);
+    return [node valueForKey:RZAssemblageChildrenKey];
+}
 
 - (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath;
 {
-    NSUInteger count = NSNotFound;
-    NSUInteger length = [indexPath length];
-
-    if ( length == 0 ) {
-        count = self.countOfChildren;
-    }
-    else {
-        id<RZAssemblage> assemblage = [self nodeInChildrenAtIndex:[indexPath indexAtPosition:0]];
-        RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
-        count = [assemblage childCountAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
-    }
-    return count;
+    RZAssemblage *node = [self nodeForIndexPath:indexPath];
+    RZRaize([node isKindOfClass:[RZAssemblage class]], @"Invalid Index Path: %@", indexPath);
+    return node.countOfChildren;
 }
 
 - (id)childAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSUInteger length = [indexPath length];
-    id object = nil;
-    if ( length == 1 ) {
-        object = [self objectInChildrenAtIndex:[indexPath indexAtPosition:0]];
-    }
-    else if ( length > 1 ) {
-        id<RZAssemblage> assemblage = [self nodeInChildrenAtIndex:[indexPath indexAtPosition:0]];
-        RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
-        object = [assemblage childAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
-    }
-    else {
-        object = [self representedObject];
-    }
-    return object;
+    RZAssemblage *node = [self nodeForIndexPath:indexPath];
+    return  [node isKindOfClass:[RZAssemblage class]] ? node.representedObject : node;
 }
 
 #pragma mark - Batching
@@ -129,9 +118,9 @@
 {
     if ( self.updateCount == 0 ) {
         self.changeSet = [[RZAssemblageChangeSet alloc] init];
-        self.changeSet.startingAssemblage = [self copy];
+        self.changeSet.snapshot = [self snapshotTree];
         if ( [self.delegate respondsToSelector:@selector(willBeginUpdatesForAssemblage:)] ) {
-            [self.delegate willBeginUpdatesForAssemblage:self.changeSet.startingAssemblage];
+            [self.delegate willBeginUpdatesForAssemblage:self.changeSet.snapshot];
         }
     }
     self.updateCount += 1;
@@ -149,7 +138,7 @@
 
 #pragma mark - RZAssemblageDelegate
 
-- (void)willBeginUpdatesForAssemblage:(id<RZAssemblage>)assemblage
+- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
 {
     [self openBatchUpdate];
 }
@@ -165,7 +154,7 @@
     [self closeBatchUpdate];
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     RZRaize(self.changeSet != nil, @"Must begin an update on the parent assemblage before mutating a child assemblage");
     NSUInteger assemblageIndex = [self childrenIndexOfObject:assemblage];
@@ -211,13 +200,10 @@
 - (id)objectInChildrenAtIndex:(NSUInteger)index
 {
     id object = [self nodeInChildrenAtIndex:index];
-    if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
-        object = [object representedObject];
-    }
-    return object;
+    return [object isKindOfClass:[RZAssemblage class]] ? [object representedObject] : object;
 }
 
-- (id<RZAssemblage>)nodeInChildrenAtIndex:(NSUInteger)index
+- (RZAssemblage *)nodeInChildrenAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement(nil);
 }
@@ -239,15 +225,15 @@
 
 - (void)addMonitorsForObject:(NSObject *)anObject
 {
-    if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
-        [(id<RZAssemblage>)anObject setDelegate:self];
+    if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
+        [(RZAssemblage *)anObject setDelegate:self];
     }
 }
 
 - (void)removeMonitorsForObject:(NSObject *)anObject;
 {
-    if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
-        [(id<RZAssemblage>)anObject setDelegate:nil];
+    if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
+        [(RZAssemblage *)anObject setDelegate:nil];
     }
 }
 

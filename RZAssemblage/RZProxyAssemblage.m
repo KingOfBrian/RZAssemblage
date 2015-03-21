@@ -64,7 +64,7 @@ static char RZProxyKeyPathContext;
     [self.representedObject removeObserver:self forKeyPath:self.keypath context:&RZProxyKeyPathContext];
 }
 
-- (id)copyWithZone:(NSZone *)zone;
+- (id)snapshotTree
 {
     NSMutableArray *children = [NSMutableArray array];
     NSUInteger childCount = [self countOfChildren];
@@ -73,14 +73,14 @@ static char RZProxyKeyPathContext;
         // Do not access the children through `nodeInChildrenAtIndex:` like default, as this
         // will trigger the tree expansion.
         id object = [self.childrenStorage objectAtIndex:i];
-        if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
-            object = [object copy];
+        if ( [object isKindOfClass:[RZAssemblage class]] ) {
+            object = [object snapshotTree];
         }
         [children addObject:object];
     }
 
-    return [[RZCopyAssemblage alloc] initWithArray:children
-                                representingObject:[self representedObject]];
+    return [[RZSnapshotAssemblage alloc] initWithArray:children
+                                    representingObject:[self representedObject]];
 }
 
 - (BOOL)isRepeatingKeyPath
@@ -109,7 +109,7 @@ static char RZProxyKeyPathContext;
 {
     id node = [super nodeInChildrenAtIndex:index];
     if ( self.isRepeatingKeyPath ) {
-        if ( [node conformsToProtocol:@protocol(RZAssemblage)] == NO ) {
+        if ( [node isKindOfClass:[RZAssemblage class]] == NO ) {
             [self removeMonitorsForObject:node];
             node = [[RZProxyAssemblage alloc] initWithObject:node childKey:self.keypath];
             [self addMonitorsForObject:node];
@@ -117,7 +117,7 @@ static char RZProxyKeyPathContext;
         }
     }
     else if ( self.nextKeyPaths.count > 0 ) {
-        if ( [node conformsToProtocol:@protocol(RZAssemblage)] == NO ) {
+        if ( [node isKindOfClass:[RZAssemblage class]] == NO ) {
             [self removeMonitorsForObject:node];
             node = [[RZProxyAssemblage alloc] initWithObject:node keypaths:self.nextKeyPaths];
             [self addMonitorsForObject:node];
@@ -146,8 +146,8 @@ static char RZProxyKeyPathContext;
         else if ( changeType == NSKeyValueChangeReplacement ) {
             id newObject = change[NSKeyValueChangeNewKey];
             id oldObject = change[NSKeyValueChangeOldKey];
-            BOOL isAssemblageSwap = ([newObject conformsToProtocol:@protocol(RZAssemblage)] &&
-                                     [oldObject conformsToProtocol:@protocol(RZAssemblage)] == NO);
+            BOOL isAssemblageSwap = ([newObject isKindOfClass:[RZAssemblage class]] &&
+                                     [oldObject isKindOfClass:[RZAssemblage class]] == NO);
             if ( isAssemblageSwap == NO && indexes.count == 1 ) {
                 [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:indexes.firstIndex]];
             }

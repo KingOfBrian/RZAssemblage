@@ -21,9 +21,9 @@
 @end
 
 /**
- * A Copy assemblage is identical to an array assemblage except it will not observe the
+ * A snapshot assemblage is identical to an array assemblage except it will not observe the
  * contents of the array, nor the represented object.
  */
-@interface RZCopyAssemblage : RZArrayAssemblage
+@interface RZSnapshotAssemblage : RZArrayAssemblage
 
 @end

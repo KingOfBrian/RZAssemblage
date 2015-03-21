@@ -19,7 +19,7 @@
 @synthesize cellFactory = _cellFactory;
 @synthesize internalDataSource = _internalDataSource;
 
-- (void)setAssemblage:(id<RZAssemblage>)assemblage
+- (void)setAssemblage:(RZAssemblage *)assemblage
 {
     _assemblage = assemblage;
 

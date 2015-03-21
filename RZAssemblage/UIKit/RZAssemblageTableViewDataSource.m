@@ -23,7 +23,7 @@
     return indexPath.length == 1;
 }
 
-- (id)initWithAssemblage:(id<RZAssemblage>)assemblage
+- (id)initWithAssemblage:(RZAssemblage *)assemblage
             forTableView:(UITableView *)tableView
              cellFactory:(RZAssemblageTableViewCellFactory *)cellFactory;
 {
@@ -67,7 +67,7 @@
 
 #pragma mark - RZAssemblageDelegate
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     [changeSet generateMoveEventsFromAssemblage:assemblage];
     RZDataSourceLog(@"Update = %@", changeSet);

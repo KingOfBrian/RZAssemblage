@@ -22,10 +22,16 @@ RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \
 event.delegateSelector = _cmd;\
 event.assemblage = assemblage;
 
+typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
+    RZAssemblageMutationTypeInsert = 0,
+    RZAssemblageMutationTypeUpdate,
+    RZAssemblageMutationTypeRemove,
+    RZAssemblageMutationTypeMove
+};
 
 @interface RZAssemblageDelegateEvent : NSObject
 
-@property (strong, nonatomic) id<RZAssemblage> assemblage;
+@property (strong, nonatomic) RZAssemblage *assemblage;
 @property (assign, nonatomic) SEL delegateSelector;
 @property (assign, nonatomic) RZAssemblageMutationType type;
 @property (strong, nonatomic) id object;
@@ -110,12 +116,12 @@ event.assemblage = assemblage;
 {
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeRemove;
-        event.object = [changeSet.startingAssemblage childAtIndexPath:indexPath];
+        event.object = [changeSet.snapshot childAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {

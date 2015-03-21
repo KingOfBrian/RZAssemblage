@@ -14,7 +14,7 @@
 
 @property (strong, nonatomic) RZAssemblageTableViewCellFactory *cellFactory;
 
-@property (weak, nonatomic) id<RZAssemblage> assemblage;
+@property (weak, nonatomic) RZAssemblage *assemblage;
 
 @property (weak, nonatomic) id<RZAssemblageTableViewDataSource> dataSource;
 

@@ -12,11 +12,11 @@
 
 @interface RZAssemblageCollectionViewDataSource : NSObject <UICollectionViewDataSource, RZAssemblageDelegate>
 
-- (id)initWithAssemblage:(id<RZAssemblage>)assemblage
+- (id)initWithAssemblage:(RZAssemblage *)assemblage
        forCollectionView:(UICollectionView *)collectionView
              cellFactory:(RZAssemblageCollectionViewCellFactory *)cellFactory;
 
-@property (strong, nonatomic, readonly) id<RZAssemblage> assemblage;
+@property (strong, nonatomic, readonly) RZAssemblage *assemblage;
 
 @property (strong, nonatomic, readonly) RZAssemblageCollectionViewCellFactory *cellFactory;
 

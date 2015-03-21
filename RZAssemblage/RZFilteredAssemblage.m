@@ -105,7 +105,7 @@
 
 #pragma mark - RZAssemblageDelegate
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];

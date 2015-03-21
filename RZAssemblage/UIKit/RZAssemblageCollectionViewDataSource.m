@@ -12,7 +12,7 @@
 
 @implementation RZAssemblageCollectionViewDataSource
 
-- (id)initWithAssemblage:(id<RZAssemblage>)assemblage
+- (id)initWithAssemblage:(RZAssemblage *)assemblage
        forCollectionView:(UICollectionView *)collectionView
              cellFactory:(RZAssemblageCollectionViewCellFactory *)cellFactory;
 {
@@ -61,7 +61,7 @@
     return view;
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     [changeSet generateMoveEventsFromAssemblage:assemblage];
     RZDataSourceLog(@"Update = %@", changeSet);

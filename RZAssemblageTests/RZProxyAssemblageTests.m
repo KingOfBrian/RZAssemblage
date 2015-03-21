@@ -36,7 +36,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     [super tearDown];
 }
 
-- (void)assemblage:(id<RZAssemblage>)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     self.changeSet = changeSet;
 }
@@ -74,7 +74,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     Artist *pf = [Artist pinkFloyd];
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs"]];
-    XCTAssertTrue([[a nodeInChildrenAtIndex:0] conformsToProtocol:@protocol(RZAssemblage)]);
+    XCTAssertTrue([[a nodeInChildrenAtIndex:0] isKindOfClass:[RZAssemblage class]]);
     XCTAssertEqual([a nodeInChildrenAtIndex:0], [a nodeInChildrenAtIndex:0]);
 }
 
