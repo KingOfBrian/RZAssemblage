@@ -44,9 +44,10 @@
 
     UIViewController *mutable = [[MutatableAssemblageTableViewController alloc] init];
     UIViewController *filtered = [[FilteredAssemblageTableViewController alloc] init];
-    self.assemblage = [[RZAssemblage alloc] initWithArray:@[[[RZAssemblage alloc] initWithArray:@[red, blue, mutable, filtered]],
-                                                            [[RZAssemblage alloc] initWithArray:@[@"String Value A", @"String Value B"]],
-                                                            ]];
+    RZAssemblage *section1 = [RZAssemblage assemblageForArray:@[red, blue, mutable, filtered]];
+    RZAssemblage *section2 = [RZAssemblage assemblageForArray:@[@"String Value A", @"String Value B"]];
+    self.assemblage = [RZAssemblage assemblageForArray:@[section1, section2]];
+
     self.tableView.assemblage = self.assemblage;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;

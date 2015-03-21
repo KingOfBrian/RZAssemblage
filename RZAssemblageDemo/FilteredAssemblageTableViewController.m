@@ -9,6 +9,7 @@
 #import "FilteredAssemblageTableViewController.h"
 #import "RZAssemblageTableView.h"
 #import "RZFilteredAssemblage.h"
+#import "RZAssemblage.h"
 
 @interface FilteredAssemblageTableViewController () <RZAssemblageTableViewDataSource, UITableViewDelegate>
 
@@ -50,9 +51,9 @@
     for ( NSUInteger i = 0; i < 100; i++ ) {
         [oneHundered addObject:@(i+1)];
     }
-    self.data = [[RZAssemblage alloc] initWithArray:oneHundered];
-    self.filtered = [[RZFilteredAssemblage alloc] initWithAssemblage:self.data];
-    self.assemblage = [[RZAssemblage alloc] initWithArray:@[self.filtered]];
+    self.data = [RZAssemblage assemblageForArray:oneHundered];
+    self.filtered = [self.data filteredAssemblage];
+    self.assemblage = [RZAssemblage assemblageForArray:@[self.filtered]];
 
     self.filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return YES;
@@ -80,7 +81,7 @@
 - (void)clearData
 {
     [self.data openBatchUpdate];
-    NSMutableArray *proxy = [self.data mutableArrayProxyForIndexPath:nil];
+    NSMutableArray *proxy = [self.data mutableArrayForIndexPath:nil];
     while ( [proxy count] != 0 ) {
         [proxy removeObjectAtIndex:0];
     }
@@ -90,7 +91,7 @@
 - (void)addData
 {
     [self.data openBatchUpdate];
-    NSMutableArray *proxy = [self.data mutableArrayProxyForIndexPath:nil];
+    NSMutableArray *proxy = [self.data mutableArrayForIndexPath:nil];
     for ( NSUInteger i = 0; i < 5; i++ ) {
         [proxy addObject:@(i+1)];
     }
