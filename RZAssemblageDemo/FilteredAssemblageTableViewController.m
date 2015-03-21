@@ -107,4 +107,6 @@
     NSLog(@"Showing filters divisible by %@ = %@", @(self.divisbleBy + 1), @([self.assemblage childCountAtIndexPath:[NSIndexPath indexPathWithIndex:0]]));
 }
 
+RZAssemblageTableViewDataSourceIsControllingCells()
+
 @end

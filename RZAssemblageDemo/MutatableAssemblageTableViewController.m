@@ -87,6 +87,8 @@ _Pragma("clang diagnostic pop")                                         \
     [self.tableView setEditing:editing animated:animated];
 }
 
+RZAssemblageTableViewDataSourceIsControllingCells()
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;
 {
     return [NSString stringWithFormat:@"Section %@", @(section + 1)];

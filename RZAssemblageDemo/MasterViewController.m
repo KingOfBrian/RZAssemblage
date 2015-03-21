@@ -65,6 +65,8 @@
     }];
 }
 
+RZAssemblageTableViewDataSourceIsControllingCells()
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;
 {
     if ( section == 0 ) {

@@ -59,6 +59,16 @@
 
 @end
 
+// Stub methods for the data source, to make the compiler happy.  These
+// messassages will never be sent.
+#define RZAssemblageTableViewDataSourceIsControllingCells() \
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section __attribute__((unavailable))\
+{ return NSNotFound; }\
+\
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath\
+{ return nil; }
+
+
 /**
  *  This is the same as UITableViewDataSource, with the exception of the required parameters,
  *  which are provided by the assemblage and cell factory.
