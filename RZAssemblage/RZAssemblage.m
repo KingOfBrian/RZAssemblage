@@ -255,6 +255,7 @@ static char RZAssemblageUpdateContext;
         [(id<RZAssemblage>)anObject setDelegate:self];
     }
     else if ( [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
+        NSLog(@"%@ observing %@", self, anObject);
         [anObject addObserver:self
                    forKeyPath:RZAssemblageUpdateKey
                       options:NSKeyValueObservingOptionNew
@@ -268,10 +269,8 @@ static char RZAssemblageUpdateContext;
         [(id<RZAssemblage>)anObject setDelegate:nil];
     }
     else if ( [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
-        [anObject addObserver:self
-                   forKeyPath:RZAssemblageUpdateKey
-                      options:NSKeyValueObservingOptionNew
-                      context:&RZAssemblageUpdateContext];
+        NSLog(@"%@ removing observer %@", self, anObject);
+        [anObject removeObserver:self forKeyPath:RZAssemblageUpdateKey context:&RZAssemblageUpdateContext];
     }
 }
 
@@ -292,5 +291,12 @@ static char RZAssemblageUpdateContext;
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
+
+@end
+
+@implementation NSObject (RZAssemblageUpdateKey)
+
+- (id)RZAssemblageUpdateKey { return  nil; }
+- (void)setRZAssemblageUpdateKey:(id)RZAssemblageUpdateKey {}
 
 @end

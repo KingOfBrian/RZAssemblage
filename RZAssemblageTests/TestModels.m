@@ -75,12 +75,27 @@
     return pinkFloyd;
 }
 
++ (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
+{
+    return [NSSet setWithObjects:@"name", nil];
+}
+
 @end
 
 @implementation Albumn
 
++ (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
+{
+    return [NSSet setWithObjects:@"name", nil];
+}
+
 @end
 
 @implementation Song
+
++ (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
+{
+    return [NSSet setWithObjects:@"name", @"duration", nil];
+}
 
 @end

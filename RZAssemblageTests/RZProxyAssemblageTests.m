@@ -7,6 +7,7 @@
 //
 
 #import "RZProxyAssemblage.h"
+#import "RZAssemblage+Private.h"
 #import "TestModels.h"
 #import <XCTest/XCTest.h>
 
@@ -60,14 +61,33 @@
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
     Albumn *darkSide = [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
     XCTAssertNotNil(darkSide);
+    XCTAssertEqual(darkSide, [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]]);
     XCTAssertEqualObjects(darkSide.name, @"Dark Side Of The Moon");
     XCTAssertTrue([a childCountAtIndexPath:nil] == 2);
     Song *s = [a childAtIndexPath:[NSIndexPath indexPathWithIndexes:topSongPath length:2]];
     XCTAssertTrue(s && [s isKindOfClass:[Song class]]);
     NSString *w = [a childAtIndexPath:[NSIndexPath indexPathWithIndexes:firstWriterPath length:3]];
     XCTAssertTrue(w && [w isKindOfClass:[NSString class]]);
-
 }
 
+- (void)testEqualAssemblageExpansion
+{
+    Artist *pf = [Artist pinkFloyd];
+    RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs"]];
+    XCTAssertTrue([[a nodeInChildrenAtIndex:0] conformsToProtocol:@protocol(RZAssemblage)]);
+    XCTAssertEqual([a nodeInChildrenAtIndex:0], [a nodeInChildrenAtIndex:0]);
+}
+
+- (void)testUpdate
+{
+    @autoreleasepool {
+        Artist *pf = [Artist pinkFloyd];
+        RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs"]];
+        a.delegate = self;
+
+        pf.name = @"Pink-ish Floyd";
+    }
+    
+}
 
 @end
