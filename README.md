@@ -1,19 +1,26 @@
 # RZAssemblage - Composable Data Sources
-RZAssemblage allows composing separate sources of data (Static Arrays or NSFetchedResultsControllers) into a unified NSIndexPath space.  Any changes to the backing data store will percolate up the assemblage and emit change events that the data source objects can use to update the view with proper change animations.
+RZAssemblage allows composing separate sources of data into a tree to be accessed via NSIndexPath.   It also provides a series of data source objects that bind this data to common UI Views. Any changes that are made to the assemblage percolates up the tree and the data source objects animate and update the backing UI Views.
 
-# Cell Creation
-  A primary goal of RZAssemblage is to simplify cell creation.  This entails passing the object in the assemblage along with index path to the delegate.  This allows the cell creation code to change from `switch` and `if ( indexPath.section == MagicNumber )` with `if ( [object isKindOf:[DataModel class]] ) `.
+Assemblages can be built from a number of native Cocoa sources, like an array, an NSFetchedResultsController, or a Key Value Coding compliant array property.  KVC Properties allow your model objects to be updated as objects are added or removed from sections.  There are also a few assemblages that perform processing on the index space, and do not represent data.  Filtered assemblages allow fast NSPredicate based filtering, and Join assemblages will represent multiple child nodes as one index space.  There is no sort assemblage currently, however, an array assemblage can easily be sorted by an array-proxy.
 
-# Compose data sources
-A UITableView will often not map directly to an array.  Juggling the data correctly is boring and error prone, and getting animations to work correctly is usually not worth it.  Lets imagine a jumbled tableview.  The first section contains a persons information, the second section is a list of friends, with a spinner when the data is loading.   And the third section has an action button, like delete or share.
+## UIKit
+Native UIKit views are represented by very flat trees. The primary goal is to simplify the creation of cells, and to simplify the composition of table view or collection view data sources. To this Aim, RZAssemblage provides a cell factory and a data source for both UITableView and UICollectionView. The cell factory provides blocks to bind objects to cells, and the data source loads data from the assemblage, and monitors changes to the assemblage for updating. 
+
+### UITableView
+
+Due to the API design of UITableView, and how both the delegate and dataSource properties provide views, there's a UITableView subclass to simplify binding.   It will internally intercept both the delegate and dataSource API's and respond to API methods that provide views, and relay all other messages back to the delegate and dataSource properties that are externally configured.
+
+## Compose data sources
+A UITableView will often not map directly to an array or NSFetchedResultsController.  Juggling the data correctly is boring and error prone, and getting animations to work correctly is usually not worth it.  Lets imagine a jumbled tableview.  The first section contains a persons information, the second section is a list of friends, with a spinner when the data is loading.   And the third section has an action button, like delete or share.
 
 ```
-RZAssemblage *section1 = [[RZPropertyAssemblage alloc] initWithObject:person keys:@[@"firstName", @"lastName", @"streetAddress"]];
+RZAssemblage *section1 = [RZAssemblage assemblageWithObject:person leafKeypaths:@[@"firstName", @"lastName", @"streetAddress"]];
 RZAssemblage *friends  = [[RZFRCAssemblage alloc] initWithFetchedResultsController:friendListFRC];
-RZAssemblage *loading  = [[RZAssemblage alloc] initWithArray:@"Loading"];
-RZAssemblage *section2 = [[RZJoinAssemblage alloc] initWithArray:@[friends, loading]];
-RZAssemblage *section3 = [[RZAssemblage alloc] initWithArray:@[@"Delete", @"Share"]];
-RZAssemblage *tableAssemblage = [[RZAssemblage alloc] initWithArray:@[section1, section2, section3]];
+RZAssemblage *filteredFriends  = [friends filteredAssemblage];
+RZAssemblage *loading  = [RZAssemblage assemblageForArray:@"Loading"];
+RZAssemblage *section2 = [RZAssemblage joinedAssemblages:@[friends, loading]];
+RZAssemblage *section3 = [RZAssemblage assemblageForArray:@[@"Delete", @"Share"]];
+RZAssemblage *tableAssemblage = [RZAssemblage assemblageForArray:@[section1, section2, section3]];
 ```
 
 Then a web request will be made that imports the persons friends into core data.  To disable the spinner, call

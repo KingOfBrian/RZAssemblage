@@ -31,6 +31,8 @@ OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 + (RZAssemblage *)joinedAssemblages:(NSArray *)array;
 + (RZAssemblage *)assemblageTreeWithObject:(id)object arrayKeypaths:(NSArray *)keypaths;
 + (RZAssemblage *)assemblageTreeWithObject:(id)object arrayTreeKeypath:(NSArray *)keypaths;
+//+ (RZAssemblage *)assemblageWithObject:(id)object leafKeypaths:(NSArray *)keypaths;
+//+ (RZAssemblage *)assemblageTreeWithObject:(id)object setKeypaths:(NSArray *)keypaths sortDescriptors:(NSArray *)sortDescriptors;
 
 /**
  *  Return the object that this assemblage represents.
