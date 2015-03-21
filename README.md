@@ -8,7 +8,7 @@ Native UIKit views are represented by very flat trees. The primary goal is to si
 
 ### UITableView
 
-Due to the API design of UITableView, and how both the delegate and dataSource properties provide views, there's a UITableView subclass to simplify binding.   It will internally intercept both the delegate and dataSource API's and respond to API methods that provide views, and relay all other messages back to the delegate and dataSource properties that are externally configured.
+Due to the API design of UITableView, and how both the delegate and dataSource properties provide views, there's a UITableView subclass to simplify binding. It will internally intercept both the delegate and dataSource API's and respond to API methods that provide views, and relay all other messages back to the delegate and dataSource properties that are externally configured. This subclass is not required to use RZAssemblage, but simplifies wiring things up.
 
 ## Compose data sources
 A UITableView will often not map directly to an array or NSFetchedResultsController.  Juggling the data correctly is boring and error prone, and getting animations to work correctly is usually not worth it.  Lets imagine a jumbled tableview.  The first section contains a persons information, the second section is a list of friends, with a spinner when the data is loading.   And the third section has an action button, like delete or share.
