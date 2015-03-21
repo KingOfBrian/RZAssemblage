@@ -8,9 +8,9 @@
 
 #import "RZFRCAssemblage.h"
 #import "NSIndexPath+RZAssemblage.h"
-#import "RZAssemblage+Private.h"
+#import "RZArrayAssemblage.h"
 #import "RZAssemblageDefines.h"
-#import "RZAssemblageChangeSet.h"
+#import "RZAssemblageChangeSet+Private.h"
 
 
 #define RZAssertIndexPathLength(indexPath, offset) RZRaize(indexPath.length <= ((self.hasSections ? 2 : 1) + offset), @"Index Path %@ has length of %lu, expected index <= %d", indexPath, (unsigned long)indexPath.length, ((self.hasSections ? 2 : 1) + offset))
@@ -99,7 +99,7 @@
 
 - (id)representedObject
 {
-    return self;
+    return self.fetchedResultsController;
 }
 
 // Fake our implementation of copy by returning an array backed assemblage.
@@ -116,8 +116,9 @@
     if ( self.hasSections ) {
         NSMutableArray *sections = [NSMutableArray array];
         for ( NSUInteger i = 0; i < [self childCountAtIndexPath:nil]; i++ ) {
-            NSArray *childContent = self.fetchedResultsController.sections[i];
-            RZAssemblage *childAssemblage = [[RZAssemblage alloc] initWithArray:childContent];
+            id<NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[i];
+            id<RZAssemblage> childAssemblage = [[RZCopyAssemblage alloc] initWithArray:sectionInfo.objects
+                                                                    representingObject:sectionInfo];
             [sections addObject:childAssemblage];
         }
         contents = sections;
@@ -125,7 +126,7 @@
     else {
         contents = [[self mutableArrayForIndexPath:nil] copy];
     }
-    return [[RZAssemblage alloc] initWithArray:contents];
+    return [[RZCopyAssemblage alloc] initWithArray:contents representingObject:self.fetchedResultsController];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

@@ -72,20 +72,6 @@
     return indexPath;
 }
 
-- (NSIndexPath *)rz_indexPathShiftedAtIndexPath:(NSIndexPath *)indexPath by:(NSUInteger)change
-{
-    NSIndexPath *result = nil;
-    if ( indexPath.length <= self.length ) {
-        NSUInteger indexPosition = indexPath.length - 1;
-        NSUInteger mutationIndex = [indexPath indexAtPosition:indexPosition];
-        NSUInteger indexAtDepth = [self indexAtPosition:indexPosition];
-        if ( mutationIndex <= indexAtDepth ) {
-            result = [self rz_indexPathByReplacingIndexAtPosition:indexPosition withIndex:indexAtDepth + change];
-        }
-    }
-    return result;
-}
-
 - (NSIndexPath *)rz_indexPathWithLastIndexShiftedBy:(NSInteger)shift
 {
     NSUInteger end = self.length - 1;
@@ -105,19 +91,6 @@
         [indexes addObject:[NSString stringWithFormat:@"%zd", [self indexAtPosition:i]]];
     }
     return [indexes componentsJoinedByString:@":"];
-}
-
-- (void)rz_enumerateUsingBlock:(RZIndexPathIndexBlock)block
-{
-    NSParameterAssert(block);
-    for ( NSUInteger i = 0; i < self.length; i++ ) {
-        NSUInteger index = [self indexAtPosition:i];
-        BOOL stop = NO;
-        block(index, &stop);
-        if ( stop ) {
-            break;
-        }
-    }
 }
 
 @end

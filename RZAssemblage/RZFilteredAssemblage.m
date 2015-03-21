@@ -15,30 +15,21 @@
 @interface RZFilteredAssemblage()
 
 @property (copy, nonatomic) NSMutableIndexSet *filteredIndexes;
-@property (strong, nonatomic) id<RZAssemblage>filteredAssemblage;
+@property (strong, nonatomic) RZAssemblage *filteredAssemblage;
 
 @end
 
 @implementation RZFilteredAssemblage
 
-- (instancetype)initWithAssemblage:(id<RZAssemblage>)assemblage
+- (instancetype)initWithAssemblage:(RZAssemblage *)assemblage
 {
-    self = [super initWithArray:@[]];
+    self = [super init];
     if ( self ) {
         _filteredAssemblage = assemblage;
         _filteredAssemblage.delegate = self;
         _filteredIndexes = [NSMutableIndexSet indexSet];
     }
     return self;
-}
-
-- (id)copyWithZone:(NSZone *)zone;
-{
-    RZFilteredAssemblage *copy = [super copyWithZone:zone];
-    copy->_filter = self.filter;
-    copy->_filteredIndexes = [self.filteredIndexes copyWithZone:zone];
-    copy->_filteredAssemblage = [self.filteredAssemblage copyWithZone:zone];
-    return copy;
 }
 
 - (NSString *)description
@@ -50,13 +41,13 @@
 
 - (NSUInteger)countOfChildren
 {
-    return [self.filteredAssemblage childCountAtIndexPath:nil] - self.filteredIndexes.count;
+    return [self.filteredAssemblage countOfChildren] - self.filteredIndexes.count;
 }
 
-- (id)objectInChildrenAtIndex:(NSUInteger)index
+- (id)nodeInChildrenAtIndex:(NSUInteger)index;
 {
     index = [self realIndexFromIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    return [self.filteredAssemblage childAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    return [self.filteredAssemblage nodeInChildrenAtIndex:index];
 }
 
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
@@ -76,6 +67,7 @@
 - (void)setFilter:(NSPredicate *)filter
 {
     _filter = filter;
+    RZRaize(self.updateCount == 0, @"Can not modify the filter during mutation");
     [self updateFilterState];
 }
 
@@ -215,6 +207,15 @@
 - (BOOL)isIndexFiltered:(NSUInteger)index
 {
     return [self.filteredIndexes containsIndex:index];
+}
+
+@end
+
+@implementation RZAssemblage (Filter)
+
+- (RZFilteredAssemblage *)filteredAssemblage
+{
+    return [[RZFilteredAssemblage alloc] initWithAssemblage:self];
 }
 
 @end

@@ -18,14 +18,10 @@ typedef void(^RZIndexPathIndexBlock)(NSUInteger index, BOOL *stop);
 
 - (NSIndexPath *)rz_indexPathByReplacingIndexAtPosition:(NSUInteger)position withIndex:(NSUInteger)index;
 
-- (NSIndexPath *)rz_indexPathShiftedAtIndexPath:(NSIndexPath *)indexPath by:(NSUInteger)change;
-
 - (NSIndexPath *)rz_indexPathWithLastIndexShiftedBy:(NSInteger)shift;
 
 - (NSUInteger)rz_lastIndex;
 
 - (NSString *)rz_shortDescription;
-
-- (void)rz_enumerateUsingBlock:(RZIndexPathIndexBlock)block;
 
 @end

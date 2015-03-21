@@ -12,64 +12,61 @@
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
 
-NSString *const RZAssemblageUpdateKey = @"RZAssemblageUpdateKey";
-static char RZAssemblageUpdateContext;
+#import "RZJoinAssemblage.h"
+#import "RZFilteredAssemblage.h"
+#import "RZArrayAssemblage.h"
+#import "RZProxyAssemblage.h"
 
 @implementation RZAssemblage
 
++ (RZAssemblage *)assemblageForArray:(NSArray *)array
+{
+    return [self assemblageForArray:array representedObject:nil];
+}
+
++ (RZAssemblage *)assemblageForArray:(NSArray *)array representedObject:(id)representedObject
+{
+    return [[RZArrayAssemblage alloc] initWithArray:array representingObject:representedObject];
+}
+
++ (RZAssemblage *)joinedAssemblages:(NSArray *)array
+{
+    return [[RZJoinAssemblage alloc] initWithAssemblages:array];
+}
+
++ (RZAssemblage *)assemblageTreeWithObject:(id)object arrayKeypaths:(NSArray *)keypaths
+{
+    return [[RZProxyAssemblage alloc] initWithObject:object keypaths:keypaths];
+}
+
++ (RZAssemblage *)assemblageTreeWithObject:(id)object arrayTreeKeypath:(NSString *)keypath
+{
+    return [[RZProxyAssemblage alloc] initWithObject:object childKey:keypath];
+}
+
+
 @synthesize delegate = _delegate;
-
-- (instancetype)initWithArray:(NSArray *)array representingObject:(id)representingObject;
-{
-    self = [super init];
-    if ( self ) {
-        _representedObject = representingObject;
-        if ( _representedObject ) {
-            [self addMonitorsForObject:_representedObject];
-        }
-        _childrenStorage = [array isKindOfClass:[NSMutableArray class]] ? array : [array mutableCopy];
-        [[_childrenStorage copy] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
-            [self addMonitorsForObject:object];
-        }];
-    }
-    return self;
-}
-
-- (instancetype)initWithArray:(NSArray *)array
-{
-    return [self initWithArray:array representingObject:nil];
-}
-
-- (void)dealloc
-{
-    for ( NSObject *object in _childrenStorage ) {
-        [self removeMonitorsForObject:object];
-    }
-    if ( _representedObject ) {
-        [self removeMonitorsForObject:_representedObject];
-    }
-}
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"<%@:%p - %@>", self.class, self, self.childrenStorage];
-}
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    RZAssemblage *copy = [[self class] allocWithZone:zone];
+    NSMutableArray *children = [NSMutableArray array];
+    NSUInteger childCount = [self countOfChildren];
 
-    NSMutableArray *children = [NSMutableArray arrayWithArray:self.childrenStorage];
-    NSUInteger index = 0;
-    for ( id object in self.childrenStorage ) {
+    for ( NSUInteger i = 0; i < childCount; i++ ) {
+        id object = [self nodeInChildrenAtIndex:i];
         if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
-            id assemblageCopy = [object copy];
-            [children replaceObjectAtIndex:index withObject:assemblageCopy];
+            object = [object copy];
         }
-        index++;
+        [children addObject:object];
     }
-    copy->_childrenStorage = [children copy];
-    return copy;
+
+    return [[RZCopyAssemblage alloc] initWithArray:children
+                                representingObject:[self representedObject]];
+}
+
+- (id)representedObject
+{
+    return nil;
 }
 
 #pragma mark - <RZAssemblage>
@@ -207,59 +204,42 @@ static char RZAssemblageUpdateContext;
 
 - (NSUInteger)countOfChildren
 {
-    return self.childrenStorage.count;
+    RZSubclassMustImplement(NSNotFound);
 }
 
 - (id)objectInChildrenAtIndex:(NSUInteger)index
 {
-    id object = [self.childrenStorage objectAtIndex:index];
+    id object = [self nodeInChildrenAtIndex:index];
     if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
         object = [object representedObject];
     }
     return object;
 }
 
+- (id<RZAssemblage>)nodeInChildrenAtIndex:(NSUInteger)index
+{
+    RZSubclassMustImplement(nil);
+}
+
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
 {
-    RZAssemblageLog(@"%p:Remove %@ at %zd", self, [self objectInChildrenAtIndex:index],  index);
-    [self openBatchUpdate];
-    [self.childrenStorage removeObjectAtIndex:index];
-    [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self closeBatchUpdate];
+    RZSubclassMustImplement();
 }
 
 - (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
 {
-    RZAssemblageLog(@"%p:Insert %@ at %zd", self, object, index);
-    NSParameterAssert(object);
-    [self addMonitorsForObject:object];
-    [self openBatchUpdate];
-    [self.childrenStorage insertObject:object atIndex:index];
-    [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-    [self closeBatchUpdate];
+    RZSubclassMustImplement();
 }
 
 - (NSUInteger)childrenIndexOfObject:(id)object
 {
-    return [self.childrenStorage indexOfObject:object];
-}
-
-- (id)nodeInChildrenAtIndex:(NSUInteger)index;
-{
-    return [self.childrenStorage objectAtIndex:index];
+    RZSubclassMustImplement(NSNotFound);
 }
 
 - (void)addMonitorsForObject:(NSObject *)anObject
 {
     if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
         [(id<RZAssemblage>)anObject setDelegate:self];
-    }
-    else if ( [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
-        NSLog(@"%@ observing %@", self, anObject);
-        [anObject addObserver:self
-                   forKeyPath:RZAssemblageUpdateKey
-                      options:NSKeyValueObservingOptionNew
-                      context:&RZAssemblageUpdateContext];
     }
 }
 
@@ -268,35 +248,6 @@ static char RZAssemblageUpdateContext;
     if ( [anObject conformsToProtocol:@protocol(RZAssemblage)] ) {
         [(id<RZAssemblage>)anObject setDelegate:nil];
     }
-    else if ( [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
-        NSLog(@"%@ removing observer %@", self, anObject);
-        [anObject removeObserver:self forKeyPath:RZAssemblageUpdateKey context:&RZAssemblageUpdateContext];
-    }
 }
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ( context == &RZAssemblageUpdateContext ) {
-        [self openBatchUpdate];
-        if ( object == _representedObject ) {
-            [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndexes:NULL length:0]];
-        }
-        else {
-            NSUInteger index = [self childrenIndexOfObject:object];
-            [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-        }
-        [self closeBatchUpdate];
-    }
-    else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-@end
-
-@implementation NSObject (RZAssemblageUpdateKey)
-
-- (id)RZAssemblageUpdateKey { return  nil; }
-- (void)setRZAssemblageUpdateKey:(id)RZAssemblageUpdateKey {}
 
 @end

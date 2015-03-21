@@ -14,4 +14,8 @@
  */
 @interface RZJoinAssemblage : RZAssemblage
 
+- (instancetype)initWithAssemblages:(NSArray *)assemblages;
+
+@property (strong, nonatomic, readonly) NSArray *assemblages;
+
 @end

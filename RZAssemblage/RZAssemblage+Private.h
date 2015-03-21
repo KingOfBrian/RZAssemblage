@@ -8,12 +8,9 @@
 
 #import "RZAssemblage.h"
 #import "RZAssemblageChangeSet+Private.h"
+#import "RZAssemblageDefines.h"
 
 @interface RZAssemblage() <RZAssemblageDelegate>
-
-@property (strong, nonatomic) id representedObject;
-
-@property (strong, nonatomic) NSMutableArray *childrenStorage;
 
 @property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
 
@@ -31,7 +28,7 @@
 - (NSUInteger)childrenIndexOfObject:(id)object;
 
 
-- (id)nodeInChildrenAtIndex:(NSUInteger)index;
+- (id<RZAssemblage>)nodeInChildrenAtIndex:(NSUInteger)index;
 - (void)addMonitorsForObject:(id)anObject;
 - (void)removeMonitorsForObject:(id)anObject;
 

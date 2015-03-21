@@ -10,6 +10,8 @@
 
 @interface Artist : NSObject
 
++ (void)setChangeNotifications:(BOOL)notify;
+
 + (Artist *)pinkFloyd;
 
 @property (strong, nonatomic) NSString *name;

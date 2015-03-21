@@ -21,6 +21,7 @@
 #define RZDataSourceLog(fmt, ... ) RZLog(fmt, ##__VA_ARGS__)
 #define RZFRCLog(fmt, ... ) //RZLog(fmt, ##__VA_ARGS__)
 
+#define RZSubclassMustImplement(returnValue)     [NSException raise:NSInternalInconsistencyException format:@"%@ Must Subclass %@", NSStringFromClass(self.class), NSStringFromSelector(_cmd)];return returnValue
 
 #define RZRaize(expression, fmt, ...) if ( expression == NO ) { [NSException raise:NSInternalInconsistencyException format:fmt, ##__VA_ARGS__]; }
 #define RZIndexPathWithLength(indexPath) RZRaize(indexPath.length > 0, @"Index Path is empty")

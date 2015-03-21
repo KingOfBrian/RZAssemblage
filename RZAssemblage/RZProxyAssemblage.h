@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RZAssemblage.h"
+#import "RZArrayAssemblage.h"
 
-@interface RZProxyAssemblage : RZAssemblage
+@interface RZProxyAssemblage : RZArrayAssemblage
 
 - (instancetype)initWithObject:(id)object keypath:(NSString *)keypath;
 - (instancetype)initWithObject:(id)object keypaths:(NSArray *)keypaths;

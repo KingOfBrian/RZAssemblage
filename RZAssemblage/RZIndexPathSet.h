@@ -74,17 +74,3 @@
 - (void)removeAllIndexPaths;
 
 @end
-
-#pragma mark - NSIndexPath+RZExtensions
-
-@interface NSIndexPath (RZExtensions)
-
-- (NSIndexPath *)rz_indexPathByPrependingIndex:(NSUInteger)index;
-- (NSIndexPath *)rz_indexPathByRemovingFirstIndex;
-
-- (NSIndexPath *)rz_indexPathByInsertingIndex:(NSUInteger)index atPosition:(NSUInteger)position;
-- (NSIndexPath *)rz_indexPathByReplacingIndexAtPosition:(NSUInteger)position withIndex:(NSUInteger)index;
-
-- (NSUInteger)rz_lastIndex;
-
-@end

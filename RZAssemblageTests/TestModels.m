@@ -8,7 +8,14 @@
 
 #import "TestModels.h"
 
+static BOOL changeNotifications = YES;
+
 @implementation Artist
+
++ (void)setChangeNotifications:(BOOL)notify
+{
+    changeNotifications = notify;
+}
 
 + (Artist *)pinkFloyd
 {
@@ -77,7 +84,7 @@
 
 + (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
 {
-    return [NSSet setWithObjects:@"name", nil];
+    return changeNotifications ? [NSSet setWithObjects:@"name", nil] : nil;
 }
 
 @end
@@ -86,7 +93,7 @@
 
 + (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
 {
-    return [NSSet setWithObjects:@"name", nil];
+    return changeNotifications ? [NSSet setWithObjects:@"name", nil] : nil;
 }
 
 @end
@@ -95,7 +102,7 @@
 
 + (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
 {
-    return [NSSet setWithObjects:@"name", @"duration", nil];
+    return changeNotifications ? [NSSet setWithObjects:@"name", @"duration", nil] : nil;
 }
 
 @end

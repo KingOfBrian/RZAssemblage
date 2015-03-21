@@ -16,10 +16,11 @@ OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 
 @interface RZAssemblage : NSObject <RZAssemblage>
 
-- (instancetype)init __attribute__((unavailable));
-
-- (instancetype)initWithArray:(NSArray *)array;
-- (instancetype)initWithArray:(NSArray *)array representingObject:(id)representingObject;
++ (RZAssemblage *)assemblageForArray:(NSArray *)array;
++ (RZAssemblage *)assemblageForArray:(NSArray *)array representedObject:(id)representedObject;
++ (RZAssemblage *)joinedAssemblages:(NSArray *)array;
++ (RZAssemblage *)assemblageTreeWithObject:(id)object arrayKeypaths:(NSArray *)keypaths;
++ (RZAssemblage *)assemblageTreeWithObject:(id)object arrayTreeKeypath:(NSArray *)keypaths;
 
 - (void)openBatchUpdate;
 - (void)notifyObjectUpdate:(id)object;

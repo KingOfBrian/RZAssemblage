@@ -15,6 +15,12 @@
 /**
  * The RZAssemblage protocol allows objects to be composed into trees of objects that can be 
  * uniformly accessed via NSIndexPath, and allow change events to percolate up the tree.
+ *
+ * The NSCopying implementation should return a copy of the index space and does not preserve
+ * any other state.   Any filter, join, FRC based assemblages may return it's content, and not
+ * replica's if it's own state if it simplifies the implementation.  Copying is only required for
+ * change observation, since the initial index space before a change involving removals must be 
+ * known to properly manage binding.
  */
 @protocol RZAssemblage <NSObject, NSCopying>
 

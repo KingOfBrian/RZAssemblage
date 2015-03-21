@@ -64,6 +64,25 @@ static char RZProxyKeyPathContext;
     [self.representedObject removeObserver:self forKeyPath:self.keypath context:&RZProxyKeyPathContext];
 }
 
+- (id)copyWithZone:(NSZone *)zone;
+{
+    NSMutableArray *children = [NSMutableArray array];
+    NSUInteger childCount = [self countOfChildren];
+
+    for ( NSUInteger i = 0; i < childCount; i++ ) {
+        // Do not access the children through `nodeInChildrenAtIndex:` like default, as this
+        // will trigger the tree expansion.
+        id object = [self.childrenStorage objectAtIndex:i];
+        if ( [object conformsToProtocol:@protocol(RZAssemblage)] ) {
+            object = [object copy];
+        }
+        [children addObject:object];
+    }
+
+    return [[RZCopyAssemblage alloc] initWithArray:children
+                                representingObject:[self representedObject]];
+}
+
 - (BOOL)isRepeatingKeyPath
 {
     // If nextKeyPaths is nil, this is a repeating tree expansion.
