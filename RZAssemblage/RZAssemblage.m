@@ -82,6 +82,7 @@
     }
     else {
         id<RZAssemblage> assemblage = [self nodeInChildrenAtIndex:[indexPath indexAtPosition:0]];
+        RZRaize([assemblage conformsToProtocol:@protocol(RZAssemblage)], @"Invalid Index Path: %@", indexPath);
         proxy = [assemblage mutableArrayForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return proxy;

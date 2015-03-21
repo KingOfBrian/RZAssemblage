@@ -80,24 +80,26 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 
 - (void)testUpdate
 {
-    @autoreleasepool {
-        Artist *pf = [Artist pinkFloyd];
-        RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs"]];
-        a.delegate = self;
+    NSIndexPath *top = [NSIndexPath indexPathWithIndexes:topSongPath length:2];
+    Artist *pf = [Artist pinkFloyd];
+    RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
+    a.delegate = self;
 
-        pf.name = @"Pink-ish Floyd";
-        XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 1);
+    pf.name = @"Pink-ish Floyd";
+    XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 1);
 
-        [a openBatchUpdate];
-        Albumn *dsom = [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
-        dsom.name = @"Which Side of The Moon?";
+    [a openBatchUpdate];
+    Albumn *dsom = [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
+    dsom.name = @"Which Side of The Moon?";
 
-        Song *s = [a childAtIndexPath:[NSIndexPath indexPathWithIndexes:topSongPath length:2]];
-        s.name = @"Not Sure";
-        [a closeBatchUpdate];
-        XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 2);
-    }
+    Song *s = [a childAtIndexPath:top];
+    s.name = @"Not Sure";
+    NSMutableArray *writers = [a mutableArrayForIndexPath:top];
+    [writers removeAllObjects];
+    [a closeBatchUpdate];
 
+    XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 2);
+    XCTAssertTrue(self.changeSet.removedIndexPaths.count == 1);
 }
 
 @end
