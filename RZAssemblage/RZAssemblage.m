@@ -15,6 +15,7 @@
 #import "RZFilteredAssemblage.h"
 #import "RZArrayAssemblage.h"
 #import "RZProxyAssemblage.h"
+#import "RZPropertyAssemblage.h"
 
 static NSString *RZAssemblageChildrenKey = @"children";
 
@@ -43,6 +44,11 @@ static NSString *RZAssemblageChildrenKey = @"children";
 + (RZAssemblage *)assemblageTreeWithObject:(id)object arrayTreeKeypath:(NSString *)keypath
 {
     return [[RZProxyAssemblage alloc] initWithObject:object childKey:keypath];
+}
+
++ (RZAssemblage *)assemblageWithObject:(id)object leafKeypaths:(NSArray *)keypaths
+{
+    return [[RZPropertyAssemblage alloc] initWithObject:object keypaths:keypaths];
 }
 
 @synthesize delegate = _delegate;

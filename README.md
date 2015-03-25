@@ -17,8 +17,8 @@ A UITableView will often not map directly to an array or NSFetchedResultsControl
 RZAssemblage *section1 = [RZAssemblage assemblageWithObject:person leafKeypaths:@[@"firstName", @"lastName", @"streetAddress"]];
 RZAssemblage *friends  = [[RZFRCAssemblage alloc] initWithFetchedResultsController:friendListFRC];
 RZAssemblage *filteredFriends  = [friends filteredAssemblage];
-RZAssemblage *loading  = [RZAssemblage assemblageForArray:@"Loading"];
-RZAssemblage *section2 = [RZAssemblage joinedAssemblages:@[friends, loading]];
+RZAssemblage *loading  = [RZAssemblage assemblageForArray:@[@"Loading"]];
+RZAssemblage *section2 = [RZAssemblage joinedAssemblages:@[filteredFriends, loading]];
 RZAssemblage *section3 = [RZAssemblage assemblageForArray:@[@"Delete", @"Share"]];
 RZAssemblage *tableAssemblage = [RZAssemblage assemblageForArray:@[section1, section2, section3]];
 ```

@@ -40,6 +40,8 @@
 		ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 		ABB5E4531ABDAC3200A37788 /* RZArrayAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5E4511ABDAC3200A37788 /* RZArrayAssemblage.h */; };
 		ABB5E4541ABDAC3200A37788 /* RZArrayAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5E4521ABDAC3200A37788 /* RZArrayAssemblage.m */; };
+		ABB5E4571ABE153200A37788 /* RZPropertyAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5E4551ABE153200A37788 /* RZPropertyAssemblage.h */; };
+		ABB5E4581ABE153200A37788 /* RZPropertyAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5E4561ABE153200A37788 /* RZPropertyAssemblage.m */; };
 		ABB6EF7C1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB6EF7A1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.h */; };
 		ABB6EF7D1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB6EF7B1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.m */; };
 		ABB6EF801ABBB2FE0014224A /* RZAssemblageCollectionViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB6EF7E1ABBB2FE0014224A /* RZAssemblageCollectionViewDataSource.h */; };
@@ -115,6 +117,8 @@
 		ABADD3BF1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		ABB5E4511ABDAC3200A37788 /* RZArrayAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZArrayAssemblage.h; sourceTree = "<group>"; };
 		ABB5E4521ABDAC3200A37788 /* RZArrayAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZArrayAssemblage.m; sourceTree = "<group>"; };
+		ABB5E4551ABE153200A37788 /* RZPropertyAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZPropertyAssemblage.h; sourceTree = "<group>"; };
+		ABB5E4561ABE153200A37788 /* RZPropertyAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZPropertyAssemblage.m; sourceTree = "<group>"; };
 		ABB6EF7A1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageCollectionViewCellFactory.h; sourceTree = "<group>"; };
 		ABB6EF7B1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageCollectionViewCellFactory.m; sourceTree = "<group>"; };
 		ABB6EF7E1ABBB2FE0014224A /* RZAssemblageCollectionViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageCollectionViewDataSource.h; sourceTree = "<group>"; };
@@ -220,6 +224,8 @@
 				AB05610C1A7B25D200B5C17E /* RZFRCAssemblage.m */,
 				ABB6EF861ABBC62E0014224A /* RZProxyAssemblage.h */,
 				ABB6EF871ABBC62E0014224A /* RZProxyAssemblage.m */,
+				ABB5E4551ABE153200A37788 /* RZPropertyAssemblage.h */,
+				ABB5E4561ABE153200A37788 /* RZPropertyAssemblage.m */,
 				ABC504EF1A7E9AB200DE4C16 /* RZAssemblageDefines.h */,
 			);
 			path = RZAssemblage;
@@ -306,6 +312,7 @@
 				ABADD3681A776EE100397031 /* RZAssemblage.h in Headers */,
 				ABC57BB21A911C9000E97873 /* RZIndexPathSet.h in Headers */,
 				AB0578811AB7B27C00E5A1E1 /* RZAssemblageTableViewDataSource.h in Headers */,
+				ABB5E4571ABE153200A37788 /* RZPropertyAssemblage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,6 +450,7 @@
 				ABAC829D1A7B3CC0001CDC27 /* RZJoinAssemblage.m in Sources */,
 				ABB6EF891ABBC62E0014224A /* RZProxyAssemblage.m in Sources */,
 				ABB6EF811ABBB2FE0014224A /* RZAssemblageCollectionViewDataSource.m in Sources */,
+				ABB5E4581ABE153200A37788 /* RZPropertyAssemblage.m in Sources */,
 				ABB6EF7D1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.m in Sources */,
 				AB05788A1AB7BF9E00E5A1E1 /* RZAssemblageTableView.m in Sources */,
 				ABADD3691A776EE100397031 /* RZAssemblage.m in Sources */,
