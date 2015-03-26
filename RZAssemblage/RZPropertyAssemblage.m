@@ -14,7 +14,7 @@ static char RZPropertyContext;
 @interface RZPropertyAssemblage ()
 
 @property (strong, nonatomic) id representedObject;
-@property (strong, nonatomic) NSArray *keypaths;
+@property (strong, nonatomic) NSMutableArray *keypaths;
 
 @end
 
@@ -25,7 +25,7 @@ static char RZPropertyContext;
     self = [super init];
     if ( self ) {
         self.representedObject = object;
-        self.keypaths = keypaths;
+        self.keypaths = [keypaths mutableCopy];
         [self addObservers];
     }
     return self;
@@ -79,12 +79,33 @@ static char RZPropertyContext;
     return [self.representedObject valueForKeyPath:keypath];
 }
 
-// No Mutation support
-- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index {}
-- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index {}
-- (NSMutableArray *)mutableArrayForIndexPath:(NSIndexPath *)indexPath
+- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
 {
-    return nil;
+    NSString *keypath = self.keypaths[index];
+    [self openBatchUpdate];
+    [self.representedObject removeObserver:self forKeyPath:keypath context:&RZPropertyContext];
+    [self.keypaths removeObjectAtIndex:index];
+    [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self closeBatchUpdate];
+}
+
+- (void)insertObject:(NSString *)keypath inChildrenAtIndex:(NSUInteger)index
+{
+    RZRaize([keypath isKindOfClass:[NSString class]], @"Can only insert valid keypaths into a property assemblage");
+    [self openBatchUpdate];
+    [self.representedObject addObserver:self
+                             forKeyPath:keypath
+                                options:NSKeyValueObservingOptionNew
+                                context:&RZPropertyContext];
+    [self.keypaths insertObject:keypath atIndex:index];
+    [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self closeBatchUpdate];
+}
+
+- (void)replaceObjectInChildrenAtIndex:(NSUInteger)index withObject:(id)object
+{
+    NSString *keypath = self.keypaths[index];
+    [self.representedObject setValue:object forKeyPath:keypath];
 }
 
 - (NSUInteger)childrenIndexOfObject:(id)object

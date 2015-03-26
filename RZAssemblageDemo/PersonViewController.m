@@ -70,20 +70,20 @@
         cell.textLabel.text = [person.firstName stringByAppendingFormat:@" %@", person.lastName];
     }];
     [self.tableView.cellFactory configureCellForClass:[NSString class] reuseIdentifier:@"Cell-String" block:^(UITableViewCell *cell, NSString *value, NSIndexPath *indexPath) {
-        cell.textLabel.text = [[self typeForIndexPath:indexPath] stringByAppendingString:value];
+        cell.textLabel.text = [[self typeForIndexPath:indexPath] stringByAppendingFormat:@": %@", value];
     }];
 }
 
 - (NSString *)typeForIndexPath:(NSIndexPath *)indexPath
 {
     if ( indexPath.row == 0 ) {
-        return @"Team: ";
+        return @"Team";
     }
     else if ( indexPath.row == 1 ) {
-        return @"First Name: ";
+        return @"First Name";
     }
     else {
-        return @"Last Name: ";
+        return @"Last Name";
     }
 }
 
@@ -103,18 +103,29 @@ RZAssemblageTableViewDataSourceIsControllingCells()
     return nil;
 }
 
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    Person *p = [self.assemblage childAtIndexPath:indexPath];
-    return [p isKindOfClass:[Person class]];
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Person *p = [self.assemblage childAtIndexPath:indexPath];
     if ( [p isKindOfClass:[Person class]] ) {
         PersonViewController *pvc = [[PersonViewController alloc] initWithPerson:p];
         [self.navigationController pushViewController:pvc animated:YES];
+    }
+    else {
+        NSString *title = [@"Edit " stringByAppendingString:[self typeForIndexPath:indexPath]];
+        UIAlertView *editAlert = [[UIAlertView alloc] initWithTitle:title message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+        editAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+        [editAlert textFieldAtIndex:0].text = [self.assemblage childAtIndexPath:indexPath];
+        editAlert.tag = [indexPath rz_lastIndex];
+        [editAlert show];
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if ( buttonIndex != alertView.cancelButtonIndex ) {
+        NSString *name = [alertView textFieldAtIndex:0].text;
+        NSMutableArray *a = [self.assemblage mutableArrayForIndexPath:[NSIndexPath indexPathWithIndex:0]];
+        [a replaceObjectAtIndex:alertView.tag withObject:name];
     }
 }
 

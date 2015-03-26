@@ -76,6 +76,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
     Person *p = [self.assemblage childAtIndexPath:indexPath];
     PersonViewController *pvc = [[PersonViewController alloc] initWithPerson:p];
     [self.navigationController pushViewController:pvc animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (NSManagedObjectContext *)managedObjectContext
