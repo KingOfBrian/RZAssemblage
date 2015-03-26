@@ -24,4 +24,6 @@ typedef void(^RZIndexPathIndexBlock)(NSUInteger index, BOOL *stop);
 
 - (NSString *)rz_shortDescription;
 
+- (NSIndexPath *)rz_sectionIndexPath;
+
 @end

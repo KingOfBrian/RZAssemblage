@@ -14,7 +14,7 @@ Due to the API design of UITableView, and how both the delegate and dataSource p
 A UITableView will often not map directly to an array or NSFetchedResultsController.  Juggling the data correctly is boring and error prone, and getting animations to work correctly is usually not worth it.  Lets imagine a jumbled tableview.  The first section contains a persons information, the second section is a list of friends, with a spinner when the data is loading.   And the third section has an action button, like delete or share.
 
 ```
-RZAssemblage *section1 = [RZAssemblage assemblageWithObject:person leafKeypaths:@[@"firstName", @"lastName", @"streetAddress"]];
+RZAssemblage *section1 = [RZAssemblage assemblageWithObject:person leafKeypaths:@[@"firstName", @"lastName", @"location"]];
 RZAssemblage *friends  = [[RZFRCAssemblage alloc] initWithFetchedResultsController:friendListFRC];
 RZAssemblage *filteredFriends  = [friends filteredAssemblage];
 RZAssemblage *loading  = [RZAssemblage assemblageForArray:@[@"Loading"]];

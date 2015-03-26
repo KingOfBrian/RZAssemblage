@@ -11,7 +11,7 @@
 #import "RZFilteredAssemblage.h"
 #import "RZAssemblage.h"
 
-@interface FilteredAssemblageTableViewController () <RZAssemblageTableViewDataSource, UITableViewDelegate>
+@interface FilteredAssemblageTableViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) RZAssemblage *data;
 @property (strong, nonatomic) RZAssemblage *assemblage;

@@ -10,11 +10,12 @@
 
 #import "MutatableAssemblageTableViewController.h"
 #import "FilteredAssemblageTableViewController.h"
+#import "PersonListViewController.h"
 
 #import "RZAssemblage.h"
 #import "RZAssemblageTableView.h"
 
-@interface MasterViewController () <RZAssemblageTableViewDataSource, UITableViewDelegate>
+@interface MasterViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) RZAssemblage *assemblage;
 
@@ -35,16 +36,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    UIViewController *red = [[UIViewController alloc] initWithNibName:nil bundle:nil];
-    red.view.backgroundColor = [UIColor redColor];
-    red.title = @"Red View Controller";
-    UIViewController *blue = [[UIViewController alloc] initWithNibName:nil bundle:nil];
-    blue.view.backgroundColor = [UIColor blueColor];
-    blue.title = @"Blue View Controller";
-
     UIViewController *mutable = [[MutatableAssemblageTableViewController alloc] init];
     UIViewController *filtered = [[FilteredAssemblageTableViewController alloc] init];
-    RZAssemblage *section1 = [RZAssemblage assemblageForArray:@[red, blue, mutable, filtered]];
+    PersonListViewController *persons = [[PersonListViewController alloc] init];
+    RZAssemblage *section1 = [RZAssemblage assemblageForArray:@[persons, mutable, filtered]];
     RZAssemblage *section2 = [RZAssemblage assemblageForArray:@[@"String Value A", @"String Value B"]];
     self.assemblage = [RZAssemblage assemblageForArray:@[section1, section2]];
 

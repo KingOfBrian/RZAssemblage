@@ -93,4 +93,9 @@
     return [indexes componentsJoinedByString:@":"];
 }
 
+- (NSIndexPath *)rz_sectionIndexPath
+{
+    return [NSIndexPath indexPathWithIndex:[self indexAtPosition:0]];
+}
+
 @end

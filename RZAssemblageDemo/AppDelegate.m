@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import "MasterViewController.h"
+#import "Team.h"
+#import "Person.h"
 
 @interface AppDelegate ()
 
@@ -22,25 +24,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = navigationController;
     [self.window makeKeyAndVisible];
+    [self createFakeData];
     return YES;
-}
-
-- (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -100,7 +85,7 @@
 
 
 - (NSManagedObjectContext *)managedObjectContext {
-    // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
+    // Returns the managed object context for the application (which is already bound to the persistent store coordinator for tRZAssemblageDemo.xcdatamodeldhe application.)
     if (_managedObjectContext != nil) {
         return _managedObjectContext;
     }
@@ -126,6 +111,109 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+    }
+}
+
++ (NSDictionary *)iosTeam
+{
+    return @{
+             @"name" : @"iOS Developers",
+             @"team" : @[
+                     @"Zev Eisenberg",
+                     @"Michael Gorbach",
+                     @"Brian King",
+                     @"Derek Ostrander",
+                     @"Eric Slosser",
+                     @"Rob Visentin",
+                     @"Matt Buckley",
+                     @"Michael Skiba",
+                     @"Alex Rouse",
+                     @"John Watson",
+                     @"Adam Howitt",
+                     @"John Stricker"
+                     ]
+             };
+}
+
++ (NSDictionary *)androidTeam
+{
+    return @{
+             @"name" : @"Android Developers",
+             @"team" : @[
+                     @"Dylan James",
+                     @"Andrew Grosner",
+                     @"Magdiel Lorenzo",
+                     ]
+             };
+}
+
++ (NSDictionary *)bdTeam
+{
+    return @{
+             @"name" : @"Business Development",
+             @"team" : @[
+                     @"Gary Fortier",
+                     @"Ben Johnson",
+                     ]
+             };
+}
+
++ (NSDictionary *)pmTeam
+{
+    return @{
+             @"name" : @"Product Management",
+             @"team" : @[
+                     @"Jenn Pleus",
+                     @"Nick Costa",
+                     @"Josh Wilson"
+                     ]
+             };
+}
+
+- (void)createFakeData
+{
+    NSEntityDescription *teamDescription = [self.managedObjectModel entitiesByName][@"Team"];
+    Team *ios = [[Team alloc] initWithEntity:teamDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    Team *android = [[Team alloc] initWithEntity:teamDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    Team *bd = [[Team alloc] initWithEntity:teamDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    Team *pm = [[Team alloc] initWithEntity:teamDescription insertIntoManagedObjectContext:self.managedObjectContext];
+
+    [self populateTeam:ios withData:[self.class iosTeam]];
+    [self populateTeam:android withData:[self.class androidTeam]];
+    [self populateTeam:bd withData:[self.class bdTeam]];
+    [self populateTeam:pm withData:[self.class pmTeam]];
+
+    // iOS and android teams are enemies
+    [ios hates:android];
+    [android hates:ios];
+
+    [ios loves:ios];
+    [android loves:android];
+    [bd hates:bd];
+    [pm hates:pm];
+
+    for ( Team *t in @[ios, android, pm] ) {
+        [t loves:bd];
+    }
+
+    // Hate may be strong, but PM's are a pain
+    [ios hates:pm];
+    [android hates:pm];
+
+    [bd loves:pm];
+}
+
+- (void)populateTeam:(Team *)team withData:(NSDictionary *)data
+{
+    NSEntityDescription *personDescription = [self.managedObjectModel entitiesByName][@"Person"];
+
+    team.name = data[@"name"];
+    for ( NSString *name in data[@"team"] ) {
+        NSArray *nameComponents = [name componentsSeparatedByString:@" "];
+        Person *p = [[Person alloc] initWithEntity:personDescription insertIntoManagedObjectContext:self.managedObjectContext];
+        p.firstName = nameComponents[0];
+        p.lastName = nameComponents[1];
+        p.team = team;
     }
 }
 

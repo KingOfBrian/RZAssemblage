@@ -16,8 +16,6 @@
 
 @property (weak, nonatomic) RZAssemblage *assemblage;
 
-@property (weak, nonatomic) id<RZAssemblageTableViewDataSource> dataSource;
-
 /**
  * Ignore assemblage delegate events while set to YES.  This should be enabled
  * while table view delegate mutation is occurring.

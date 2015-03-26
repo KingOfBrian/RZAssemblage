@@ -73,7 +73,7 @@ static char RZPropertyContext;
     return self.keypaths.count;
 }
 
-- (id)objectInChildrenAtIndex:(NSUInteger)index
+- (id)nodeInChildrenAtIndex:(NSUInteger)index
 {
     NSString *keypath = self.keypaths[index];
     return [self.representedObject valueForKeyPath:keypath];

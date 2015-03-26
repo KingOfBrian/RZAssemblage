@@ -10,8 +10,6 @@
 #import "RZAssemblage.h"
 #import "RZAssemblageTableViewCellFactory.h"
 
-@protocol RZAssemblageTableViewDataSource;
-
 @interface RZAssemblageTableViewDataSource : NSObject <UITableViewDataSource, RZAssemblageDelegate>
 
 - (id)initWithAssemblage:(RZAssemblage *)assemblage
@@ -24,7 +22,7 @@
 
 @property (weak, nonatomic, readonly) UITableView *tableView;
 
-@property (weak, nonatomic) id<RZAssemblageTableViewDataSource> dataSource;
+@property (weak, nonatomic) id<UITableViewDataSource> dataSource;
 
 @property (assign, nonatomic) BOOL animateChanges;
 
@@ -67,26 +65,3 @@
 \
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath\
 { return nil; }
-
-
-/**
- *  This is the same as UITableViewDataSource, with the exception of the required parameters,
- *  which are provided by the assemblage and cell factory.
- */
-@protocol RZAssemblageTableViewDataSource<UITableViewDataSource>
-
-// These two methods will not be called by the data source.  This is required to make the compiler happy.
-@optional
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section __attribute__((unavailable));
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
-@optional
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section;
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath;
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath;
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView;
-- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index;
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath;
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath;
-
-@end

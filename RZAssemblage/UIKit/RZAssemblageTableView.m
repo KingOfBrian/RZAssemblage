@@ -44,7 +44,7 @@
     return _cellFactory;
 }
 
-- (void)setDataSource:(id<RZAssemblageTableViewDataSource>)dataSource
+- (void)setDataSource:(id<UITableViewDataSource>)dataSource
 {
     if ( _internalDataSource ) {
         _internalDataSource.dataSource = dataSource;

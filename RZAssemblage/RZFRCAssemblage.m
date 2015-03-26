@@ -56,7 +56,6 @@
 
 - (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath
 {
-    RZAssertContainerIndexPath(indexPath);
     NSUInteger childCount = NSNotFound;
     if ( self.hasSections ) {
         if ( indexPath.length == 0 ) {
@@ -92,7 +91,19 @@
     return object;
 }
 
-- (NSMutableArray *)mutableArrayForIndexPath:(NSIndexPath *)indexPath;
+- (NSUInteger)countOfChildren
+{
+    RZRaize(self.hasSections == NO, @"");
+    return [self childCountAtIndexPath:nil];
+}
+
+- (RZAssemblage *)nodeInChildrenAtIndex:(NSUInteger)index
+{
+    RZRaize(self.hasSections == NO, @"");
+    return [self childAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+}
+
+- (NSMutableArray *)mutableArrayValueForKey:(NSString *)key
 {
     return nil;
 }

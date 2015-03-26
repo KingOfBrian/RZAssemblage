@@ -16,6 +16,11 @@
 		AB0578861AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578841AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m */; };
 		AB0578891AB7BF9E00E5A1E1 /* RZAssemblageTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */; };
 		AB05788A1AB7BF9E00E5A1E1 /* RZAssemblageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */; };
+		AB559B451AC3735F00DFB024 /* PersonListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B441AC3735F00DFB024 /* PersonListViewController.m */; };
+		AB559B481AC3779000DFB024 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B471AC3779000DFB024 /* Team.m */; };
+		AB559B4E1AC37C9600DFB024 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B4D1AC37C9600DFB024 /* Person.m */; };
+		AB559B521AC383B600DFB024 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B511AC383B600DFB024 /* PersonViewController.m */; };
+		AB559B551AC3926800DFB024 /* RZAssemblageDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AB559B531AC3926800DFB024 /* RZAssemblageDemo.xcdatamodeld */; };
 		AB9B31B61A8679FB00C39876 /* RZAssemblageChangeSet.h in Headers */ = {isa = PBXBuildFile; fileRef = AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */; };
 		AB9B31B71A8679FB00C39876 /* RZAssemblageChangeSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */; };
 		ABA6EC0B1ABCA6CC00201944 /* RZProxyAssemblageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA6EC0A1ABCA6CC00201944 /* RZProxyAssemblageTests.m */; };
@@ -84,6 +89,15 @@
 		AB0578841AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewCellFactory.m; sourceTree = "<group>"; };
 		AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableView.h; sourceTree = "<group>"; };
 		AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableView.m; sourceTree = "<group>"; };
+		AB559B431AC3735F00DFB024 /* PersonListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonListViewController.h; sourceTree = "<group>"; };
+		AB559B441AC3735F00DFB024 /* PersonListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonListViewController.m; sourceTree = "<group>"; };
+		AB559B461AC3779000DFB024 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
+		AB559B471AC3779000DFB024 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
+		AB559B4C1AC37C9600DFB024 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		AB559B4D1AC37C9600DFB024 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
+		AB559B501AC383B600DFB024 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
+		AB559B511AC383B600DFB024 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
+		AB559B541AC3926800DFB024 /* RZAssemblageDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RZAssemblageDemo.xcdatamodel; sourceTree = "<group>"; };
 		AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageChangeSet.h; sourceTree = "<group>"; };
 		AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageChangeSet.m; sourceTree = "<group>"; };
 		ABA6EC0A1ABCA6CC00201944 /* RZProxyAssemblageTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZProxyAssemblageTests.m; sourceTree = "<group>"; };
@@ -264,6 +278,7 @@
 		ABADD3A81A787F1900397031 /* RZAssemblageDemo */ = {
 			isa = PBXGroup;
 			children = (
+				AB559B531AC3926800DFB024 /* RZAssemblageDemo.xcdatamodeld */,
 				ABADD3AD1A787F1900397031 /* AppDelegate.h */,
 				ABADD3AE1A787F1900397031 /* AppDelegate.m */,
 				ABADD3B31A787F1900397031 /* MasterViewController.h */,
@@ -272,6 +287,14 @@
 				AB0279051A789FA600AF66DB /* MutatableAssemblageTableViewController.m */,
 				ABAC82DC1A7DF252001CDC27 /* FilteredAssemblageTableViewController.h */,
 				ABAC82DD1A7DF252001CDC27 /* FilteredAssemblageTableViewController.m */,
+				AB559B431AC3735F00DFB024 /* PersonListViewController.h */,
+				AB559B441AC3735F00DFB024 /* PersonListViewController.m */,
+				AB559B501AC383B600DFB024 /* PersonViewController.h */,
+				AB559B511AC383B600DFB024 /* PersonViewController.m */,
+				AB559B4C1AC37C9600DFB024 /* Person.h */,
+				AB559B4D1AC37C9600DFB024 /* Person.m */,
+				AB559B461AC3779000DFB024 /* Team.h */,
+				AB559B471AC3779000DFB024 /* Team.m */,
 				ABADD3BC1A787F1900397031 /* Images.xcassets */,
 				ABADD3BE1A787F1900397031 /* LaunchScreen.xib */,
 				ABADD3A91A787F1900397031 /* Supporting Files */,
@@ -477,11 +500,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB559B481AC3779000DFB024 /* Team.m in Sources */,
 				ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */,
 				AB0279061A789FA600AF66DB /* MutatableAssemblageTableViewController.m in Sources */,
 				ABAC82DE1A7DF252001CDC27 /* FilteredAssemblageTableViewController.m in Sources */,
 				ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */,
+				AB559B521AC383B600DFB024 /* PersonViewController.m in Sources */,
 				ABADD3AC1A787F1900397031 /* main.m in Sources */,
+				AB559B4E1AC37C9600DFB024 /* Person.m in Sources */,
+				AB559B551AC3926800DFB024 /* RZAssemblageDemo.xcdatamodeld in Sources */,
+				AB559B451AC3735F00DFB024 /* PersonListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -720,6 +748,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		AB559B531AC3926800DFB024 /* RZAssemblageDemo.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				AB559B541AC3926800DFB024 /* RZAssemblageDemo.xcdatamodel */,
+			);
+			currentVersion = AB559B541AC3926800DFB024 /* RZAssemblageDemo.xcdatamodel */;
+			path = RZAssemblageDemo.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = ABADD3391A776C7C00397031 /* Project object */;
 }

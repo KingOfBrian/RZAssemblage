@@ -106,8 +106,11 @@
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         NSAssert(indexPath.length == 2, @"");
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        id object = [assemblage childAtIndexPath:indexPath];
-        [self.cellFactory configureCell:cell forObject:object atIndexPath:indexPath];
+        // Update the cell if it is visible.
+        if ( cell ) {
+            id object = [assemblage childAtIndexPath:indexPath];
+            [self.cellFactory configureCell:cell forObject:object atIndexPath:indexPath];
+        }
     }
 
     [self.tableView endUpdates];
