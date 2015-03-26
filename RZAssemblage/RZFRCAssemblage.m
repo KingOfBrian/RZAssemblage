@@ -93,13 +93,13 @@
 
 - (NSUInteger)countOfChildren
 {
-    RZRaize(self.hasSections == NO, @"");
+    RZRaize(self.hasSections == NO, @"Can not compose RZFRC inside of all parent assemblages if the FRC has sections");
     return [self childCountAtIndexPath:nil];
 }
 
 - (RZAssemblage *)nodeInChildrenAtIndex:(NSUInteger)index
 {
-    RZRaize(self.hasSections == NO, @"");
+    RZRaize(self.hasSections == NO, @"Can not compose RZFRC inside of all parent assemblages if the FRC has sections");
     return [self childAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
 }
 
