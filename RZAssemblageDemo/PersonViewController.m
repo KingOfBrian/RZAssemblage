@@ -36,7 +36,7 @@
 
 - (void)loadView
 {
-    self.view = [[RZAssemblageTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.view = [[RZAssemblageTableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 }
 
 - (RZAssemblageTableView *)tableView
@@ -99,6 +99,20 @@ RZAssemblageTableViewDataSourceIsControllingCells()
     }
     else if ( section == 2 ) {
         return @"Enemies";
+    }
+    return nil;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    if ( section == 0 ) {
+        return @"Click row above to edit";
+    }
+    else if ( section == 1 ) {
+        return @"Swipe to delete does not work in section above (NSFRC backed)";
+    }
+    else if ( section == 2 ) {
+        return @"Swipe to delete does work in section above (KVC observed)";
     }
     return nil;
 }
