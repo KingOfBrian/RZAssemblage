@@ -184,23 +184,23 @@
     [self populateTeam:pm withData:[self.class pmTeam]];
 
     // iOS and android teams are enemies
-    [ios hates:android];
-    [android hates:ios];
+    [ios enemiesWith:android];
+    [android enemiesWith:ios];
 
-    [ios loves:ios];
-    [android loves:android];
-    [bd hates:bd];
-    [pm hates:pm];
+    [ios alliesWith:ios];
+    [android alliesWith:android];
+    [bd enemiesWith:bd];
+    [pm enemiesWith:pm];
 
     for ( Team *t in @[ios, android, pm] ) {
-        [t loves:bd];
+        [t alliesWith:bd];
     }
 
     // Hate may be strong, but PM's are a pain
-    [ios hates:pm];
-    [android hates:pm];
+    [ios enemiesWith:pm];
+    [android enemiesWith:pm];
 
-    [bd loves:pm];
+    [bd alliesWith:pm];
 }
 
 - (void)populateTeam:(Team *)team withData:(NSDictionary *)data

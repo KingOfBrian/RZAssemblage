@@ -15,14 +15,14 @@
 @dynamic name;
 @dynamic members;
 
-- (void)loves:(Team *)otherTeam
+- (void)alliesWith:(Team *)otherTeam
 {
     for ( Person *p in self.members ) {
         [p addFriends:otherTeam.members];
     }
 }
 
-- (void)hates:(Team *)otherTeam
+- (void)enemiesWith:(Team *)otherTeam
 {
     for ( Person *p in self.members ) {
         [p addEnemies:otherTeam.members];

@@ -16,8 +16,8 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSSet *members;
 
-- (void)hates:(Team *)otherTeam;
-- (void)loves:(Team *)otherTeam;
+- (void)enemiesWith:(Team *)otherTeam;
+- (void)alliesWith:(Team *)otherTeam;
 
 
 @end
