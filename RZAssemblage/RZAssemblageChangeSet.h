@@ -18,11 +18,12 @@ typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *ind
 + (NSIndexSet *)sectionIndexSetFromIndexPaths:(NSArray *)indexPaths;
 + (NSArray *)rowIndexPathsFromIndexPaths:(NSArray *)indexPaths;
 
-@property (strong, nonatomic) RZAssemblage *snapshot;
-
 @property (strong, nonatomic, readonly) NSArray *insertedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *updatedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *removedIndexPaths;
+
+- (id)removedObjectAtIndexPath:(NSIndexPath *)indexPath;
+
 @property (strong, nonatomic, readonly) NSDictionary *moveFromToIndexPaths;
 
 - (void)generateMoveEventsFromAssemblage:(RZAssemblage *)assemblage;

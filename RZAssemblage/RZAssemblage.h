@@ -68,12 +68,6 @@ OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
 
 /**
- *  Return a snapshot of the tree.  This snapshot tree is used to lookup objects
- *  in the tree that were removed from the assemblage.
- */
-- (RZAssemblage *)snapshotTree;
-
-/**
  *  Open a batch of updates.   This will hold onto all changes until a matching
  *  number of closeBatchUpdate messages are sent.
  */

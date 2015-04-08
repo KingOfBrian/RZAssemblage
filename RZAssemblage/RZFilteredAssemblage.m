@@ -82,7 +82,7 @@
         if ( [self isObjectFiltered:object] && [self isIndexFiltered:index] == NO) {
             NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
             indexPath = [self indexPathFromRealIndexPath:indexPath];
-            [self.changeSet removeAtIndexPath:indexPath];
+            [self.changeSet removeObject:object atIndexPath:indexPath];
         }
     }];
     [allObjects enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
@@ -107,14 +107,14 @@
 
 - (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
-    for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
+    [changeSet.removedObjectsByIndexPath enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *indexPath, id obj, BOOL *stop) {
         NSIndexPath *parentIndexPath = [self indexPathFromRealIndexPath:indexPath];
         NSUInteger idx = [indexPath indexAtPosition:0];
 
         if ( [self isIndexFiltered:idx] == NO ) {
-            [self.changeSet removeAtIndexPath:parentIndexPath];
+            [self.changeSet removeObject:obj atIndexPath:parentIndexPath];
         }
-    }
+    }];
     // Clean up the index set.   If we shift a lot of items sequentially,
     // indexes can get improperly preserved, so remove them, and then shift them.
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
@@ -153,7 +153,7 @@
         else if ( [self isIndexFiltered:idx] == NO && [self isObjectFiltered:object] ) {
             [self.filteredIndexes addIndex:idx];
 
-            [self.changeSet removeAtIndexPath:parentIndexPath];
+            [self.changeSet removeObject:object atIndexPath:parentIndexPath];
         }
         else {
             [self.changeSet updateAtIndexPath:parentIndexPath];

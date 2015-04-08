@@ -19,11 +19,3 @@
 @property (strong, nonatomic) NSMutableArray *childrenStorage;
 
 @end
-
-/**
- * A snapshot assemblage is identical to an array assemblage except it will not observe the
- * contents of the array, nor the represented object.
- */
-@interface RZSnapshotAssemblage : RZArrayAssemblage
-
-@end

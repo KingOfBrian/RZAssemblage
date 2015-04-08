@@ -64,25 +64,6 @@ static char RZProxyKeyPathContext;
     [self.representedObject removeObserver:self forKeyPath:self.keypath context:&RZProxyKeyPathContext];
 }
 
-- (id)snapshotTree
-{
-    NSMutableArray *children = [NSMutableArray array];
-    NSUInteger childCount = [self countOfChildren];
-
-    for ( NSUInteger i = 0; i < childCount; i++ ) {
-        // Do not access the children through `nodeInChildrenAtIndex:` like default, as this
-        // will trigger the tree expansion.
-        id object = [self.childrenStorage objectAtIndex:i];
-        if ( [object isKindOfClass:[RZAssemblage class]] ) {
-            object = [object snapshotTree];
-        }
-        [children addObject:object];
-    }
-
-    return [[RZSnapshotAssemblage alloc] initWithArray:children
-                                    representingObject:[self representedObject]];
-}
-
 - (BOOL)isRepeatingKeyPath
 {
     // If nextKeyPaths is nil, this is a repeating tree expansion.
@@ -139,9 +120,13 @@ static char RZProxyKeyPathContext;
             }];
         }
         else if ( changeType == NSKeyValueChangeRemoval ) {
-            [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-                [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
-            }];
+            NSArray *oldValues = change[NSKeyValueChangeOldKey];
+            for (NSUInteger i = 0, index = [indexes firstIndex];
+                 i < indexes.count;
+                 i++, index = [indexes indexGreaterThanIndex:index] ) {
+                id object = oldValues[i];
+                [self.changeSet removeObject:object atIndexPath:[NSIndexPath indexPathWithIndex:index]];
+            }
         }
         else if ( changeType == NSKeyValueChangeReplacement ) {
             id newObject = change[NSKeyValueChangeNewKey];

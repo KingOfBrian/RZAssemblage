@@ -42,8 +42,8 @@
     if ( self ) {
         _inserts = [RZMutableIndexPathSet set];
         _updates = [RZMutableIndexPathSet set];
-        _removes = [RZMutableIndexPathSet set];
-        self.moveFromToIndexPathMap = [NSMutableDictionary dictionary];
+        _removedObjectsByIndexPath = [NSMutableDictionary dictionary];
+        _moveFromToIndexPathMap = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -61,7 +61,7 @@
 
 - (NSArray *)removedIndexPaths
 {
-    return self.removes.sortedIndexPaths;
+    return [[self.removedObjectsByIndexPath allKeys] sortedArrayUsingSelector:@selector(compare:)];
 }
 
 - (NSArray *)updatedIndexPaths
@@ -72,6 +72,14 @@
 - (NSDictionary *)moveFromToIndexPaths
 {
     return [self.moveFromToIndexPathMap copy];
+}
+
+- (id)removedObjectAtIndexPath:(NSIndexPath *)indexPath;
+{
+    NSParameterAssert(indexPath);
+    id object = [self.removedObjectsByIndexPath objectForKey:indexPath];
+    NSAssert(object != nil, @"No object for indexPath=%@", indexPath);
+    return object;
 }
 
 - (void)insertAtIndexPath:(NSIndexPath *)indexPath
@@ -87,7 +95,7 @@
     [self.updates addIndexPath:indexPath];
 }
 
-- (void)removeAtIndexPath:(NSIndexPath *)indexPath
+- (void)removeObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 {
     BOOL insertWasRemoved = [self.inserts containsIndexPath:indexPath];
 
@@ -98,10 +106,10 @@
     if ( insertWasRemoved == NO) {
         // If the index has already been removed, shift it down till it finds an empty index.
         NSIndexPath *indexPathToRemove = indexPath;
-        while ( [self.removes containsIndexPath:indexPathToRemove] ) {
+        while ( [self.removedIndexPaths containsObject:indexPathToRemove] ) {
             indexPathToRemove = [indexPathToRemove rz_indexPathWithLastIndexShiftedBy:1];
         }
-        [self.removes addIndexPath:indexPathToRemove];
+        self.removedObjectsByIndexPath[indexPathToRemove] = object;
     }
 }
 
@@ -117,48 +125,32 @@
 - (void)generateMoveEventsFromAssemblage:(RZAssemblage *)assemblage
 {
     NSArray *insertedIndexPaths = self.insertedIndexPaths;
-    NSArray *removedIndexPaths = self.removedIndexPaths;
 
     NSArray *insertedObjects = [self objectsForIndexPaths:insertedIndexPaths inAssemblage:assemblage];
-    NSArray *removedObjects  = [self objectsForIndexPaths:removedIndexPaths inAssemblage:self.snapshot];
-
-    // Save the index state of the removes
-    NSMutableDictionary *parentIndexPathToIndexes = [NSMutableDictionary dictionary];
-    [self.removes enumerateIndexesUsingBlock:^(NSIndexPath *parentPath, NSIndexSet *indexes, BOOL *stop) {
-        parentIndexPathToIndexes[parentPath] = indexes;
-    }];
 
     NSMutableDictionary *moveFromToIndexPathMap = [NSMutableDictionary dictionary];
     [insertedObjects enumerateObjectsUsingBlock:^(id insertedObject, NSUInteger insertedIndex, BOOL *stop) {
-        NSUInteger removedIndex = [removedObjects indexOfObject:insertedObject];
-        if ( removedIndex != NSNotFound ) {
-            NSIndexPath *removedIndexPath = removedIndexPaths[removedIndex];
+        NSIndexPath *removedIndexPath = [self indexPathForRemovedObject:insertedObject];
+        if ( removedIndexPath ) {
             NSIndexPath *insertedIndexPath = insertedIndexPaths[insertedIndex];
             moveFromToIndexPathMap[removedIndexPath] = insertedIndexPath;
             [self.inserts removeIndexPath:insertedIndexPath];
-            [self.removes removeIndexPath:removedIndexPath];
+            [self.removedObjectsByIndexPath removeObjectForKey:removedIndexPath];
         }
     }];
 
-#ifdef CORRECT_MOVE_NOTIFICATIONS_FOR_SHIFT_WHOLE
-    // Iterate over the to destinations, and if the index path lands inside a remove hole (More than 1 remove), correct it.
-    [[moveFromToIndexPathMap copy] enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *fromIndexPath, NSIndexPath *toIndexPath, BOOL *stop) {
-        NSIndexPath *parentFromIndexPath = [fromIndexPath indexPathByRemovingLastIndex];
-        NSIndexPath *parentToIndexPath   = [toIndexPath indexPathByRemovingLastIndex];
-        if ( [parentFromIndexPath isEqual:parentToIndexPath] ) {
-            NSIndexSet *indexes = parentIndexPathToIndexes[parentFromIndexPath];
-            __block NSUInteger index = [toIndexPath rz_lastIndex];
-            [indexes enumerateRangesUsingBlock:^(NSRange range, BOOL *stop) {
-                if ( range.length > 2 && index > range.location && index < range.location + range.length ) {
-                    // The to index is inside of a shift-hole.   Subtract the range
-                    index -= range.length - 2;
-                }
-            }];
-            moveFromToIndexPathMap[fromIndexPath] = [parentToIndexPath indexPathByAddingIndex:index];
+    [self.moveFromToIndexPathMap setValuesForKeysWithDictionary:moveFromToIndexPathMap];
+}
+
+- (NSIndexPath *)indexPathForRemovedObject:(id)object
+{
+    __block NSIndexPath *indexPathForRemovedObject = nil;
+    [self.removedObjectsByIndexPath enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *indexPath, id obj, BOOL *stop) {
+        if ( object == obj ) {
+            indexPathForRemovedObject = indexPath;
         }
     }];
-#endif
-    [self.moveFromToIndexPathMap setValuesForKeysWithDictionary:moveFromToIndexPathMap];
+    return indexPathForRemovedObject;
 }
 
 - (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2
@@ -177,7 +169,8 @@ withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
 
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         NSIndexPath *newIndexPath = transform(indexPath);
-        [self removeAtIndexPath:newIndexPath];
+        id object = [changeSet removedObjectAtIndexPath:indexPath];
+        [self removeObject:object atIndexPath:newIndexPath];
     }
 
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {

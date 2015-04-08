@@ -53,23 +53,6 @@ static NSString *RZAssemblageChildrenKey = @"children";
 
 @synthesize delegate = _delegate;
 
-- (RZAssemblage *)snapshotTree
-{
-    NSMutableArray *children = [NSMutableArray array];
-    NSUInteger childCount = [self countOfChildren];
-
-    for ( NSUInteger i = 0; i < childCount; i++ ) {
-        id object = [self nodeInChildrenAtIndex:i];
-        if ( [object isKindOfClass:[RZAssemblage class]] ) {
-            object = [object snapshotTree];
-        }
-        [children addObject:object];
-    }
-
-    return [[RZSnapshotAssemblage alloc] initWithArray:children
-                                    representingObject:[self representedObject]];
-}
-
 - (id)representedObject
 {
     return nil;
@@ -124,9 +107,8 @@ static NSString *RZAssemblageChildrenKey = @"children";
 {
     if ( self.updateCount == 0 ) {
         self.changeSet = [[RZAssemblageChangeSet alloc] init];
-        self.changeSet.snapshot = [self snapshotTree];
         if ( [self.delegate respondsToSelector:@selector(willBeginUpdatesForAssemblage:)] ) {
-            [self.delegate willBeginUpdatesForAssemblage:self.changeSet.snapshot];
+            [self.delegate willBeginUpdatesForAssemblage:self];
         }
     }
     self.updateCount += 1;

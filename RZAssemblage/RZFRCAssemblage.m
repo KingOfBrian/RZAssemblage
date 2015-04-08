@@ -113,27 +113,6 @@
     return self.fetchedResultsController;
 }
 
-- (RZAssemblage *)snapshotTree
-{
-    // I don't want to support this for NSFRC, but we have to do this to keep the API correct.
-    // Investigate documenting and returning an error proxy object.
-    NSArray *contents = nil;
-    if ( self.hasSections ) {
-        NSMutableArray *sections = [NSMutableArray array];
-        for ( NSUInteger i = 0; i < [self childCountAtIndexPath:nil]; i++ ) {
-            id<NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[i];
-            RZAssemblage *childAssemblage = [[RZSnapshotAssemblage alloc] initWithArray:sectionInfo.objects
-                                                                    representingObject:sectionInfo];
-            [sections addObject:childAssemblage];
-        }
-        contents = sections;
-    }
-    else {
-        contents = [[self mutableArrayForIndexPath:nil] copy];
-    }
-    return [[RZSnapshotAssemblage alloc] initWithArray:contents representingObject:self.fetchedResultsController];
-}
-
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
@@ -160,7 +139,7 @@
             break;
         }
         case NSFetchedResultsChangeDelete: {
-            [self.changeSet removeAtIndexPath:indexPath];
+            [self.changeSet removeObject:anObject atIndexPath:indexPath];
             break;
         }
         case NSFetchedResultsChangeMove: {
@@ -187,7 +166,7 @@
             break;
         }
         case NSFetchedResultsChangeDelete: {
-            [self.changeSet removeAtIndexPath:indexPath];
+            [self.changeSet removeObject:sectionInfo atIndexPath:indexPath];
             break;
         }
         default: {

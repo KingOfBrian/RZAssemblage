@@ -77,8 +77,9 @@ static char RZAssemblageUpdateContext;
 {
     RZAssemblageLog(@"%p:Remove %@ at %zd", self, [self objectInChildrenAtIndex:index],  index);
     [self openBatchUpdate];
+    id object = [self.childrenStorage objectAtIndex:index];
     [self.childrenStorage removeObjectAtIndex:index];
-    [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self.changeSet removeObject:object atIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self closeBatchUpdate];
 }
 
@@ -103,7 +104,7 @@ static char RZAssemblageUpdateContext;
     [super addMonitorsForObject:anObject];
     if ( self.class.shouldObserveContents &&
         [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
-        NSLog(@"%@ adding observer %@", self, anObject);
+        RZAssemblageLog(@"%@ adding observer %@", self, anObject);
         [anObject addObserver:self
                    forKeyPath:RZAssemblageUpdateKey
                       options:NSKeyValueObservingOptionNew
@@ -116,7 +117,7 @@ static char RZAssemblageUpdateContext;
     [super removeMonitorsForObject:anObject];
     if ( self.class.shouldObserveContents &&
         [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
-        NSLog(@"%@ removing observer %@", self, anObject);
+        RZAssemblageLog(@"%@ removing observer %@", self, anObject);
         [anObject removeObserver:self
                       forKeyPath:RZAssemblageUpdateKey
                          context:&RZAssemblageUpdateContext];
@@ -139,15 +140,6 @@ static char RZAssemblageUpdateContext;
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-}
-
-@end
-
-@implementation RZSnapshotAssemblage
-
-+ (BOOL)shouldObserveContents
-{
-    return NO;
 }
 
 @end

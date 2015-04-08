@@ -85,7 +85,7 @@ static char RZPropertyContext;
     [self openBatchUpdate];
     [self.representedObject removeObserver:self forKeyPath:keypath context:&RZPropertyContext];
     [self.keypaths removeObjectAtIndex:index];
-    [self.changeSet removeAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+    [self.changeSet removeObject:keypath atIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self closeBatchUpdate];
 }
 

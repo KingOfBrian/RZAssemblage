@@ -121,7 +121,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeRemove;
-        event.object = [changeSet.snapshot childAtIndexPath:indexPath];
+        event.object = [changeSet removedObjectAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
@@ -500,7 +500,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
             NSUInteger valueIndex = i + aValues.count;
             RZAssemblageDelegateEvent *event = self.delegateEvents[eventIndex];
             XCTAssertEqual(event.type, RZAssemblageMutationTypeRemove);
-            XCTAssertEqual(event.object, values[valueIndex]);
+            XCTAssertEqual(event.object, values[valueIndex], @"Event at %zd[%@] != %zd[%@] ", eventIndex, event.object, valueIndex, values[valueIndex]);
         }
     }
     [self.delegateEvents removeAllObjects];
