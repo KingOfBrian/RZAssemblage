@@ -121,11 +121,13 @@ static char RZProxyKeyPathContext;
         }
         else if ( changeType == NSKeyValueChangeRemoval ) {
             NSArray *oldValues = change[NSKeyValueChangeOldKey];
-            for (NSUInteger i = 0, index = [indexes firstIndex];
-                 i < indexes.count;
-                 i++, index = [indexes indexGreaterThanIndex:index] ) {
+            NSUInteger i = 0;
+            NSUInteger index = [indexes firstIndex];
+            while ( i < indexes.count ) {
                 id object = oldValues[i];
                 [self.changeSet removeObject:object atIndexPath:[NSIndexPath indexPathWithIndex:index]];
+                i++;
+                index = [indexes indexGreaterThanIndex:index];
             }
         }
         else if ( changeType == NSKeyValueChangeReplacement ) {

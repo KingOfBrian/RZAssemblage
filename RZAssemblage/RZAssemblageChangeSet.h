@@ -21,11 +21,9 @@ typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *ind
 @property (strong, nonatomic, readonly) NSArray *insertedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *updatedIndexPaths;
 @property (strong, nonatomic, readonly) NSArray *removedIndexPaths;
-
-- (id)removedObjectAtIndexPath:(NSIndexPath *)indexPath;
-
 @property (strong, nonatomic, readonly) NSDictionary *moveFromToIndexPaths;
 
+- (id)removedObjectAtIndexPath:(NSIndexPath *)indexPath;
 - (void)generateMoveEventsFromAssemblage:(RZAssemblage *)assemblage;
 
 @end

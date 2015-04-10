@@ -77,7 +77,7 @@
 - (id)removedObjectAtIndexPath:(NSIndexPath *)indexPath;
 {
     NSParameterAssert(indexPath);
-    id object = [self.removedObjectsByIndexPath objectForKey:indexPath];
+    id object = self.removedObjectsByIndexPath[indexPath];
     NSAssert(object != nil, @"No object for indexPath=%@", indexPath);
     return object;
 }
