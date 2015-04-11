@@ -400,6 +400,11 @@
     }
 }
 
+- (void)shiftIndexesStartingAtIndex:(NSUInteger)index by:(NSUInteger)shift
+{
+    [self shiftIndexesStartingAtIndexPath:[NSIndexPath indexPathWithIndex:index] by:shift];
+}
+
 - (void)addIndexPath:(NSIndexPath *)indexPath
 {
     NSParameterAssert(indexPath);
@@ -422,10 +427,15 @@
     }];
 }
 
+- (void)addIndex:(NSUInteger)index;
+{
+    [self addIndexPath:[NSIndexPath indexPathWithIndex:index]];
+}
+
 - (void)addIndexes:(NSIndexSet *)indexSet
 {
     [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        [self addIndexPath:[NSIndexPath indexPathWithIndex:idx]];
+        [self addIndex:idx];
     }];
 }
 
@@ -451,6 +461,11 @@
         RZIndexNode *parentNode = [self.rootNode childForIndexPath:parentPath createNew:NO];
         [parentNode removeChildWithIndex:lastIndex];
     }];
+}
+
+- (void)removeIndex:(NSUInteger)index;
+{
+    [self removeIndexPath:[NSIndexPath indexPathWithIndex:index]];
 }
 
 - (void)unionSet:(RZIndexPathSet *)indexPathSet

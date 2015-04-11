@@ -57,15 +57,18 @@
 
 - (void)shiftIndexesStartingAtIndexPath:(NSIndexPath *)indexPath by:(NSInteger)delta;
 - (void)shiftIndexesStartingAfterIndexPath:(NSIndexPath *)indexPath by:(NSInteger)delta;
+- (void)shiftIndexesStartingAtIndex:(NSUInteger)index by:(NSUInteger)shift;
 
 - (void)addIndexPath:(NSIndexPath *)indexPath;
 - (void)addIndexPathsInArray:(NSArray *)indexPaths;
 - (void)addIndexPaths:(NSSet *)indexPaths;
+- (void)addIndex:(NSUInteger)index;
 - (void)addIndexes:(NSIndexSet *)indexSet;
 
 - (void)removeIndexPath:(NSIndexPath *)indexPath;
 - (void)removeIndexPathsInArray:(NSArray *)indexPaths;
 - (void)removeIndexPaths:(NSSet *)indexPaths;
+- (void)removeIndex:(NSUInteger)index;
 
 - (void)unionSet:(RZIndexPathSet *)indexPathSet;
 - (void)intersectSet:(RZIndexPathSet *)indexPathSet;

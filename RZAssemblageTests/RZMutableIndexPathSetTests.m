@@ -12,11 +12,6 @@
 
 @implementation RZMutableIndexPathSet(Test)
 
-- (void)shiftIndexesStartingAtIndex:(NSUInteger)index by:(NSUInteger)shift
-{
-    [self shiftIndexesStartingAtIndexPath:[NSIndexPath indexPathWithIndex:index] by:shift];
-}
-
 - (BOOL)containsIndex:(NSUInteger)index
 {
     return [self containsIndexPath:[NSIndexPath indexPathWithIndex:index]];
