@@ -95,14 +95,22 @@
     // assemblage before the filter change.
     [self.unfilteredAssemblage enumerateObjectsUsingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
         if ( object && [self isObjectFiltered:object] && [self.filteredIndexPaths containsIndexPath:indexPath] == NO) {
-            [self.filteredIndexPaths addIndexPath:indexPath];
             indexPath = [self exposedIndexPathFromIndexPath:indexPath];
             [self.changeSet removeObject:object atIndexPath:indexPath];
         }
-        else if ( object && [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
+    }];
+    [self.unfilteredAssemblage enumerateObjectsUsingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
+        if ( object && [self isObjectFiltered:object] && [self.filteredIndexPaths containsIndexPath:indexPath] == NO) {
+            [self.filteredIndexPaths addIndexPath:indexPath];
+        }
+    }];
+    // Next generate insert events and always ensure that the indexes are valid against
+    // the current state.
+    [self.unfilteredAssemblage enumerateObjectsUsingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
+        if ( object && [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
+            NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
+            [self.changeSet insertAtIndexPath:exposedIndexPath];
             [self.filteredIndexPaths removeIndexPath:indexPath];
-            indexPath = [self exposedIndexPathFromIndexPath:indexPath];
-            [self.changeSet insertAtIndexPath:indexPath];
         }
     }];
     [self closeBatchUpdate];
