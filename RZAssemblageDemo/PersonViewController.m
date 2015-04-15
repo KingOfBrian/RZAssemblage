@@ -138,14 +138,14 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ( buttonIndex != alertView.cancelButtonIndex ) {
         NSString *name = [alertView textFieldAtIndex:0].text;
-        NSMutableArray *a = [self.assemblage mutableArrayForIndexPath:[NSIndexPath indexPathWithIndex:0]];
+        NSMutableArray *a = [[self.assemblage assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:0]] mutableChildren];
         [a replaceObjectAtIndex:alertView.tag withObject:name];
     }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.assemblage mutableArrayForIndexPath:[indexPath rz_sectionIndexPath]];
+    return [[self.assemblage assemblageAtIndexPath:[indexPath rz_sectionIndexPath]] mutableChildren] != nil;
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath

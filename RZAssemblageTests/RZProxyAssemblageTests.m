@@ -7,6 +7,8 @@
 //
 
 #import "RZProxyAssemblage.h"
+#import "RZFilterAssemblage.h"
+
 #import "RZAssemblage+Private.h"
 #import "TestModels.h"
 #import <XCTest/XCTest.h>
@@ -100,6 +102,37 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 
     XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 2);
     XCTAssertTrue(self.changeSet.removedIndexPaths.count == 1);
+}
+
+- (void)testFiltering
+{
+    Artist *pf = [Artist pinkFloyd];
+    RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
+    a.delegate = self;
+    RZFilterAssemblage *f = [a filterAssemblage];
+    f.filter = [NSPredicate predicateWithBlock:^BOOL(Albumn *albumn, NSDictionary *bindings) {
+        BOOL match = YES;
+        if ( [albumn isKindOfClass:[Albumn class]] ) {
+            match = [albumn.name hasPrefix:@"W"] || [albumn.name hasPrefix:@"T"];
+        }
+        return match;
+    }];
+    NSLog(@"Albumns starting with W or T");
+    [f enumerateObjectsUsingBlock:^(id obj, NSIndexPath *indexPath, BOOL *stop) {
+        NSLog(@"[%@] = %@", [indexPath rz_shortDescription], [obj respondsToSelector:@selector(name)] ? [obj name] : obj);
+    }];
+
+    f.filter = [NSPredicate predicateWithBlock:^BOOL(Song *song, NSDictionary *bindings) {
+        BOOL match = YES;
+        if ( [song isKindOfClass:[Song class]] ) {
+            match = [song.name hasPrefix:@"W"] || [song.name hasPrefix:@"T"];
+        }
+        return match;
+    }];
+    NSLog(@"Songs starting with W or T");
+    [f enumerateObjectsUsingBlock:^(id obj, NSIndexPath *indexPath, BOOL *stop) {
+        NSLog(@"[%@] = %@", [indexPath rz_shortDescription], [obj respondsToSelector:@selector(name)] ? [obj name] : obj);
+    }];
 }
 
 @end

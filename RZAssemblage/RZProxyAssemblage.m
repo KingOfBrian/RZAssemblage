@@ -61,6 +61,19 @@ static char RZProxyKeyPathContext;
 
 - (void)dealloc
 {
+    [self disableObservation];
+}
+
+- (void)enableObservation
+{
+    [self.representedObject addObserver:self
+                             forKeyPath:self.keypath
+                                options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                                context:&RZProxyKeyPathContext];
+}
+
+- (void)disableObservation
+{
     [self.representedObject removeObserver:self forKeyPath:self.keypath context:&RZProxyKeyPathContext];
 }
 
@@ -94,14 +107,18 @@ static char RZProxyKeyPathContext;
         [self removeMonitorsForObject:object];
         node = [[RZProxyAssemblage alloc] initWithObject:object childKey:self.keypath];
         [self addMonitorsForObject:node];
+        [self disableObservation];
         [self.childrenStorage replaceObjectAtIndex:index withObject:node];
+        [self enableObservation];
     }
     else if ( node == nil && self.nextKeyPaths.count > 0 ) {
         id object = [self objectInElementsAtIndex:index];
         [self removeMonitorsForObject:object];
         node = [[RZProxyAssemblage alloc] initWithObject:object keypaths:self.nextKeyPaths];
         [self addMonitorsForObject:node];
+        [self disableObservation];
         [self.childrenStorage replaceObjectAtIndex:index withObject:node];
+        [self enableObservation];
     }
     return node;
 }
@@ -129,16 +146,9 @@ static char RZProxyKeyPathContext;
             }
         }
         else if ( changeType == NSKeyValueChangeReplacement ) {
-            id newObject = change[NSKeyValueChangeNewKey];
-            id oldObject = change[NSKeyValueChangeOldKey];
-            BOOL isAssemblageSwap = ([newObject isKindOfClass:[RZAssemblage class]] &&
-                                     [oldObject isKindOfClass:[RZAssemblage class]] == NO);
-            if ( isAssemblageSwap == NO && indexes.count == 1 ) {
-                [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:indexes.firstIndex]];
-            }
-            else {
-                RZRaize(changeType != NSKeyValueChangeReplacement, @"Unexpected Replacement");
-            }
+            [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
+            }];
         } else {
             RZRaize(changeType != NSKeyValueChangeSetting, @"Have to implement setting");
         }

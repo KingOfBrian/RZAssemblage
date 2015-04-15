@@ -60,7 +60,7 @@ _Pragma("clang diagnostic pop")                                         \
 
     RZAssemblage *f1 = [RZAssemblage joinedAssemblages:@[m3, m4]];
 
-    RZFilterAssemblage *filtered = [f1 filteredAssemblage];
+    RZFilterAssemblage *filtered = [f1 filterAssemblage];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
@@ -106,10 +106,8 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *nodeIndexPath = [indexPath indexPathByRemovingLastIndex];
-    NSMutableArray *proxy = [self.assemblage mutableArrayForIndexPath:nodeIndexPath];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [proxy removeObjectAtIndex:[indexPath rz_lastIndex]];
+        [self.assemblage removeObjectAtIndexPath:indexPath];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
 
     }
@@ -119,12 +117,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 {
     // Pause the delegate during the move, as the views have already moved.   The data just needs to be kept in sync.
     self.tableView.ignoreAssemblageChanges = YES;
-    NSMutableArray *fromProxy = [self.assemblage mutableArrayForIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
-    NSMutableArray *toProxy = [self.assemblage mutableArrayForIndexPath:[toIndexPath indexPathByRemovingLastIndex]];
-
-    NSObject *object = [fromProxy objectAtIndex:[fromIndexPath rz_lastIndex]];
-    [fromProxy removeObjectAtIndex:[fromIndexPath rz_lastIndex]];
-    [toProxy insertObject:object atIndex:[toIndexPath rz_lastIndex]];
+    [self.assemblage moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
     self.tableView.ignoreAssemblageChanges = NO;
 }
 
@@ -154,7 +147,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
     while ( indexPath == nil ) {
         NSUInteger randomSectionIndex = [self randomPopulatedIndexForArray:sections];
         NSIndexPath *sectionIndexPath = randomSectionIndex == NSNotFound ? nil : [NSIndexPath indexPathWithIndex:randomSectionIndex];
-        NSMutableArray *section = [self.assemblage mutableArrayForIndexPath:sectionIndexPath];
+        NSMutableArray *section = [[self.assemblage assemblageAtIndexPath:sectionIndexPath] mutableChildren];
 
         NSUInteger row = [self randomPopulatedIndexForArray:section];
         indexPath = row == NSNotFound ? nil : [NSIndexPath indexPathForRow:row inSection:randomSectionIndex];
@@ -167,13 +160,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 {
     NSIndexPath *fromIndexPath = [self randomExistingIndexPath];
     NSIndexPath *toIndexPath = [self randomExistingIndexPath];
-
-    NSMutableArray *fromProxy = [self.assemblage mutableArrayForIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
-    NSMutableArray *toProxy = [self.assemblage mutableArrayForIndexPath:[toIndexPath indexPathByRemovingLastIndex]];
-
-    NSObject *object = [fromProxy objectAtIndex:[fromIndexPath rz_lastIndex]];
-    [fromProxy removeObjectAtIndex:[fromIndexPath rz_lastIndex]];
-    [toProxy insertObject:object atIndex:[toIndexPath rz_lastIndex]];
+    [self.assemblage moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
 }
 
 - (void)testHowDoesItWorkMove
