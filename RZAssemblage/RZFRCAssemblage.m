@@ -54,9 +54,50 @@
     return [self.fetchedResultsController performFetch:error];
 }
 
+- (id)objectAtIndexPath:(NSIndexPath *)indexPath
+{
+    id object = nil;
+    if ( self.hasSections && indexPath.length == 2 ) {
+        object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    }
+    else {
+        object = [super objectAtIndexPath:indexPath];
+    }
+    return object;
+}
+
+- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
+{
+    RZAssemblage *assemblage = nil;
+    if ( indexPath.length == 0 ) {
+        assemblage = self;
+    }
+    else if ( indexPath.length == 1 && self.hasSections ) {
+        NSUInteger index = [indexPath indexAtPosition:0];
+        id<NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[index];
+        assemblage = [[RZStaticArrayAssemblage alloc] initWithArray:sectionInfo.objects representingObject:sectionInfo];
+    }
+    else {
+        RZRaize(NO, @"No assemblage at index path %@", indexPath);
+    }
+    return assemblage;
+}
+
 - (NSMutableArray *)mutableChildren;
 {
     return nil;
+}
+
+- (NSArray *)children
+{
+    NSArray *children = nil;
+    if ( self.hasSections == NO ) {
+        children = self.fetchedResultsController.fetchedObjects;
+    }
+    else {
+        children = [super children];
+    }
+    return children;
 }
 
 - (id)representedObject

@@ -25,9 +25,11 @@ static char RZAssemblageUpdateContext;
     if ( self ) {
         self.representedObject = representingObject;
         _childrenStorage = [array isKindOfClass:[NSMutableArray class]] ? array : [array mutableCopy];
-        [[_childrenStorage copy] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
-            [self addMonitorsForObject:object];
-        }];
+        if ( self.class.shouldObserveContents ) {
+            [[_childrenStorage copy] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+                [self addMonitorsForObject:object];
+            }];
+        }
     }
     return self;
 }
@@ -147,6 +149,15 @@ static char RZAssemblageUpdateContext;
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+@end
+
+@implementation RZStaticArrayAssemblage
+
++ (BOOL)shouldObserveContents
+{
+    return NO;
 }
 
 @end

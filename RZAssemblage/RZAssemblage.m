@@ -63,13 +63,13 @@ static NSString *RZAssemblageElementsKey = @"elements";
 - (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger length = [indexPath length];
-    id node = self;
+    RZAssemblage *assemblage = self;
 
     if ( length > 0 ) {
-        node = [self nodeAtIndex:[indexPath indexAtPosition:0]];
-        node = [node assemblageAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        assemblage = [self nodeAtIndex:[indexPath indexAtPosition:0]];
+        assemblage = [assemblage assemblageAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
-    return node;
+    return assemblage;
 }
 
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath
@@ -219,7 +219,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
 {
     NSUInteger index = NSNotFound;
     for ( NSUInteger i = 0; i < [self countOfElements]; i++ ) {
-        RZAssemblage *childAssemblage = [self assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:i]];
+        RZAssemblage *childAssemblage = [self nodeAtIndex:i];
         if ( childAssemblage == assemblage ) {
             index = i;
             break;

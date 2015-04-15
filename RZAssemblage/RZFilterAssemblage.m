@@ -73,6 +73,11 @@
     [self.filteredAssemblage insertObject:object inElementsAtIndex:index];
 }
 
+- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self.filteredAssemblage assemblageAtIndexPath:indexPath];
+}
+
 #pragma mark - Filter Mutation
 
 - (void)setFilter:(NSPredicate *)filter

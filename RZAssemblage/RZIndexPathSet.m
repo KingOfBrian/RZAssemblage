@@ -297,11 +297,10 @@
     return set;
 }
 
-+ (instancetype)setWithIndexPathSet:(RZIndexPathSet *)indexPathSet
++ (instancetype)setWithRootNode:(RZIndexNode *)indexNode
 {
     RZIndexPathSet *set = [[self alloc] init];
-    set.rootNode = [indexPathSet.rootNode copy];
-
+    set.rootNode = [indexNode copy];
     return set;
 }
 
@@ -340,6 +339,12 @@
     return [node childIndexSet];
 }
 
+- (instancetype)indexPathSetAtIndexPath:(NSIndexPath *)parentPath;
+{
+    RZIndexNode *node = [self.rootNode childForIndexPath:parentPath createNew:NO];
+    return [self.class setWithRootNode:node];
+}
+
 - (void)enumerateIndexesUsingBlock:(void (^)(NSIndexPath *, NSIndexSet *, BOOL *))block
 {
     NSParameterAssert(block);
@@ -371,12 +376,12 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [RZIndexPathSet setWithIndexPathSet:self];
+    return [RZIndexPathSet setWithRootNode:self.rootNode];
 }
 
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
-    return [RZMutableIndexPathSet setWithIndexPathSet:self];
+    return [RZMutableIndexPathSet setWithRootNode:self.rootNode];
 }
 
 @end

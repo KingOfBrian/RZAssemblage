@@ -39,12 +39,12 @@
 + (instancetype)setWithIndexPath:(NSIndexPath *)indexPath;
 + (instancetype)setWithIndexPathsInArray:(NSArray *)indexPaths;
 + (instancetype)setWithIndexPaths:(NSSet *)indexPaths;
-+ (instancetype)setWithIndexPathSet:(RZIndexPathSet *)indexPathSet;
 
 - (BOOL)containsIndexPath:(NSIndexPath *)indexPath;
 - (BOOL)containsIndex:(NSUInteger)index;
 
 - (NSIndexSet *)indexesAtIndexPath:(NSIndexPath *)parentPath;
+- (instancetype)indexPathSetAtIndexPath:(NSIndexPath *)parentPath;
 - (void)enumerateIndexesUsingBlock:(void (^)(NSIndexPath *parentPath, NSIndexSet *indexes, BOOL *stop))block;
 
 - (NSArray *)sortedIndexPaths;

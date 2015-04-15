@@ -30,14 +30,14 @@
     return [NSString stringWithFormat:@"<%@: %p %@ filtered from %@", self.class, self, self.filteredIndexPaths, self.assemblage];
 }
 
-- (NSUInteger)indexFromRealIndex:(NSUInteger)index
+- (NSUInteger)exposedIndexFromIndex:(NSUInteger)index
 {
     NSIndexSet *filtered = [self.filteredIndexPaths indexesAtIndexPath:nil];
     index -= [filtered countOfIndexesInRange:NSMakeRange(0, index)];
     return index;
 }
 
-- (NSUInteger)realIndexFromIndex:(NSUInteger)idx
+- (NSUInteger)indexFromExposedIndex:(NSUInteger)idx
 {
     __block NSUInteger index = idx;
     NSIndexSet *filtered = [self.filteredIndexPaths indexesAtIndexPath:nil];
@@ -59,32 +59,49 @@
 
 - (id)objectInElementsAtIndex:(NSUInteger)index
 {
-    index = [self realIndexFromIndex:index];
+    index = [self indexFromExposedIndex:index];
     return [self.assemblage objectInElementsAtIndex:index];
 }
 
 - (NSUInteger)elementsIndexOfObject:(id)object
 {
     NSUInteger index = [self.assemblage elementsIndexOfObject:object];
-    index = [self indexFromRealIndex:index];
+    index = [self exposedIndexFromIndex:index];
     return index;
 }
 
 - (id)nodeAtIndex:(NSUInteger)index;
 {
-    index = [self realIndexFromIndex:index];
+    index = [self indexFromExposedIndex:index];
     return [self.assemblage nodeAtIndex:index];
 }
 
+- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
+{
+    RZAssemblage *assemblage = self;
+    if ( indexPath.length > 0 ) {
+        NSUInteger index = [indexPath indexAtPosition:0];
+        // Lookup the assemblage at the index path
+        assemblage = [self nodeAtIndex:index];
+        // Wrap the assemblage with a filtered assemblage
+        RZMutableIndexPathSet *childIndexPathSet = [self.filteredIndexPaths indexPathSetAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+        assemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:assemblage filteredIndexPaths:childIndexPathSet];
+        // Recurse.
+        assemblage = [assemblage assemblageAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+    }
+    return assemblage;
+}
+
+
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
-    index = [self realIndexFromIndex:index];
+    index = [self indexFromExposedIndex:index];
     [[self.assemblage mutableChildren] removeObjectAtIndex:index];
 }
 
 - (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
-    index = [self realIndexFromIndex:index];
+    index = [self indexFromExposedIndex:index];
     [[self.assemblage mutableChildren] insertObject:object atIndex:index];
 }
 

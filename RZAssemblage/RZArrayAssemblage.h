@@ -19,3 +19,7 @@
 @property (strong, nonatomic) NSMutableArray *childrenStorage;
 
 @end
+
+@interface RZStaticArrayAssemblage : RZArrayAssemblage
+
+@end
