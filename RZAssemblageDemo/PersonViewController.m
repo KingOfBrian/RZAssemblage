@@ -119,7 +119,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Person *p = [self.assemblage childAtIndexPath:indexPath];
+    Person *p = [self.assemblage objectAtIndexPath:indexPath];
     if ( [p isKindOfClass:[Person class]] ) {
         PersonViewController *pvc = [[PersonViewController alloc] initWithPerson:p];
         [self.navigationController pushViewController:pvc animated:YES];
@@ -128,7 +128,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
         NSString *title = [@"Edit " stringByAppendingString:[self typeForIndexPath:indexPath]];
         UIAlertView *editAlert = [[UIAlertView alloc] initWithTitle:title message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
         editAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
-        [editAlert textFieldAtIndex:0].text = [self.assemblage childAtIndexPath:indexPath];
+        [editAlert textFieldAtIndex:0].text = [self.assemblage objectAtIndexPath:indexPath];
         editAlert.tag = [indexPath rz_lastIndex];
         [editAlert show];
     }

@@ -63,19 +63,26 @@ static char RZAssemblageUpdateContext;
     }
 }
 
-- (NSUInteger)countOfChildren
+- (NSUInteger)countOfElements
 {
     return self.childrenStorage.count;
 }
 
-- (id)nodeInChildrenAtIndex:(NSUInteger)index;
+- (id)objectInElementsAtIndex:(NSUInteger)index
 {
-    return [self.childrenStorage objectAtIndex:index];
+    id object = [self.childrenStorage objectAtIndex:index];
+    return [object isKindOfClass:[RZAssemblage class]] ? [object representedObject] : object;
 }
 
-- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
+- (id)nodeAtIndex:(NSUInteger)index
 {
-    RZAssemblageLog(@"%p:Remove %@ at %zd", self, [self objectInChildrenAtIndex:index],  index);
+    id node = [self.childrenStorage objectAtIndex:index];
+    return [node isKindOfClass:[RZAssemblage class]] ? node : nil;
+}
+
+- (void)removeObjectFromElementsAtIndex:(NSUInteger)index
+{
+    RZAssemblageLog(@"%p:Remove %@ at %zd", self, [self objectInElementsAtIndex:index],  index);
     [self openBatchUpdate];
     id object = [self.childrenStorage objectAtIndex:index];
     [self.childrenStorage removeObjectAtIndex:index];
@@ -83,7 +90,7 @@ static char RZAssemblageUpdateContext;
     [self closeBatchUpdate];
 }
 
-- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
+- (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
     RZAssemblageLog(@"%p:Insert %@ at %zd", self, object, index);
     NSParameterAssert(object);
@@ -94,7 +101,7 @@ static char RZAssemblageUpdateContext;
     [self closeBatchUpdate];
 }
 
-- (NSUInteger)childrenIndexOfObject:(id)object
+- (NSUInteger)elementsIndexOfObject:(id)object
 {
     return [self.childrenStorage indexOfObject:object];
 }
@@ -132,7 +139,7 @@ static char RZAssemblageUpdateContext;
             [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndexes:NULL length:0]];
         }
         else {
-            NSUInteger index = [self childrenIndexOfObject:object];
+            NSUInteger index = [self elementsIndexOfObject:object];
             [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
         }
         [self closeBatchUpdate];

@@ -54,56 +54,7 @@
     return [self.fetchedResultsController performFetch:error];
 }
 
-- (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSUInteger childCount = NSNotFound;
-    if ( self.hasSections ) {
-        if ( indexPath.length == 0 ) {
-            childCount = self.fetchedResultsController.sections.count;
-        }
-        else {
-            id<NSFetchedResultsSectionInfo> sectionInfo = [self childAtIndexPath:indexPath];
-            childCount = [sectionInfo numberOfObjects];
-        }
-    }
-    else {
-        return self.fetchedResultsController.fetchedObjects.count;
-    }
-    return childCount;
-}
-
-- (id)childAtIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssertItemIndexPath(indexPath);
-    id object = nil;
-    if ( indexPath.length == 1 ) {
-        NSUInteger index = [indexPath indexAtPosition:0];
-        if ( self.hasSections ) {
-            object = self.fetchedResultsController.sections[index];
-        }
-        else {
-            object = self.fetchedResultsController.fetchedObjects[index];
-        }
-    }
-    else {
-        object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    }
-    return object;
-}
-
-- (NSUInteger)countOfChildren
-{
-    RZRaize(self.hasSections == NO, @"Can not compose RZFRC inside of all parent assemblages if the FRC has sections");
-    return [self childCountAtIndexPath:nil];
-}
-
-- (RZAssemblage *)nodeInChildrenAtIndex:(NSUInteger)index
-{
-    RZRaize(self.hasSections == NO, @"Can not compose RZFRC inside of all parent assemblages if the FRC has sections");
-    return [self childAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
-}
-
-- (NSMutableArray *)mutableArrayValueForKey:(NSString *)key
+- (NSMutableArray *)mutableChildren;
 {
     return nil;
 }

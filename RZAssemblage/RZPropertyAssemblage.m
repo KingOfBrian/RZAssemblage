@@ -68,18 +68,18 @@ static char RZPropertyContext;
     }
 }
 
-- (NSUInteger)countOfChildren
+- (NSUInteger)countOfElements
 {
     return self.keypaths.count;
 }
 
-- (id)nodeInChildrenAtIndex:(NSUInteger)index
+- (id)objectInElementsAtIndex:(NSUInteger)index
 {
     NSString *keypath = self.keypaths[index];
     return [self.representedObject valueForKeyPath:keypath];
 }
 
-- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
+- (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
     NSString *keypath = self.keypaths[index];
     [self openBatchUpdate];
@@ -89,7 +89,7 @@ static char RZPropertyContext;
     [self closeBatchUpdate];
 }
 
-- (void)insertObject:(NSString *)keypath inChildrenAtIndex:(NSUInteger)index
+- (void)insertObject:(NSString *)keypath inElementsAtIndex:(NSUInteger)index
 {
     RZRaize([keypath isKindOfClass:[NSString class]], @"Can only insert valid keypaths into a property assemblage");
     [self openBatchUpdate];
@@ -102,13 +102,13 @@ static char RZPropertyContext;
     [self closeBatchUpdate];
 }
 
-- (void)replaceObjectInChildrenAtIndex:(NSUInteger)index withObject:(id)object
+- (void)replaceObjectInElementsAtIndex:(NSUInteger)index withObject:(id)object
 {
     NSString *keypath = self.keypaths[index];
     [self.representedObject setValue:object forKeyPath:keypath];
 }
 
-- (NSUInteger)childrenIndexOfObject:(id)object
+- (NSUInteger)elementsIndexOfObject:(id)object
 {
     __block NSUInteger index = NSNotFound;
     [self.keypaths enumerateObjectsUsingBlock:^(NSString *keypath, NSUInteger idx, BOOL *stop) {

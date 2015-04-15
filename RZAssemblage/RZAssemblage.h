@@ -40,27 +40,21 @@ OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 - (id)representedObject;
 
 /**
- *  Return a mutable array proxy representing the children of the node at indexPath
- *
- *  If the assemblage does not support mutation, this will return nil.
+ * Return an array of objects representing the children of this node.
  */
-- (NSMutableArray *)mutableArrayForIndexPath:(NSIndexPath *)indexPath;
+- (NSArray *)children;
 
 /**
- *  Return an array representing the children of the node at index path
+ * Return a mutable array of objects representing the children of this node.
  */
-- (NSArray *)arrayForIndexPath:(NSIndexPath *)indexPath;
+- (NSMutableArray *)mutableChildren;
 
 /**
- *  Return the number of children at the indexPath
+ * Return the node at the specified index path.
  */
-- (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath;
+- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath;
 
-/**
- *  Return the child at the indexPath.  If the child is an assemblage,
- *  this will return the represented object.
- */
-- (id)childAtIndexPath:(NSIndexPath *)indexPath;
+- (id)objectAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
  * The delegate to inform of changes.

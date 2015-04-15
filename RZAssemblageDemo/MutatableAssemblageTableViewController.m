@@ -141,13 +141,13 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (NSMutableArray *)randomSection
 {
-    NSMutableArray *sections = [self.assemblage mutableArrayForIndexPath:nil];
+    NSMutableArray *sections = [self.assemblage mutableChildren];
     return sections[arc4random() % [sections count]];
 }
 
 - (NSIndexPath *)randomExistingIndexPath
 {
-    NSMutableArray *sections = [self.assemblage mutableArrayForIndexPath:nil];
+    NSMutableArray *sections = [self.assemblage mutableChildren];
 
     NSIndexPath *indexPath = nil;
     // Find an indexPath.  If the section we point to has no items, pick another section.
@@ -179,7 +179,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (void)testHowDoesItWorkMove
 {
     // This move actually works, but a move from 0:1 -> 0:1 doesn't appear like it should work.
-    NSMutableArray *m1 = [self.mutableAssemblages[0] mutableArrayForIndexPath:nil];
+    NSMutableArray *m1 = [self.mutableAssemblages[0] mutableChildren];
     [self.mutableAssemblages[0] openBatchUpdate];
     [m1 removeObjectAtIndex:0];
     [m1 removeObjectAtIndex:0];
@@ -219,7 +219,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 {
     [self.assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in self.mutableAssemblages ) {
-        NSMutableArray *proxy = [assemblage mutableArrayForIndexPath:nil];
+        NSMutableArray *proxy = [assemblage mutableChildren];
         while ( [proxy count] > 2 ) {
             [proxy removeLastObject];
         }

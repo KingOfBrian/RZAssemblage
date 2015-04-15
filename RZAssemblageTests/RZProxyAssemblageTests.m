@@ -46,12 +46,12 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     Artist *pf = [Artist pinkFloyd];
 
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypath:@"songs"];
-    Artist *rPF = [a childAtIndexPath:nil];
+    Artist *rPF = [a objectAtIndexPath:nil];
     XCTAssertNotNil(rPF);
-    Song *s = [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
+    Song *s = [a objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
     XCTAssertNotNil(s);
     XCTAssertTrue([s isKindOfClass:[Song class]]);
-    XCTAssertTrue([a childCountAtIndexPath:nil] == 9);
+    XCTAssertTrue([a children].count == 9);
 }
 
 - (void)testMutliKeyProxy
@@ -59,14 +59,14 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     Artist *pf = [Artist pinkFloyd];
 
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
-    Albumn *darkSide = [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
+    Albumn *darkSide = [a objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
     XCTAssertNotNil(darkSide);
-    XCTAssertEqual(darkSide, [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]]);
+    XCTAssertEqual(darkSide, [a objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]]);
     XCTAssertEqualObjects(darkSide.name, @"Dark Side Of The Moon");
-    XCTAssertTrue([a childCountAtIndexPath:nil] == 2);
-    Song *s = [a childAtIndexPath:[NSIndexPath indexPathWithIndexes:topSongPath length:2]];
+    XCTAssertTrue([a children].count == 2);
+    Song *s = [a objectAtIndexPath:[NSIndexPath indexPathWithIndexes:topSongPath length:2]];
     XCTAssertTrue(s && [s isKindOfClass:[Song class]]);
-    NSString *w = [a childAtIndexPath:[NSIndexPath indexPathWithIndexes:firstWriterPath length:3]];
+    NSString *w = [a objectAtIndexPath:[NSIndexPath indexPathWithIndexes:firstWriterPath length:3]];
     XCTAssertTrue(w && [w isKindOfClass:[NSString class]]);
 }
 
@@ -74,8 +74,8 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     Artist *pf = [Artist pinkFloyd];
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs"]];
-    XCTAssertTrue([[a nodeInChildrenAtIndex:0] isKindOfClass:[RZAssemblage class]]);
-    XCTAssertEqual([a nodeInChildrenAtIndex:0], [a nodeInChildrenAtIndex:0]);
+    XCTAssertTrue([[a nodeAtIndex:0] isKindOfClass:[RZAssemblage class]]);
+    XCTAssertEqual([a nodeAtIndex:0], [a nodeAtIndex:0]);
 }
 
 - (void)testUpdate
@@ -89,12 +89,12 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 1);
 
     [a openBatchUpdate];
-    Albumn *dsom = [a childAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
+    Albumn *dsom = [a objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
     dsom.name = @"Which Side of The Moon?";
 
-    Song *s = [a childAtIndexPath:top];
+    Song *s = [a objectAtIndexPath:top];
     s.name = @"Not Sure";
-    NSMutableArray *writers = [a mutableArrayForIndexPath:top];
+    NSMutableArray *writers = [[a assemblageAtIndexPath:top] mutableChildren];
     [writers removeAllObjects];
     [a closeBatchUpdate];
 

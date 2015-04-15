@@ -21,14 +21,14 @@
 @interface RZAssemblage (Protected)
 
 // These methods should be implemented by subclasses.
-- (NSUInteger)countOfChildren;
-- (id)objectInChildrenAtIndex:(NSUInteger)index;
-- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index;
-- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index;
-- (NSUInteger)childrenIndexOfObject:(id)object;
+- (NSUInteger)countOfElements;
+- (id)objectInElementsAtIndex:(NSUInteger)index;
+- (void)removeObjectFromElementsAtIndex:(NSUInteger)index;
+- (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index;
+- (NSUInteger)elementsIndexOfObject:(id)object;
 
 
-- (RZAssemblage *)nodeInChildrenAtIndex:(NSUInteger)index;
+- (RZAssemblage *)nodeAtIndex:(NSUInteger)index;
 - (void)addMonitorsForObject:(id)anObject;
 - (void)removeMonitorsForObject:(id)anObject;
 

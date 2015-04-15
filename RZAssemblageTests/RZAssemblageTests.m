@@ -127,19 +127,19 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeInsert;
-        event.object = [assemblage childAtIndexPath:indexPath];
+        event.object = [assemblage objectAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeUpdate;
-        event.object = [assemblage childAtIndexPath:indexPath];
+        event.object = [assemblage objectAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
 //    [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
 //        TRACE_DELEGATE_EVENT
 //        event.type = RZAssemblageMutationTypeMove;
-//        event.object = [assemblage childAtIndexPath:indexPath];
+//        event.object = [assemblage objectAtIndexPath:indexPath];
 //        event.indexPath = indexPath;
 //    }];
     self.changeSet = changeSet;
@@ -163,18 +163,18 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testComposition
 {
     RZAssemblage *staticValues = [RZAssemblage assemblageForArray:@[@1, @2, @3]];
-    XCTAssertEqual([staticValues childCountAtIndexPath:nil], 3);
-    XCTAssertEqualObjects([staticValues childAtIndexPath:[NSIndexPath indexPathWithIndex:0]], @1);
-    XCTAssertEqualObjects([staticValues childAtIndexPath:[NSIndexPath indexPathWithIndex:1]], @2);
-    XCTAssertEqualObjects([staticValues childAtIndexPath:[NSIndexPath indexPathWithIndex:2]], @3);
+    XCTAssertEqual([staticValues children].count, 3);
+    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]], @1);
+    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:1]], @2);
+    XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:2]], @3);
     RZAssemblage *mutableValues = [RZAssemblage assemblageForArray:@[]];
-    XCTAssertEqual([mutableValues childCountAtIndexPath:nil], 0);
+    XCTAssertEqual([mutableValues children].count, 0);
 
     RZAssemblage *sectioned = [RZAssemblage assemblageForArray:@[staticValues, mutableValues]];
 
-    XCTAssertEqual([sectioned childCountAtIndexPath:nil], 2);
-    XCTAssertEqual([sectioned childCountAtIndexPath:[NSIndexPath indexPathWithIndex:0]], 3);
-    XCTAssertEqual([sectioned childCountAtIndexPath:[NSIndexPath indexPathWithIndex:1]], 0);
+    XCTAssertEqual([sectioned children].count, 2);
+    XCTAssertEqual([sectioned assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:0]].children.count, 3);
+    XCTAssertEqual([sectioned assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:1]].children.count, 0);
 }
 
 - (void)testMutableDelegation
@@ -182,7 +182,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *mutableAssemblage = [RZAssemblage assemblageForArray:@[]];
     mutableAssemblage.delegate = self;
 
-    NSMutableArray *mutableValues = [mutableAssemblage mutableArrayForIndexPath:nil];
+    NSMutableArray *mutableValues = [mutableAssemblage mutableChildren];
     [mutableValues addObject:@1];
     XCTAssert(self.delegateEvents.count == 1);
     XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
@@ -215,7 +215,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *mutableAssemblage = [RZAssemblage assemblageForArray:@[]];
     mutableAssemblage.delegate = self;
 
-    NSMutableArray *mutableValues = [mutableAssemblage mutableArrayForIndexPath:nil];
+    NSMutableArray *mutableValues = [mutableAssemblage mutableChildren];
     [mutableAssemblage openBatchUpdate];
 
     [mutableValues addObject:@1];
@@ -237,7 +237,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
     [assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in assemblages ) {
-        NSMutableArray *ma = [assemblage mutableArrayForIndexPath:nil];
+        NSMutableArray *ma = [assemblage mutableChildren];
         [ma addObject:@1];
         [ma removeLastObject];
     }
@@ -247,7 +247,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
     [assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in assemblages ) {
-        NSMutableArray *ma = [assemblage mutableArrayForIndexPath:nil];
+        NSMutableArray *ma = [assemblage mutableChildren];
         [ma addObject:@1];
     }
     [assemblage closeBatchUpdate];
@@ -267,72 +267,72 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     assemblage.delegate = self;
 
     for ( RZAssemblage *assemblage in @[m1, f1m1] ) {
-        NSMutableArray *ma = [assemblage mutableArrayForIndexPath:nil];
+        NSMutableArray *ma = [assemblage mutableChildren];
         [ma addObject:@1];
         [ma addObject:@2];
         [ma addObject:@3];
     }
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
-    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 2);
-    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 2);
-    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 2);
-    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 0);
+    XCTAssertTrue([m1 children].count == 2);
+    XCTAssertTrue([f1 children].count == 2);
+    XCTAssertTrue([f1m1 children].count == 2);
+    XCTAssertTrue([f1m2 children].count == 0);
 
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                           toIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
 
-    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
-    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 3);
-    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
-    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 0);
+    XCTAssertTrue([m1 children].count == 1);
+    XCTAssertTrue([f1 children].count == 3);
+    XCTAssertTrue([f1m1 children].count == 3);
+    XCTAssertTrue([f1m2 children].count == 0);
 
-    [[f1m2 mutableArrayForIndexPath:nil] addObject:@4];
-    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
-    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 4);
-    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
-    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 1);
+    [[f1m2 mutableChildren] addObject:@4];
+    XCTAssertTrue([m1 children].count == 1);
+    XCTAssertTrue([f1 children].count == 4);
+    XCTAssertTrue([f1m1 children].count == 3);
+    XCTAssertTrue([f1m2 children].count == 1);
 
     [assemblage insertObject:@5 atIndexPath:[NSIndexPath indexPathForRow:4 inSection:1]];
-    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
-    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 5);
-    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 3);
-    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 2);
+    XCTAssertTrue([m1 children].count == 1);
+    XCTAssertTrue([f1 children].count == 5);
+    XCTAssertTrue([f1m1 children].count == 3);
+    XCTAssertTrue([f1m2 children].count == 2);
 
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]
                           toIndexPath:[NSIndexPath indexPathForRow:4 inSection:1]];
-    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
-    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 5);
-    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 2);
-    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 3);
-    NSMutableArray *proxy = [f1m1 mutableArrayForIndexPath:nil];
+    XCTAssertTrue([m1 children].count == 1);
+    XCTAssertTrue([f1 children].count == 5);
+    XCTAssertTrue([f1m1 children].count == 2);
+    XCTAssertTrue([f1m2 children].count == 3);
+    NSMutableArray *proxy = [f1m1 mutableChildren];
     [proxy removeObjectAtIndex:0];
     [proxy removeObjectAtIndex:0];
-    XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
-    XCTAssertTrue([f1 childCountAtIndexPath:nil] == 3);
-    XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 0);
-    XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 3);
+    XCTAssertTrue([m1 children].count == 1);
+    XCTAssertTrue([f1 children].count == 3);
+    XCTAssertTrue([f1m1 children].count == 0);
+    XCTAssertTrue([f1m2 children].count == 3);
 
     // The first composed assemblage is empty, and we are removing from the head.
     // Ensure that this results in a removal from f1m2, not a index-violation on f1m1
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
-     XCTAssertTrue([m1 childCountAtIndexPath:nil] == 1);
-     XCTAssertTrue([f1 childCountAtIndexPath:nil] == 2);
-     XCTAssertTrue([f1m1 childCountAtIndexPath:nil] == 0);
-     XCTAssertTrue([f1m2 childCountAtIndexPath:nil] == 2);
+     XCTAssertTrue([m1 children].count == 1);
+     XCTAssertTrue([f1 children].count == 2);
+     XCTAssertTrue([f1m1 children].count == 0);
+     XCTAssertTrue([f1m2 children].count == 2);
 }
 
 - (void)testNestedGroupedMutableDelegation
 {
     RZAssemblage *parent = [RZAssemblage assemblageForArray:@[]];
-    NSMutableArray *parentproxy = [parent mutableArrayForIndexPath:nil];
+    NSMutableArray *parentproxy = [parent mutableChildren];
     [parentproxy addObject:[RZAssemblage assemblageForArray:@[]]];
     RZAssemblage *mutableValues = [RZAssemblage assemblageForArray:@[]];
     [parentproxy addObject:mutableValues];
 
     parent.delegate = self;
     [parent openBatchUpdate];
-    NSMutableArray *proxy = [mutableValues mutableArrayForIndexPath:nil];
+    NSMutableArray *proxy = [mutableValues mutableChildren];
     [proxy addObject:@1];
     [proxy removeLastObject];
     [proxy insertObject:@2 atIndex:0];
@@ -359,13 +359,13 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 #define THIRD_CHILD_COUNT 12 / 3
 
     RZFilteredAssemblage *s1 = [m1 filteredAssemblage];
-    NSMutableArray *s1proxy = [s1 mutableArrayForIndexPath:nil];
+    NSMutableArray *s1proxy = [s1 mutableChildren];
     s1.delegate = self;
-    XCTAssertEqual([s1 childCountAtIndexPath:nil], CHILD_COUNT);
+    XCTAssertEqual([s1 children].count, CHILD_COUNT);
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
         return [n unsignedIntegerValue] % 2 == 0;
     }];
-    XCTAssertEqual([s1 childCountAtIndexPath:nil], EVEN_CHILD_COUNT);
+    XCTAssertEqual([s1 children].count, EVEN_CHILD_COUNT);
     XCTAssert(self.delegateEvents.count == EVEN_CHILD_COUNT);
     for ( NSUInteger i = 0; i < EVEN_CHILD_COUNT; i++ ) {
         RZAssemblageDelegateEvent *ev = self.delegateEvents[i];
@@ -382,7 +382,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     XCTAssert([[s1proxy objectAtIndex:2] integerValue] == 9);
     XCTAssert([[s1proxy objectAtIndex:3] integerValue] == 12);
 
-    XCTAssertEqual([s1 childCountAtIndexPath:nil], THIRD_CHILD_COUNT);
+    XCTAssertEqual([s1 children].count, THIRD_CHILD_COUNT);
 
     [self.delegateEvents removeAllObjects];
 }
@@ -391,7 +391,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 {
     NSArray *values = [self.class values];
     RZFilteredAssemblage *s1 = [[RZAssemblage assemblageForArray:values] filteredAssemblage];
-    NSMutableArray *s1proxy = [s1 mutableArrayForIndexPath:nil];
+    NSMutableArray *s1proxy = [s1 mutableChildren];
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
     }];
@@ -401,15 +401,15 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     for ( NSUInteger i = 6; i < 12; i++ ) {
         XCTAssert([[s1proxy objectAtIndex:i] hasPrefix:@"c"]);
     }
-    NSArray *objects = [s1 mutableArrayForIndexPath:nil];
-    for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
+    NSArray *objects = [s1 mutableChildren];
+    for ( NSUInteger i = 0; i < [s1 children].count; i++ ) {
         XCTAssertEqual([s1proxy objectAtIndex:i], objects[i]);
     }
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasSuffix:@"b"] || [s hasSuffix:@"d"] || [s hasSuffix:@"f"];
     }];
-    objects = [s1 mutableArrayForIndexPath:nil];
-    for ( NSUInteger i = 0; i < [s1 childCountAtIndexPath:nil]; i++ ) {
+    objects = [s1 mutableChildren];
+    for ( NSUInteger i = 0; i < [s1 children].count; i++ ) {
         XCTAssertEqual([s1proxy objectAtIndex:i], objects[i]);
     }
 }
@@ -420,9 +420,9 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *a1 = [RZAssemblage assemblageForArray:values];
     a1.delegate = self;
 
-    NSArray *array = [a1 mutableArrayForIndexPath:nil];
+    NSArray *array = [a1 mutableChildren];
     [a1 openBatchUpdate];
-    [[a1 mutableArrayForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
+    [[a1 mutableChildren] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
         return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
     }];
     [a1 closeBatchUpdate];
@@ -445,10 +445,10 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
     }];
-    NSArray *array = [f1 mutableArrayForIndexPath:nil];
+    NSArray *array = [f1 mutableChildren];
     f1.delegate = self;
     [a1 openBatchUpdate];
-    [[a1 mutableArrayForIndexPath:nil] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
+    [[a1 mutableChildren] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
         return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
     }];
     [a1 closeBatchUpdate];
@@ -482,14 +482,14 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
                              [RZAssemblage assemblageForArray:values]];
     RZAssemblage *f1 = [RZAssemblage joinedAssemblages:assemblages];
     RZFilteredAssemblage *s1 = [f1 filteredAssemblage];
-    NSMutableArray *s1proxy = [s1 mutableArrayForIndexPath:nil];
+    NSMutableArray *s1proxy = [s1 mutableChildren];
     s1.delegate = self;
-    XCTAssertEqual([s1 childCountAtIndexPath:nil], values.count * assemblages.count);
+    XCTAssertEqual([s1 children].count, values.count * assemblages.count);
     s1.filter = aFilter;
 
     NSUInteger removeInAssemblageCount = (values.count - aValues.count);
     XCTAssertEqual(self.delegateEvents.count, removeInAssemblageCount * assemblages.count);
-    XCTAssertEqual([s1 childCountAtIndexPath:nil], aValues.count * assemblages.count);
+    XCTAssertEqual([s1 children].count, aValues.count * assemblages.count);
     for ( NSUInteger assemblageIndex = 0; assemblageIndex < assemblages.count; assemblageIndex++ ) {
         for ( NSUInteger i = 0; i < aValues.count; i++ ) {
             NSUInteger indexInAssemblage = i + assemblageIndex * aValues.count;
@@ -538,10 +538,10 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilteredRemoval
 {
     RZAssemblage *m = [RZAssemblage assemblageForArray:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
-    NSMutableArray *mproxy = [m mutableArrayForIndexPath:nil];
+    NSMutableArray *mproxy = [m mutableChildren];
 
     RZFilteredAssemblage *filtered = [m filteredAssemblage];
-    NSMutableArray *filteredproxy = [filtered mutableArrayForIndexPath:nil];
+    NSMutableArray *filteredproxy = [filtered mutableChildren];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -549,7 +549,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     filtered.delegate = self;
 
     [mproxy removeObjectAtIndex:2]; // 9
-    XCTAssert([filtered childCountAtIndexPath:nil] == 2);
+    XCTAssert([filtered children].count == 2);
     XCTAssert([[filteredproxy objectAtIndex:0] isEqual:@"7"]);
     XCTAssert([[filteredproxy objectAtIndex:1] isEqual:@"11"]);
 }
@@ -557,27 +557,27 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilteredAddition
 {
     RZAssemblage *m = [RZAssemblage assemblageForArray:@[]];
-    NSMutableArray *mproxy = [m mutableArrayForIndexPath:nil];
+    NSMutableArray *mproxy = [m mutableChildren];
     RZFilteredAssemblage *filtered = [m filteredAssemblage];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
 
-    XCTAssert([filtered childCountAtIndexPath:nil] == 0);
+    XCTAssert([filtered children].count == 0);
     for ( NSUInteger i = 0; i < 5; i++ ) {
         [mproxy addObject:@(i)];
     }
-    XCTAssert([filtered childCountAtIndexPath:nil] == 2);
+    XCTAssert([filtered children].count == 2);
     for ( NSUInteger i = 0; i < 5; i++ ) {
         [mproxy addObject:@(i)];
     }
-    XCTAssert([filtered childCountAtIndexPath:nil] == 4);
+    XCTAssert([filtered children].count == 4);
 
     [m openBatchUpdate];
     [mproxy removeAllObjects];
     [m closeBatchUpdate];
 
-    XCTAssert([filtered childCountAtIndexPath:nil] == 0);
+    XCTAssert([filtered children].count == 0);
 }
 
 - (void)testMutation
@@ -588,7 +588,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *m4 = [RZAssemblage assemblageForArray:@[@"10", @"11", @"12", ]];
     RZAssemblage *j1 = [RZAssemblage joinedAssemblages:@[m3, m4]];
     RZFilteredAssemblage *filtered = [j1 filteredAssemblage];
-    NSMutableArray *filteredproxy = [filtered mutableArrayForIndexPath:nil];
+    NSMutableArray *filteredproxy = [filtered mutableChildren];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -600,45 +600,46 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
 
     // This is @ 2:2
-    [[m3 mutableArrayForIndexPath:nil] addObject:@"9"];
+    [[m3 mutableChildren] addObject:@"9"];
     XCTAssert([[filteredproxy objectAtIndex:2] isEqualToString:@"9"]);
     [self.delegateEvents removeAllObjects];
-    id obj = [assemblage childAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+    id obj = [assemblage objectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]
                           toIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]];
-    XCTAssertEqual(obj, [assemblage childAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]]);
+    XCTAssertEqual(obj, [assemblage objectAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:2]]);
 }
 
 - (void)testFilterRemoval
 {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
     RZFilteredAssemblage *filtered = [m1 filteredAssemblage];
-    NSMutableArray *filteredproxy = [filtered mutableArrayForIndexPath:nil];
+    NSMutableArray *filteredproxy = [filtered mutableChildren];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
     filtered.delegate = self;
-    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
+
+    XCTAssert([filtered children].count == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
     }
-    NSMutableArray *m1proxy = [m1 mutableArrayForIndexPath:nil];
+    NSMutableArray *m1proxy = [m1 mutableChildren];
     [m1proxy removeObjectAtIndex:1];
-    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
+    XCTAssert([filtered children].count == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
     }
     XCTAssert(self.delegateEvents.count == 0);
 
     [m1proxy removeObjectAtIndex:2];
-    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
+    XCTAssert([filtered children].count == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
     }
     XCTAssert(self.delegateEvents.count == 0);
 
     [m1proxy removeObjectAtIndex:3];
-    XCTAssert([filtered childCountAtIndexPath:nil] == 3);
+    XCTAssert([filtered children].count == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
         XCTAssert([[filteredproxy objectAtIndex:i] integerValue] % 2 == 1);
     }
@@ -648,7 +649,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testMoveWithIndexConcerns1
 {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3", @"4"]];
-    NSMutableArray *m1proxy = [m1 mutableArrayForIndexPath:nil];
+    NSMutableArray *m1proxy = [m1 mutableChildren];
 
     m1.delegate = self;
     [m1 openBatchUpdate];
@@ -663,7 +664,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testMoveWithIndexConcerns2
 {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3"]];
-    NSMutableArray *m1proxy = [m1 mutableArrayForIndexPath:nil];
+    NSMutableArray *m1proxy = [m1 mutableChildren];
 
     m1.delegate = self;
     [m1 openBatchUpdate];
@@ -677,7 +678,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testBatchingA
 {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[]];
-    NSMutableArray *m1proxy = [m1 mutableArrayForIndexPath:nil];
+    NSMutableArray *m1proxy = [m1 mutableChildren];
     m1.delegate = self;
     [m1 openBatchUpdate];
     [m1proxy addObject:@"2"];
@@ -708,7 +709,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     self.testProxyArray = [NSArray array];
     RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
     pa.delegate = self;
-    NSMutableArray *proxyArray = [pa mutableArrayForIndexPath:nil];
+    NSMutableArray *proxyArray = [pa mutableChildren];
     [pa openBatchUpdate];
     // This causes double change events (setter + observer)
     [proxyArray addObject:@"0"];

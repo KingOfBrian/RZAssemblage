@@ -70,15 +70,15 @@ static char RZProxyKeyPathContext;
     return self.nextKeyPaths == nil;
 }
 
-- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
+- (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
-    id object = [self objectInChildrenAtIndex:index];
+    id object = [self objectInElementsAtIndex:index];
     RZAssemblageLog(@"%p:Remove %@ at %zd", self, object,  index);
     [self removeMonitorsForObject:object];
     [self.childrenStorage removeObjectAtIndex:index];
 }
 
-- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
+- (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
     RZAssemblageLog(@"%p:Insert %@ at %zd", self, object, index);
     NSParameterAssert(object);
@@ -86,24 +86,22 @@ static char RZProxyKeyPathContext;
     [self.childrenStorage insertObject:object atIndex:index];
 }
 
-- (id)nodeInChildrenAtIndex:(NSUInteger)index
+- (id)nodeAtIndex:(NSUInteger)index
 {
-    id node = [super nodeInChildrenAtIndex:index];
-    if ( self.isRepeatingKeyPath ) {
-        if ( [node isKindOfClass:[RZAssemblage class]] == NO ) {
-            [self removeMonitorsForObject:node];
-            node = [[RZProxyAssemblage alloc] initWithObject:node childKey:self.keypath];
-            [self addMonitorsForObject:node];
-            [self.childrenStorage replaceObjectAtIndex:index withObject:node];
-        }
+    id node = [super nodeAtIndex:index];
+    if ( node == nil && self.isRepeatingKeyPath ) {
+        id object = [self objectInElementsAtIndex:index];
+        [self removeMonitorsForObject:object];
+        node = [[RZProxyAssemblage alloc] initWithObject:object childKey:self.keypath];
+        [self addMonitorsForObject:node];
+        [self.childrenStorage replaceObjectAtIndex:index withObject:node];
     }
-    else if ( self.nextKeyPaths.count > 0 ) {
-        if ( [node isKindOfClass:[RZAssemblage class]] == NO ) {
-            [self removeMonitorsForObject:node];
-            node = [[RZProxyAssemblage alloc] initWithObject:node keypaths:self.nextKeyPaths];
-            [self addMonitorsForObject:node];
-            [self.childrenStorage replaceObjectAtIndex:index withObject:node];
-        }
+    else if ( node == nil && self.nextKeyPaths.count > 0 ) {
+        id object = [self objectInElementsAtIndex:index];
+        [self removeMonitorsForObject:object];
+        node = [[RZProxyAssemblage alloc] initWithObject:object keypaths:self.nextKeyPaths];
+        [self addMonitorsForObject:node];
+        [self.childrenStorage replaceObjectAtIndex:index withObject:node];
     }
     return node;
 }

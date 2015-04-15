@@ -29,21 +29,21 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    NSUInteger count = [self.assemblage childCountAtIndexPath:nil];
+    NSUInteger count = [[self.assemblage children] count];
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSUInteger count = [self.assemblage childCountAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    NSUInteger count = [[self.assemblage assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:section]] children].count;
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.assemblage childAtIndexPath:indexPath];
+    id object = [self.assemblage objectAtIndexPath:indexPath];
     UICollectionViewCell *cell = [self.cellFactory cellForObject:object
                                                      atIndexPath:indexPath
                                               fromCollectionView:self.collectionView];
@@ -52,7 +52,7 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.assemblage childAtIndexPath:indexPath];
+    id object = [self.assemblage objectAtIndexPath:indexPath];
 
     UICollectionReusableView *view = [self.cellFactory reusableViewOfKind:kind
                                                                 forObject:object

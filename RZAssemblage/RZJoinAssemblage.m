@@ -31,24 +31,24 @@
 
 #pragma mark - RZAssemblage
 
-- (NSUInteger)countOfChildren
+- (NSUInteger)countOfElements
 {
     NSUInteger count = 0;
     for ( RZAssemblage *assemblage in self.assemblages ) {
-        count += [assemblage childCountAtIndexPath:nil];
+        count += [assemblage countOfElements];
     }
     return count;
 }
 
-- (id)nodeInChildrenAtIndex:(NSUInteger)index;
+- (id)objectInElementsAtIndex:(NSUInteger)index
 {
     NSUInteger offset = 0;
     id object = nil;
     for ( RZAssemblage *assemblage in self.assemblages ) {
-        NSUInteger count = [assemblage childCountAtIndexPath:nil];
+        NSUInteger count = [assemblage countOfElements];
         NSUInteger currentIndex = index - offset;
         if ( index - offset < count) {
-            object = [assemblage nodeInChildrenAtIndex:currentIndex];
+            object = [assemblage objectInElementsAtIndex:currentIndex];
             break;
         }
         offset += count;
@@ -56,14 +56,30 @@
     return object;
 }
 
-- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
+- (id)nodeAtIndex:(NSUInteger)index;
+{
+    NSUInteger offset = 0;
+    id object = nil;
+    for ( RZAssemblage *assemblage in self.assemblages ) {
+        NSUInteger count = [assemblage countOfElements];
+        NSUInteger currentIndex = index - offset;
+        if ( index - offset < count) {
+            object = [assemblage nodeAtIndex:currentIndex];
+            break;
+        }
+        offset += count;
+    }
+    return object;
+}
+
+- (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
     NSUInteger offset = 0;
     for ( RZAssemblage *assemblage in self.assemblages ) {
-        NSUInteger count = [assemblage childCountAtIndexPath:nil];
+        NSUInteger count = [assemblage countOfElements];
         NSUInteger currentIndex = index - offset;
         if ( index - offset < count) {
-            NSMutableArray *joinedProxy = [assemblage mutableArrayForIndexPath:nil];
+            NSMutableArray *joinedProxy = [assemblage mutableChildren];
             [joinedProxy removeObjectAtIndex:currentIndex];
             break;
         }
@@ -71,14 +87,14 @@
     }
 }
 
-- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
+- (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
     NSUInteger offset = 0;
     for ( RZAssemblage *assemblage in self.assemblages ) {
-        NSUInteger count = [assemblage childCountAtIndexPath:nil];
+        NSUInteger count = [assemblage countOfElements];
         NSUInteger currentIndex = index - offset;
         if ( currentIndex <= count) {
-            NSMutableArray *joinedProxy = [assemblage mutableArrayForIndexPath:nil];
+            NSMutableArray *joinedProxy = [assemblage mutableChildren];
             [joinedProxy insertObject:object atIndex:currentIndex];
             break;
         }
@@ -106,7 +122,7 @@
         if ( partAssemblage == childAssemblage ) {
             break;
         }
-        count += [partAssemblage childCountAtIndexPath:nil];
+        count += [partAssemblage countOfElements];
     }
     return count;
 }
@@ -115,7 +131,7 @@
 {
     NSUInteger index = 0;
     for ( RZAssemblage *partAssemblage in self.assemblages ) {
-        NSUInteger count = [partAssemblage childCountAtIndexPath:nil];
+        NSUInteger count = [partAssemblage countOfElements];
         if ( parentIndex <= count ) {
             break;
         }

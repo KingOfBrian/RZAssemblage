@@ -67,13 +67,13 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    Team *t = [self.assemblage childAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    Team *t = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
     return t.name;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Person *p = [self.assemblage childAtIndexPath:indexPath];
+    Person *p = [self.assemblage objectAtIndexPath:indexPath];
     PersonViewController *pvc = [[PersonViewController alloc] initWithPerson:p];
     [self.navigationController pushViewController:pvc animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

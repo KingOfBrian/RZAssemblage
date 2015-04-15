@@ -81,7 +81,7 @@
 - (void)clearData
 {
     [self.data openBatchUpdate];
-    NSMutableArray *proxy = [self.data mutableArrayForIndexPath:nil];
+    NSMutableArray *proxy = [self.data mutableChildren];
     while ( [proxy count] != 0 ) {
         [proxy removeObjectAtIndex:0];
     }
@@ -91,7 +91,7 @@
 - (void)addData
 {
     [self.data openBatchUpdate];
-    NSMutableArray *proxy = [self.data mutableArrayForIndexPath:nil];
+    NSMutableArray *proxy = [self.data mutableChildren];
     for ( NSUInteger i = 0; i < 5; i++ ) {
         [proxy addObject:@(i+1)];
     }
@@ -104,7 +104,7 @@
     self.filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *num, NSDictionary *bindings) {
         return [num integerValue] % self.divisbleBy == 0;
     }];
-    NSLog(@"Showing filters divisible by %@ = %@", @(self.divisbleBy + 1), @([self.assemblage childCountAtIndexPath:[NSIndexPath indexPathWithIndex:0]]));
+    NSLog(@"Showing filters divisible by %@ = %@", @(self.divisbleBy + 1), @([[[self.assemblage assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:0]] children] count]));
 }
 
 RZAssemblageTableViewDataSourceIsControllingCells()

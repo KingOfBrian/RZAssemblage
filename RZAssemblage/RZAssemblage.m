@@ -17,7 +17,7 @@
 #import "RZProxyAssemblage.h"
 #import "RZPropertyAssemblage.h"
 
-static NSString *RZAssemblageChildrenKey = @"children";
+static NSString *RZAssemblageElementsKey = @"elements";
 
 @implementation RZAssemblage
 
@@ -60,45 +60,32 @@ static NSString *RZAssemblageChildrenKey = @"children";
 
 #pragma mark - <RZAssemblage>
 
-- (id)nodeForIndexPath:(NSIndexPath *)indexPath
+- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger length = [indexPath length];
     id node = self;
 
     if ( length > 0 ) {
-        node = [self nodeInChildrenAtIndex:[indexPath indexAtPosition:0]];
-        if ( [node isKindOfClass:[RZAssemblage class]] ) {
-            node = [node nodeForIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
-        }
+        node = [self nodeAtIndex:[indexPath indexAtPosition:0]];
+        node = [node assemblageAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return node;
 }
 
-- (NSMutableArray *)mutableArrayForIndexPath:(NSIndexPath *)indexPath
+- (id)objectAtIndexPath:(NSIndexPath *)indexPath
 {
-    RZAssemblage *node = [self nodeForIndexPath:indexPath];
-    RZRaize([node isKindOfClass:[RZAssemblage class]], @"Invalid Index Path: %@", indexPath);
-    return [node mutableArrayValueForKey:RZAssemblageChildrenKey];
+    RZAssemblage *parent = [self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    return [parent objectInElementsAtIndex:[indexPath rz_lastIndex]];
 }
 
-- (NSArray *)arrayForIndexPath:(NSIndexPath *)indexPath;
+- (NSMutableArray *)mutableChildren
 {
-    RZAssemblage *node = [self nodeForIndexPath:indexPath];
-    RZRaize([node isKindOfClass:[RZAssemblage class]], @"Invalid Index Path: %@", indexPath);
-    return [node valueForKey:RZAssemblageChildrenKey];
+    return [self mutableArrayValueForKey:RZAssemblageElementsKey];
 }
 
-- (NSUInteger)childCountAtIndexPath:(NSIndexPath *)indexPath;
+- (NSArray *)children
 {
-    RZAssemblage *node = [self nodeForIndexPath:indexPath];
-    RZRaize([node isKindOfClass:[RZAssemblage class]], @"Invalid Index Path: %@", indexPath);
-    return node.countOfChildren;
-}
-
-- (id)childAtIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssemblage *node = [self nodeForIndexPath:indexPath];
-    return  [node isKindOfClass:[RZAssemblage class]] ? node.representedObject : node;
+    return [self valueForKey:RZAssemblageElementsKey];
 }
 
 #pragma mark - Batching
@@ -134,7 +121,7 @@ static NSString *RZAssemblageChildrenKey = @"children";
 - (void)notifyObjectUpdate:(id)anObject
 {
     NSParameterAssert(anObject);
-    NSUInteger index = [self childrenIndexOfObject:anObject];
+    NSUInteger index = [self elementsIndexOfObject:anObject];
     RZAssemblageLog(@"%p:Update %@ at %zd", self, anObject, index);
     NSAssert(index != NSNotFound, @"Object is not part of assemblage");
     [self openBatchUpdate];
@@ -145,7 +132,7 @@ static NSString *RZAssemblageChildrenKey = @"children";
 - (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     RZRaize(self.changeSet != nil, @"Must begin an update on the parent assemblage before mutating a child assemblage");
-    NSUInteger assemblageIndex = [self childrenIndexOfObject:assemblage];
+    NSUInteger assemblageIndex = [self elementsIndexOfObject:assemblage];
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         return [indexPath rz_indexPathByPrependingIndex:assemblageIndex];
     }];
@@ -156,20 +143,20 @@ static NSString *RZAssemblageChildrenKey = @"children";
 
 - (void)insertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    NSMutableArray *proxy = [self mutableArrayForIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *proxy = [[self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]] mutableChildren];
     [proxy insertObject:object atIndex:[indexPath rz_lastIndex]];
 }
 
 - (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSMutableArray *proxy = [self mutableArrayForIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *proxy = [[self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]] mutableChildren];
     [proxy removeObjectAtIndex:[indexPath rz_lastIndex]];
 }
 
 - (void)moveObjectAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    NSMutableArray *fproxy = [self mutableArrayForIndexPath:[fromIndexPath indexPathByRemovingLastIndex]];
-    NSMutableArray *tproxy = [self mutableArrayForIndexPath:[toIndexPath indexPathByRemovingLastIndex]];
+    NSMutableArray *fproxy = [[self assemblageAtIndexPath:[fromIndexPath indexPathByRemovingLastIndex]] mutableChildren];
+    NSMutableArray *tproxy = [[self assemblageAtIndexPath:[toIndexPath indexPathByRemovingLastIndex]] mutableChildren];
 
     NSObject *object = [fproxy objectAtIndex:[fromIndexPath rz_lastIndex]];
     [fproxy removeObjectAtIndex:[fromIndexPath rz_lastIndex]];
@@ -180,33 +167,32 @@ static NSString *RZAssemblageChildrenKey = @"children";
 
 @implementation RZAssemblage (Protected)
 
-- (NSUInteger)countOfChildren
+- (NSUInteger)countOfElements
 {
     RZSubclassMustImplement(NSNotFound);
 }
 
-- (id)objectInChildrenAtIndex:(NSUInteger)index
-{
-    id object = [self nodeInChildrenAtIndex:index];
-    return [object isKindOfClass:[RZAssemblage class]] ? [object representedObject] : object;
-}
-
-- (RZAssemblage *)nodeInChildrenAtIndex:(NSUInteger)index
+- (id)objectInElementsAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement(nil);
 }
 
-- (void)removeObjectFromChildrenAtIndex:(NSUInteger)index
+- (RZAssemblage *)nodeAtIndex:(NSUInteger)index
+{
+    RZSubclassMustImplement(nil);
+}
+
+- (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement();
 }
 
-- (void)insertObject:(NSObject *)object inChildrenAtIndex:(NSUInteger)index
+- (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement();
 }
 
-- (NSUInteger)childrenIndexOfObject:(id)object
+- (NSUInteger)elementsIndexOfObject:(id)object
 {
     RZSubclassMustImplement(NSNotFound);
 }

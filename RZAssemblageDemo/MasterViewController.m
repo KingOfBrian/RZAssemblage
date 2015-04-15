@@ -74,7 +74,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.tableView.assemblage childAtIndexPath:indexPath];
+    id object = [self.tableView.assemblage objectAtIndexPath:indexPath];
     if ( [object isKindOfClass:[UIViewController class]] ) {
         [self.navigationController pushViewController:object animated:YES];
     }

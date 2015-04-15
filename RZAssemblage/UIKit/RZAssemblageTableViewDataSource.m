@@ -46,21 +46,21 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSUInteger count = [self.assemblage childCountAtIndexPath:nil];
+    NSUInteger count = self.assemblage.children.count;
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSUInteger count = [self.assemblage childCountAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    NSUInteger count = [self.assemblage assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:section]].children.count;
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.assemblage childAtIndexPath:indexPath];
+    id object = [self.assemblage objectAtIndexPath:indexPath];
     UITableViewCell *cell = [self.cellFactory cellForObject:object atIndexPath:indexPath fromTableView:self.tableView];
     return cell;
 }
@@ -108,7 +108,7 @@
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         // Update the cell if it is visible.
         if ( cell ) {
-            id object = [assemblage childAtIndexPath:indexPath];
+            id object = [self.assemblage objectAtIndexPath:indexPath];
             [self.cellFactory configureCell:cell forObject:object atIndexPath:indexPath];
         }
     }
