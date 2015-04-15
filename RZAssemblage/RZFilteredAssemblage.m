@@ -52,6 +52,11 @@
 
 #pragma mark - RZAssemblage
 
+- (id)representedObject
+{
+    return self.assemblage.representedObject;
+}
+
 - (NSUInteger)countOfElements
 {
     return [self.assemblage countOfElements] - self.filteredIndexPaths.count;
@@ -73,25 +78,13 @@
 - (id)nodeAtIndex:(NSUInteger)index;
 {
     index = [self indexFromExposedIndex:index];
-    return [self.assemblage nodeAtIndex:index];
-}
-
-- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssemblage *assemblage = self;
-    if ( indexPath.length > 0 ) {
-        NSUInteger index = [indexPath indexAtPosition:0];
-        // Lookup the assemblage at the index path
-        assemblage = [self nodeAtIndex:index];
-        // Wrap the assemblage with a filtered assemblage
+    RZAssemblage *assemblage = [self.assemblage nodeAtIndex:index];
+    if ( assemblage ) {
         RZMutableIndexPathSet *childIndexPathSet = [self.filteredIndexPaths indexPathSetAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
         assemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:assemblage filteredIndexPaths:childIndexPathSet];
-        // Recurse.
-        assemblage = [assemblage assemblageAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return assemblage;
 }
-
 
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {

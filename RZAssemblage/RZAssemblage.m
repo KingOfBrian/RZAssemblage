@@ -82,7 +82,8 @@ static NSString *RZAssemblageElementsKey = @"elements";
 {
     NSParameterAssert(block);
     NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:NULL length:0];
-    [self enumerateObjectsForIndexPath:indexPath usingBlock:block];
+    RZAssemblage *assemblage = [self assemblageAtIndexPath:indexPath];
+    [assemblage enumerateObjectsForIndexPath:indexPath usingBlock:block];
 }
 
 - (BOOL)enumerateObjectsForIndexPath:(NSIndexPath *)indexPath usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block

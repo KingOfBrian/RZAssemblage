@@ -320,7 +320,7 @@
 
 - (NSUInteger)count
 {
-    return self.rootNode.sortedChildren.count;
+    return self.rootNode.childIndexSet.count;
 }
 
 - (BOOL)containsIndexPath:(NSIndexPath *)indexPath

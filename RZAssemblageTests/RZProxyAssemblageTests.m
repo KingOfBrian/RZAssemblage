@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
+@import UIKit;
 #import "RZProxyAssemblage.h"
 #import "RZFilterAssemblage.h"
 
@@ -104,12 +105,13 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     XCTAssertTrue(self.changeSet.removedIndexPaths.count == 1);
 }
 
-- (void)testFiltering
+- (void)testTreeFiltering
 {
     Artist *pf = [Artist pinkFloyd];
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
-    a.delegate = self;
     RZFilterAssemblage *f = [a filterAssemblage];
+    f.delegate = self;
+
     f.filter = [NSPredicate predicateWithBlock:^BOOL(Albumn *albumn, NSDictionary *bindings) {
         BOOL match = YES;
         if ( [albumn isKindOfClass:[Albumn class]] ) {
@@ -117,11 +119,17 @@ NSUInteger firstWriterPath[3] = {0,0,0};
         }
         return match;
     }];
-    NSLog(@"Albumns starting with W or T");
-    [f enumerateObjectsUsingBlock:^(id obj, NSIndexPath *indexPath, BOOL *stop) {
-        NSLog(@"[%@] = %@", [indexPath rz_shortDescription], [obj respondsToSelector:@selector(name)] ? [obj name] : obj);
-    }];
 
+    // Ensure the correct albumn is exposed, and the proper remove event
+    XCTAssert([f countOfElements] == 1);
+    XCTAssert(self.changeSet.removedIndexPaths.count == 1);
+
+    Albumn *albumn = [f objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
+    NSIndexPath *removedIndexPath = self.changeSet.removedIndexPaths[0];
+    XCTAssert(removedIndexPath.length == 1 && [removedIndexPath indexAtPosition:0] == 0);
+    XCTAssert([[albumn name] hasPrefix:@"W"]);
+
+    // Change the filter to songs beginning with W or T
     f.filter = [NSPredicate predicateWithBlock:^BOOL(Song *song, NSDictionary *bindings) {
         BOOL match = YES;
         if ( [song isKindOfClass:[Song class]] ) {
@@ -129,10 +137,32 @@ NSUInteger firstWriterPath[3] = {0,0,0};
         }
         return match;
     }];
-    NSLog(@"Songs starting with W or T");
-    [f enumerateObjectsUsingBlock:^(id obj, NSIndexPath *indexPath, BOOL *stop) {
-        NSLog(@"[%@] = %@", [indexPath rz_shortDescription], [obj respondsToSelector:@selector(name)] ? [obj name] : obj);
+    XCTAssert([f countOfElements] == 2);
+    XCTAssert(self.changeSet.insertedIndexPaths.count == 1);
+    XCTAssertEqualObjects(self.changeSet.insertedIndexPaths[0], [NSIndexPath indexPathWithIndex:0]);
+    XCTAssert(self.changeSet.removedIndexPaths.count == 5);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[0], [NSIndexPath indexPathForRow:0 inSection:0]);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[1], [NSIndexPath indexPathForRow:1 inSection:0]);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[2], [NSIndexPath indexPathForRow:2 inSection:0]);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[3], [NSIndexPath indexPathForRow:0 inSection:1]);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[4], [NSIndexPath indexPathForRow:2 inSection:1]);
+
+    f.filter = nil;
+    f.filter = [NSPredicate predicateWithBlock:^BOOL(Song *song, NSDictionary *bindings) {
+        BOOL match = YES;
+        if ( [song isKindOfClass:[Song class]] ) {
+            match = [song.name hasPrefix:@"W"] || [song.name hasPrefix:@"T"];
+        }
+        return match;
     }];
+    XCTAssert([f countOfElements] == 2);
+    XCTAssert(self.changeSet.insertedIndexPaths.count == 0);
+    XCTAssert(self.changeSet.removedIndexPaths.count == 5);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[0], [NSIndexPath indexPathForRow:0 inSection:0]);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[1], [NSIndexPath indexPathForRow:1 inSection:0]);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[2], [NSIndexPath indexPathForRow:2 inSection:0]);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[3], [NSIndexPath indexPathForRow:0 inSection:1]);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths[4], [NSIndexPath indexPathForRow:2 inSection:1]);
 }
 
 @end

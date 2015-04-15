@@ -82,8 +82,8 @@
 
 - (void)setFilter:(NSPredicate *)filter
 {
-    _filter = filter;
     RZRaize(self.updateCount == 0, @"Can not modify the filter during mutation");
+    _filter = filter;
     [self updateFilterState];
 }
 
@@ -110,6 +110,10 @@
         if ( object && [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
             NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
             [self.changeSet insertAtIndexPath:exposedIndexPath];
+        }
+    }];
+    [self.unfilteredAssemblage enumerateObjectsUsingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
+        if ( object && [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
             [self.filteredIndexPaths removeIndexPath:indexPath];
         }
     }];
@@ -201,7 +205,8 @@
 
 - (BOOL)isObjectFiltered:(id)object
 {
-    return self.filter && [self.filter evaluateWithObject:object] == NO;
+    BOOL filtered = self.filter && [self.filter evaluateWithObject:object] == NO;
+    return filtered;
 }
 
 @end
