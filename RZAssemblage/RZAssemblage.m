@@ -12,7 +12,7 @@
 #import "RZIndexPathSet.h"
 
 #import "RZJoinAssemblage.h"
-#import "RZFilteredAssemblage.h"
+#import "RZFilterAssemblage.h"
 #import "RZArrayAssemblage.h"
 #import "RZProxyAssemblage.h"
 #import "RZPropertyAssemblage.h"
@@ -78,6 +78,39 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return [parent objectInElementsAtIndex:[indexPath rz_lastIndex]];
 }
 
+- (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
+{
+    NSParameterAssert(block);
+    NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:NULL length:0];
+    [self enumerateObjectsForIndexPath:indexPath usingBlock:block];
+}
+
+- (BOOL)enumerateObjectsForIndexPath:(NSIndexPath *)indexPath usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block
+{
+    NSParameterAssert(block);
+    BOOL stop = NO;
+    block(self.representedObject, indexPath, &stop);
+
+    if ( stop == NO ) {
+        for ( NSUInteger index = 0; index < self.children.count; index++ ) {
+            NSIndexPath *childIndexPath = [indexPath indexPathByAddingIndex:index];
+            RZAssemblage *assemblage = [self nodeAtIndex:index];
+            if ( assemblage ) {
+                stop = [assemblage enumerateObjectsForIndexPath:childIndexPath usingBlock:block];
+            }
+            else {
+                id object = [self objectInElementsAtIndex:index];
+                block(object, childIndexPath, &stop);
+            }
+
+            if ( stop ) {
+                break;
+            }
+        }
+    }
+    return stop;
+}
+
 - (NSMutableArray *)mutableChildren
 {
     return [self mutableArrayValueForKey:RZAssemblageElementsKey];
@@ -132,7 +165,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
 - (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     RZRaize(self.changeSet != nil, @"Must begin an update on the parent assemblage before mutating a child assemblage");
-    NSUInteger assemblageIndex = [self elementsIndexOfObject:assemblage];
+    NSUInteger assemblageIndex = [self indexOfAssemblage:assemblage];
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         return [indexPath rz_indexPathByPrependingIndex:assemblageIndex];
     }];
@@ -180,6 +213,19 @@ static NSString *RZAssemblageElementsKey = @"elements";
 - (RZAssemblage *)nodeAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement(nil);
+}
+
+- (NSUInteger)indexOfAssemblage:(RZAssemblage *)assemblage
+{
+    NSUInteger index = NSNotFound;
+    for ( NSUInteger i = 0; i < [self countOfElements]; i++ ) {
+        RZAssemblage *childAssemblage = [self assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:i]];
+        if ( childAssemblage == assemblage ) {
+            index = i;
+            break;
+        }
+    }
+    return index;
 }
 
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index

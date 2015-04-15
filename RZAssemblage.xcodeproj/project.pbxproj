@@ -16,6 +16,8 @@
 		AB0578861AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578841AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m */; };
 		AB0578891AB7BF9E00E5A1E1 /* RZAssemblageTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */; };
 		AB05788A1AB7BF9E00E5A1E1 /* RZAssemblageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */; };
+		AB46C1BD1ADDFF0600ECCB4D /* RZFilteredAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB46C1BB1ADDFF0600ECCB4D /* RZFilteredAssemblage.h */; };
+		AB46C1BE1ADDFF0600ECCB4D /* RZFilteredAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB46C1BC1ADDFF0600ECCB4D /* RZFilteredAssemblage.m */; };
 		AB559B451AC3735F00DFB024 /* PersonListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B441AC3735F00DFB024 /* PersonListViewController.m */; };
 		AB559B481AC3779000DFB024 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B471AC3779000DFB024 /* Team.m */; };
 		AB559B4E1AC37C9600DFB024 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B4D1AC37C9600DFB024 /* Person.m */; };
@@ -29,8 +31,8 @@
 		ABAC82991A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC82971A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m */; };
 		ABAC829C1A7B3CC0001CDC27 /* RZJoinAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAC829A1A7B3CC0001CDC27 /* RZJoinAssemblage.h */; };
 		ABAC829D1A7B3CC0001CDC27 /* RZJoinAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC829B1A7B3CC0001CDC27 /* RZJoinAssemblage.m */; };
-		ABAC82DA1A7CA8A5001CDC27 /* RZFilteredAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAC82D81A7CA8A4001CDC27 /* RZFilteredAssemblage.h */; };
-		ABAC82DB1A7CA8A5001CDC27 /* RZFilteredAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC82D91A7CA8A4001CDC27 /* RZFilteredAssemblage.m */; };
+		ABAC82DA1A7CA8A5001CDC27 /* RZFilterAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAC82D81A7CA8A4001CDC27 /* RZFilterAssemblage.h */; };
+		ABAC82DB1A7CA8A5001CDC27 /* RZFilterAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC82D91A7CA8A4001CDC27 /* RZFilterAssemblage.m */; };
 		ABAC82DE1A7DF252001CDC27 /* FilteredAssemblageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAC82DD1A7DF252001CDC27 /* FilteredAssemblageTableViewController.m */; };
 		ABADD34E1A776C7C00397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 		ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3541A776C7C00397031 /* RZAssemblageTests.m */; };
@@ -89,6 +91,8 @@
 		AB0578841AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewCellFactory.m; sourceTree = "<group>"; };
 		AB0578871AB7BF9E00E5A1E1 /* RZAssemblageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableView.h; sourceTree = "<group>"; };
 		AB0578881AB7BF9E00E5A1E1 /* RZAssemblageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableView.m; sourceTree = "<group>"; };
+		AB46C1BB1ADDFF0600ECCB4D /* RZFilteredAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFilteredAssemblage.h; sourceTree = "<group>"; };
+		AB46C1BC1ADDFF0600ECCB4D /* RZFilteredAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFilteredAssemblage.m; sourceTree = "<group>"; };
 		AB559B431AC3735F00DFB024 /* PersonListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonListViewController.h; sourceTree = "<group>"; };
 		AB559B441AC3735F00DFB024 /* PersonListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonListViewController.m; sourceTree = "<group>"; };
 		AB559B461AC3779000DFB024 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
@@ -107,8 +111,8 @@
 		ABAC82971A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+RZAssemblage.m"; sourceTree = "<group>"; };
 		ABAC829A1A7B3CC0001CDC27 /* RZJoinAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZJoinAssemblage.h; sourceTree = "<group>"; };
 		ABAC829B1A7B3CC0001CDC27 /* RZJoinAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZJoinAssemblage.m; sourceTree = "<group>"; };
-		ABAC82D81A7CA8A4001CDC27 /* RZFilteredAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFilteredAssemblage.h; sourceTree = "<group>"; };
-		ABAC82D91A7CA8A4001CDC27 /* RZFilteredAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFilteredAssemblage.m; sourceTree = "<group>"; };
+		ABAC82D81A7CA8A4001CDC27 /* RZFilterAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFilterAssemblage.h; sourceTree = "<group>"; };
+		ABAC82D91A7CA8A4001CDC27 /* RZFilterAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFilterAssemblage.m; sourceTree = "<group>"; };
 		ABAC82DC1A7DF252001CDC27 /* FilteredAssemblageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilteredAssemblageTableViewController.h; sourceTree = "<group>"; };
 		ABAC82DD1A7DF252001CDC27 /* FilteredAssemblageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilteredAssemblageTableViewController.m; sourceTree = "<group>"; };
 		ABADD3421A776C7C00397031 /* RZAssemblage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RZAssemblage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -228,8 +232,10 @@
 				ABADD3661A776EE100397031 /* RZAssemblage.h */,
 				ABADD36E1A77808100397031 /* RZAssemblage+Private.h */,
 				ABADD3671A776EE100397031 /* RZAssemblage.m */,
-				ABAC82D81A7CA8A4001CDC27 /* RZFilteredAssemblage.h */,
-				ABAC82D91A7CA8A4001CDC27 /* RZFilteredAssemblage.m */,
+				ABAC82D81A7CA8A4001CDC27 /* RZFilterAssemblage.h */,
+				ABAC82D91A7CA8A4001CDC27 /* RZFilterAssemblage.m */,
+				AB46C1BB1ADDFF0600ECCB4D /* RZFilteredAssemblage.h */,
+				AB46C1BC1ADDFF0600ECCB4D /* RZFilteredAssemblage.m */,
 				ABB5E4511ABDAC3200A37788 /* RZArrayAssemblage.h */,
 				ABB5E4521ABDAC3200A37788 /* RZArrayAssemblage.m */,
 				ABAC829A1A7B3CC0001CDC27 /* RZJoinAssemblage.h */,
@@ -324,11 +330,12 @@
 				ABB6EF801ABBB2FE0014224A /* RZAssemblageCollectionViewDataSource.h in Headers */,
 				ABBDFA9B1A992CBF008999A1 /* RZAssemblageChangeSet+Private.h in Headers */,
 				AB05610D1A7B25D200B5C17E /* RZFRCAssemblage.h in Headers */,
+				AB46C1BD1ADDFF0600ECCB4D /* RZFilteredAssemblage.h in Headers */,
 				ABB5E4531ABDAC3200A37788 /* RZArrayAssemblage.h in Headers */,
 				ABB6EF881ABBC62E0014224A /* RZProxyAssemblage.h in Headers */,
 				AB0578851AB7B3D200E5A1E1 /* RZAssemblageTableViewCellFactory.h in Headers */,
 				ABAC829C1A7B3CC0001CDC27 /* RZJoinAssemblage.h in Headers */,
-				ABAC82DA1A7CA8A5001CDC27 /* RZFilteredAssemblage.h in Headers */,
+				ABAC82DA1A7CA8A5001CDC27 /* RZFilterAssemblage.h in Headers */,
 				ABADD36F1A77808100397031 /* RZAssemblage+Private.h in Headers */,
 				ABC504F01A7E9AB200DE4C16 /* RZAssemblageDefines.h in Headers */,
 				ABB6EF7C1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.h in Headers */,
@@ -467,9 +474,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB46C1BE1ADDFF0600ECCB4D /* RZFilteredAssemblage.m in Sources */,
 				ABAC82991A7B3737001CDC27 /* NSIndexPath+RZAssemblage.m in Sources */,
 				ABB5E4541ABDAC3200A37788 /* RZArrayAssemblage.m in Sources */,
-				ABAC82DB1A7CA8A5001CDC27 /* RZFilteredAssemblage.m in Sources */,
+				ABAC82DB1A7CA8A5001CDC27 /* RZFilterAssemblage.m in Sources */,
 				ABAC829D1A7B3CC0001CDC27 /* RZJoinAssemblage.m in Sources */,
 				ABB6EF891ABBC62E0014224A /* RZProxyAssemblage.m in Sources */,
 				ABB6EF811ABBB2FE0014224A /* RZAssemblageCollectionViewDataSource.m in Sources */,

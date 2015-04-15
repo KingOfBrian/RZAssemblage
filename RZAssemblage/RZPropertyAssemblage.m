@@ -79,6 +79,17 @@ static char RZPropertyContext;
     return [self.representedObject valueForKeyPath:keypath];
 }
 
+- (NSUInteger)elementsIndexOfObject:(id)object
+{
+    __block NSUInteger index = NSNotFound;
+    [self.keypaths enumerateObjectsUsingBlock:^(NSString *keypath, NSUInteger idx, BOOL *stop) {
+        if ( [[self.representedObject valueForKeyPath:keypath] isEqual:object] ) {
+            index = idx;
+        }
+    }];
+    return index;
+}
+
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
     NSString *keypath = self.keypaths[index];
@@ -106,17 +117,6 @@ static char RZPropertyContext;
 {
     NSString *keypath = self.keypaths[index];
     [self.representedObject setValue:object forKeyPath:keypath];
-}
-
-- (NSUInteger)elementsIndexOfObject:(id)object
-{
-    __block NSUInteger index = NSNotFound;
-    [self.keypaths enumerateObjectsUsingBlock:^(NSString *keypath, NSUInteger idx, BOOL *stop) {
-        if ( [[self.representedObject valueForKeyPath:keypath] isEqual:object] ) {
-            index = idx;
-        }
-    }];
-    return index;
 }
 
 @end

@@ -10,7 +10,7 @@
 #import <XCTest/XCTest.h>
 #import "RZAssemblage.h"
 #import "RZJoinAssemblage.h"
-#import "RZFilteredAssemblage.h"
+#import "RZFilterAssemblage.h"
 #import "RZAssemblageChangeSet.h"
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
@@ -358,7 +358,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 #define EVEN_CHILD_COUNT 12 / 2
 #define THIRD_CHILD_COUNT 12 / 3
 
-    RZFilteredAssemblage *s1 = [m1 filteredAssemblage];
+    RZFilterAssemblage *s1 = [m1 filterAssemblage];
     NSMutableArray *s1proxy = [s1 mutableChildren];
     s1.delegate = self;
     XCTAssertEqual([s1 children].count, CHILD_COUNT);
@@ -390,7 +390,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilteredRealIndex
 {
     NSArray *values = [self.class values];
-    RZFilteredAssemblage *s1 = [[RZAssemblage assemblageForArray:values] filteredAssemblage];
+    RZFilterAssemblage *s1 = [[RZAssemblage assemblageForArray:values] filterAssemblage];
     NSMutableArray *s1proxy = [s1 mutableChildren];
     s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
@@ -441,7 +441,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 {
     NSArray *values = [self.class values];
     RZAssemblage *a1 = [RZAssemblage assemblageForArray:values];
-    RZFilteredAssemblage *f1 = [a1 filteredAssemblage];
+    RZFilterAssemblage *f1 = [a1 filterAssemblage];
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
     }];
@@ -481,7 +481,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
                              [RZAssemblage assemblageForArray:values],
                              [RZAssemblage assemblageForArray:values]];
     RZAssemblage *f1 = [RZAssemblage joinedAssemblages:assemblages];
-    RZFilteredAssemblage *s1 = [f1 filteredAssemblage];
+    RZFilterAssemblage *s1 = [f1 filterAssemblage];
     NSMutableArray *s1proxy = [s1 mutableChildren];
     s1.delegate = self;
     XCTAssertEqual([s1 children].count, values.count * assemblages.count);
@@ -540,7 +540,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *m = [RZAssemblage assemblageForArray:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
     NSMutableArray *mproxy = [m mutableChildren];
 
-    RZFilteredAssemblage *filtered = [m filteredAssemblage];
+    RZFilterAssemblage *filtered = [m filterAssemblage];
     NSMutableArray *filteredproxy = [filtered mutableChildren];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
@@ -548,6 +548,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     }];
     filtered.delegate = self;
 
+    XCTAssert([filtered children].count == 3);
     [mproxy removeObjectAtIndex:2]; // 9
     XCTAssert([filtered children].count == 2);
     XCTAssert([[filteredproxy objectAtIndex:0] isEqual:@"7"]);
@@ -558,7 +559,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 {
     RZAssemblage *m = [RZAssemblage assemblageForArray:@[]];
     NSMutableArray *mproxy = [m mutableChildren];
-    RZFilteredAssemblage *filtered = [m filteredAssemblage];
+    RZFilterAssemblage *filtered = [m filterAssemblage];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
@@ -587,7 +588,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *m3 = [RZAssemblage assemblageForArray:@[@"7", @"8", @"9", ]];
     RZAssemblage *m4 = [RZAssemblage assemblageForArray:@[@"10", @"11", @"12", ]];
     RZAssemblage *j1 = [RZAssemblage joinedAssemblages:@[m3, m4]];
-    RZFilteredAssemblage *filtered = [j1 filteredAssemblage];
+    RZFilterAssemblage *filtered = [j1 filterAssemblage];
     NSMutableArray *filteredproxy = [filtered mutableChildren];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
@@ -612,7 +613,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilterRemoval
 {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
-    RZFilteredAssemblage *filtered = [m1 filteredAssemblage];
+    RZFilterAssemblage *filtered = [m1 filterAssemblage];
     NSMutableArray *filteredproxy = [filtered mutableChildren];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;

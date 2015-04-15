@@ -27,8 +27,9 @@
 - (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index;
 - (NSUInteger)elementsIndexOfObject:(id)object;
 
-
 - (RZAssemblage *)nodeAtIndex:(NSUInteger)index;
+- (NSUInteger)indexOfAssemblage:(RZAssemblage *)assemblage;
+
 - (void)addMonitorsForObject:(id)anObject;
 - (void)removeMonitorsForObject:(id)anObject;
 

@@ -54,7 +54,15 @@ OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
  */
 - (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath;
 
+/**
+ * Return the node value at the specified index path.
+ */
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath;
+
+/**
+ * Enumerate all nodes of the assemblage.  obj can be nil, if there is no represented object at the node.
+ */
+- (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
 
 /**
  * The delegate to inform of changes.

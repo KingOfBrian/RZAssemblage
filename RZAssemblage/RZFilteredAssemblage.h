@@ -1,21 +1,21 @@
 //
-//  RZModifiedAssemblage.h
+//  RZFilteredAssemblage.h
 //  RZAssemblage
 //
-//  Created by Brian King on 1/31/15.
+//  Created by Brian King on 4/14/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
 #import "RZAssemblage.h"
 
+/**
+ * Private subclass for filtering an arbitrary assemblage. This does not maintain the filteredIndexPaths, it just
+ * filters the injected assemblage
+ */
 @interface RZFilteredAssemblage : RZAssemblage
 
-@property (strong, nonatomic) NSPredicate *filter;
+- (instancetype)initWithAssemblage:(RZAssemblage *)assemblage filteredIndexPaths:(RZMutableIndexPathSet *)filteredIndexPaths;
 
-@end
-
-@interface RZAssemblage (Filter)
-
-- (RZFilteredAssemblage *)filteredAssemblage;
+@property (strong, nonatomic, readonly) RZMutableIndexPathSet *filteredIndexPaths;
 
 @end

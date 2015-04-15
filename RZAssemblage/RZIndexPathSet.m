@@ -329,6 +329,11 @@
     return [[self.rootNode childForIndexPath:indexPath createNew:NO] present];
 }
 
+- (BOOL)containsIndex:(NSUInteger)index
+{
+    return [self containsIndexPath:[NSIndexPath indexPathWithIndex:index]];
+}
+
 - (NSIndexSet *)indexesAtIndexPath:(NSIndexPath *)parentPath
 {
     RZIndexNode *node = [self.rootNode childForIndexPath:parentPath createNew:NO];

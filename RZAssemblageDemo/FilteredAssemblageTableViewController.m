@@ -8,14 +8,14 @@
 
 #import "FilteredAssemblageTableViewController.h"
 #import "RZAssemblageTableView.h"
-#import "RZFilteredAssemblage.h"
+#import "RZFilterAssemblage.h"
 #import "RZAssemblage.h"
 
 @interface FilteredAssemblageTableViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) RZAssemblage *data;
 @property (strong, nonatomic) RZAssemblage *assemblage;
-@property (strong, nonatomic) RZFilteredAssemblage *filtered;
+@property (strong, nonatomic) RZFilterAssemblage *filtered;
 
 @property (assign, nonatomic) NSUInteger divisbleBy;
 

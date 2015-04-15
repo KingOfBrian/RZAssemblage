@@ -42,6 +42,7 @@
 + (instancetype)setWithIndexPathSet:(RZIndexPathSet *)indexPathSet;
 
 - (BOOL)containsIndexPath:(NSIndexPath *)indexPath;
+- (BOOL)containsIndex:(NSUInteger)index;
 
 - (NSIndexSet *)indexesAtIndexPath:(NSIndexPath *)parentPath;
 - (void)enumerateIndexesUsingBlock:(void (^)(NSIndexPath *parentPath, NSIndexSet *indexes, BOOL *stop))block;
