@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void(^RZIndexPathIndexBlock)(NSUInteger index, BOOL *stop);
-
 @interface NSIndexPath(RZAssemblage)
 
 - (NSIndexPath *)rz_indexPathByRemovingFirstIndex;

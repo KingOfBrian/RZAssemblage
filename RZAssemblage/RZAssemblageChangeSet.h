@@ -11,8 +11,6 @@
 @class RZMutableIndexPathSet;
 @class RZAssemblage;
 
-typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *indexPath);
-
 @interface RZAssemblageChangeSet : NSObject
 
 + (NSIndexSet *)sectionIndexSetFromIndexPaths:(NSArray *)indexPaths;

@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "RZAssemblageChangeSet.h"
 
+typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *indexPath);
+
 @interface RZAssemblageChangeSet ()
 
 @property (strong, nonatomic) RZMutableIndexPathSet *inserts;

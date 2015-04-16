@@ -20,7 +20,7 @@ OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
     RZAssemblageEnumerationNoOptions = 0,
     RZAssemblageEnumerationBreadthFirst = 1 << 1, // Default is depth first
-    RZAssemblageEnumerationIncludeNilRepresentedObject = 1 << 2,
+    RZAssemblageEnumerationIncludeNilRepresentedObject = 1 << 2, // Default is to skip nil representations
 };
 
 @protocol RZAssemblageDelegate;
