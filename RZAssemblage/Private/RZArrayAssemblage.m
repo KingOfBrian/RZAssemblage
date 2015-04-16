@@ -10,7 +10,7 @@
 #import "RZAssemblage+Private.h"
 
 NSString *const RZAssemblageUpdateKey = @"RZAssemblageUpdateKey";
-static char RZAssemblageUpdateContext;
+static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContext;
 
 @implementation RZArrayAssemblage
 
@@ -108,34 +108,34 @@ static char RZAssemblageUpdateContext;
     return [self.childrenStorage indexOfObject:object];
 }
 
-- (void)addMonitorsForObject:(NSObject *)anObject
+- (void)addMonitorsForObject:(id)anObject
 {
     [super addMonitorsForObject:anObject];
     if ( self.class.shouldObserveContents &&
-        [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
+        [[anObject class] keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
         RZAssemblageLog(@"%@ adding observer %@", self, anObject);
         [anObject addObserver:self
                    forKeyPath:RZAssemblageUpdateKey
                       options:NSKeyValueObservingOptionNew
-                      context:&RZAssemblageUpdateContext];
+                      context:RZAssemblageUpdateContext];
     }
 }
 
-- (void)removeMonitorsForObject:(NSObject *)anObject;
+- (void)removeMonitorsForObject:(id)anObject;
 {
     [super removeMonitorsForObject:anObject];
     if ( self.class.shouldObserveContents &&
-        [anObject.class keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
+        [[anObject class] keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
         RZAssemblageLog(@"%@ removing observer %@", self, anObject);
         [anObject removeObserver:self
                       forKeyPath:RZAssemblageUpdateKey
-                         context:&RZAssemblageUpdateContext];
+                         context:RZAssemblageUpdateContext];
     }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ( context == &RZAssemblageUpdateContext ) {
+    if ( context == RZAssemblageUpdateContext ) {
         [self openBatchUpdate];
         if ( object == self.representedObject ) {
             [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndexes:NULL length:0]];

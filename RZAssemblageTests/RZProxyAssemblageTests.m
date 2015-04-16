@@ -165,7 +165,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     Artist *pf = [Artist pinkFloyd];
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
-    RZFilterAssemblage *f = [a filterAssemblage];
+    RZFilterAssemblage *f = [[RZFilterAssemblage alloc] initWithAssemblage:a];
     f.delegate = self;
 
     f.filter = [NSPredicate predicateWithBlock:^BOOL(Albumn *albumn, NSDictionary *bindings) {

@@ -9,7 +9,7 @@
 #import "RZPropertyAssemblage.h"
 #import "RZAssemblage+Private.h"
 
-static char RZPropertyContext;
+static void *const RZPropertyContext = (void *)&RZPropertyContext;
 
 @interface RZPropertyAssemblage ()
 
@@ -42,7 +42,7 @@ static char RZPropertyContext;
         [self.representedObject addObserver:self
                                  forKeyPath:keypath
                                     options:NSKeyValueObservingOptionNew
-                                    context:&RZPropertyContext];
+                                    context:RZPropertyContext];
     }
 }
 
@@ -51,13 +51,13 @@ static char RZPropertyContext;
     for ( NSString *keypath in self.keypaths ) {
         [self.representedObject removeObserver:self
                                     forKeyPath:keypath
-                                       context:&RZPropertyContext];
+                                       context:RZPropertyContext];
     }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ( context == &RZPropertyContext ) {
+    if ( context == RZPropertyContext ) {
         NSUInteger index = [self.keypaths indexOfObject:keyPath];
         [self openBatchUpdate];
         [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
@@ -94,7 +94,7 @@ static char RZPropertyContext;
 {
     NSString *keypath = self.keypaths[index];
     [self openBatchUpdate];
-    [self.representedObject removeObserver:self forKeyPath:keypath context:&RZPropertyContext];
+    [self.representedObject removeObserver:self forKeyPath:keypath context:RZPropertyContext];
     [self.keypaths removeObjectAtIndex:index];
     [self.changeSet removeObject:keypath atIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self closeBatchUpdate];
@@ -107,7 +107,7 @@ static char RZPropertyContext;
     [self.representedObject addObserver:self
                              forKeyPath:keypath
                                 options:NSKeyValueObservingOptionNew
-                                context:&RZPropertyContext];
+                                context:RZPropertyContext];
     [self.keypaths insertObject:keypath atIndex:index];
     [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self closeBatchUpdate];

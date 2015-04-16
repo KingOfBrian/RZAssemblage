@@ -51,7 +51,7 @@
         [oneHundered addObject:@(i+1)];
     }
     self.data = [RZAssemblage assemblageForArray:oneHundered];
-    self.filtered = [self.data filterAssemblage];
+    self.filtered = [[RZFilterAssemblage alloc] initWithAssemblage:self.data];
     self.assemblage = [RZAssemblage assemblageForArray:@[self.filtered]];
 
     self.filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {

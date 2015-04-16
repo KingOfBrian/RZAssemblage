@@ -12,7 +12,7 @@
 #import "RZIndexPathSet.h"
 #import "RZAssemblageDefines.h"
 
-static char RZProxyKeyPathContext;
+static void *const RZProxyKeyPathContext = (void *)&RZProxyKeyPathContext;
 
 @interface RZProxyAssemblage ()
 
@@ -48,7 +48,7 @@ static char RZProxyKeyPathContext;
     [object addObserver:self
              forKeyPath:keypath
                 options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
-                context:&RZProxyKeyPathContext];
+                context:RZProxyKeyPathContext];
 
     NSMutableArray *proxy = [object mutableArrayValueForKeyPath:keypath];
     self = [self initWithArray:proxy representingObject:object];
@@ -69,12 +69,12 @@ static char RZProxyKeyPathContext;
     [self.representedObject addObserver:self
                              forKeyPath:self.keypath
                                 options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
-                                context:&RZProxyKeyPathContext];
+                                context:RZProxyKeyPathContext];
 }
 
 - (void)disableObservation
 {
-    [self.representedObject removeObserver:self forKeyPath:self.keypath context:&RZProxyKeyPathContext];
+    [self.representedObject removeObserver:self forKeyPath:self.keypath context:RZProxyKeyPathContext];
 }
 
 - (BOOL)isRepeatingKeyPath
@@ -125,7 +125,7 @@ static char RZProxyKeyPathContext;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ( context == &RZProxyKeyPathContext ) {
+    if ( context == RZProxyKeyPathContext ) {
         NSKeyValueChange changeType = [change[NSKeyValueChangeKindKey] unsignedIntegerValue];
         NSIndexSet *indexes = change[NSKeyValueChangeIndexesKey];
         [self openBatchUpdate];
@@ -138,10 +138,9 @@ static char RZProxyKeyPathContext;
             NSArray *oldValues = change[NSKeyValueChangeOldKey];
             NSUInteger i = 0;
             NSUInteger index = [indexes firstIndex];
-            while ( i < indexes.count ) {
+            for ( ; i < indexes.count; i++ ) {
                 id object = oldValues[i];
                 [self.changeSet removeObject:object atIndexPath:[NSIndexPath indexPathWithIndex:index]];
-                i++;
                 index = [indexes indexGreaterThanIndex:index];
             }
         }

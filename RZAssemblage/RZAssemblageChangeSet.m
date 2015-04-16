@@ -162,8 +162,7 @@
     self.moveFromToIndexPathMap[index1] = index2;
 }
 
-- (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet
-withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
+- (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
 {
     NSParameterAssert(transform);
 

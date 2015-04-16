@@ -64,7 +64,7 @@
 
 - (void)setIgnoreAssemblageChanges:(BOOL)ignoreAssemblageChanges
 {
-    self.assemblage.delegate = ignoreAssemblageChanges ? nil : self.internalDataSource;
+    self.assemblage.delegate = ignoreAssemblageChanges ? nil : (id)self.internalDataSource;
 }
 
 @end

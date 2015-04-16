@@ -210,12 +210,3 @@
 }
 
 @end
-
-@implementation RZAssemblage (Filter)
-
-- (RZFilterAssemblage *)filterAssemblage
-{
-    return [[RZFilterAssemblage alloc] initWithAssemblage:self];
-}
-
-@end

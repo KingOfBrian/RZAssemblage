@@ -272,14 +272,14 @@ static NSString *RZAssemblageElementsKey = @"elements";
     RZSubclassMustImplement();
 }
 
-- (void)addMonitorsForObject:(NSObject *)anObject
+- (void)addMonitorsForObject:(id)anObject
 {
     if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
         [(RZAssemblage *)anObject setDelegate:self];
     }
 }
 
-- (void)removeMonitorsForObject:(NSObject *)anObject;
+- (void)removeMonitorsForObject:(id)anObject;
 {
     if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
         [(RZAssemblage *)anObject setDelegate:nil];

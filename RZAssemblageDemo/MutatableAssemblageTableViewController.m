@@ -58,7 +58,7 @@ _Pragma("clang diagnostic pop")                                         \
 
     RZAssemblage *f1 = [RZAssemblage joinedAssemblages:@[m3, m4]];
 
-    RZFilterAssemblage *filtered = [f1 filterAssemblage];
+    RZFilterAssemblage *filtered = [[RZFilterAssemblage alloc] initWithAssemblage:f1];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];

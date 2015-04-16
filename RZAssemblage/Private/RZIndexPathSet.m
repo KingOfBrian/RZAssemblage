@@ -357,11 +357,9 @@
 {
     NSMutableArray *indexPaths = [NSMutableArray array];
 
-    @synchronized ( self ) {
-        [self enumerateIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
-            [indexPaths addObject:indexPath];
-        }];
-    }
+    [self enumerateIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
+        [indexPaths addObject:indexPath];
+    }];
 
     return [indexPaths copy];
 }

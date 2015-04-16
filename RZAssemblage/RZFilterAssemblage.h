@@ -10,12 +10,8 @@
 
 @interface RZFilterAssemblage : RZAssemblage
 
+- (instancetype)initWithAssemblage:(RZAssemblage *)assemblage;
+
 @property (strong, nonatomic) NSPredicate *filter;
-
-@end
-
-@interface RZAssemblage (Filter)
-
-- (RZFilterAssemblage *)filterAssemblage;
 
 @end
