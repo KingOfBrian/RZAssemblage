@@ -13,7 +13,6 @@ FOUNDATION_EXPORT const unsigned char RZAssemblageVersionString[];
 
 #import "RZIndexPathSet.h"
 #import "RZAssemblageChangeSet.h"
-#import "NSIndexPath+RZAssemblage.h"
 
 OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 

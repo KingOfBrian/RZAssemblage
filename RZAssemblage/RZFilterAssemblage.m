@@ -8,7 +8,6 @@
 
 #import "RZFilterAssemblage.h"
 #import "RZFilteredAssemblage.h"
-
 #import "RZAssemblage+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"

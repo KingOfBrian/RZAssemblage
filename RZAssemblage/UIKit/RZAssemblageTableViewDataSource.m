@@ -8,9 +8,7 @@
 
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZAssemblageDefines.h"
-#import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageChangeSet.h"
-#import "RZIndexPathSet.h"
 
 @interface RZAssemblageTableViewDataSource()
 
