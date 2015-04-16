@@ -129,7 +129,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
         UIAlertView *editAlert = [[UIAlertView alloc] initWithTitle:title message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
         editAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
         [editAlert textFieldAtIndex:0].text = [self.assemblage objectAtIndexPath:indexPath];
-        editAlert.tag = [indexPath rz_lastIndex];
+        editAlert.tag = [indexPath indexAtPosition:indexPath.length - 1];
         [editAlert show];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -145,7 +145,8 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [[self.assemblage assemblageAtIndexPath:[indexPath rz_sectionIndexPath]] mutableChildren] != nil;
+    NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:[indexPath indexAtPosition:0]];
+    return [[self.assemblage assemblageAtIndexPath:sectionIndexPath] mutableChildren] != nil;
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath

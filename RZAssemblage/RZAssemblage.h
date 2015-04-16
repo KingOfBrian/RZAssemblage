@@ -11,7 +11,6 @@
 FOUNDATION_EXPORT double RZAssemblageVersionNumber;
 FOUNDATION_EXPORT const unsigned char RZAssemblageVersionString[];
 
-#import "RZIndexPathSet.h"
 #import "RZAssemblageChangeSet.h"
 
 OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
@@ -124,3 +123,12 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
 - (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage;
 
 @end
+
+#import "RZFilterAssemblage.h"
+
+#import "RZAssemblageTableView.h"
+#import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblageTableViewCellFactory.h"
+#import "RZAssemblageCollectionViewDataSource.h"
+#import "RZAssemblageCollectionViewCellFactory.h"
+

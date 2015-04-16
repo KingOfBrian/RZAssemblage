@@ -9,6 +9,7 @@
 #import "RZAssemblage.h"
 #import "RZAssemblageChangeSet+Private.h"
 #import "RZAssemblageDefines.h"
+#import "RZIndexPathSet.h"
 
 @interface RZAssemblage() <RZAssemblageDelegate>
 

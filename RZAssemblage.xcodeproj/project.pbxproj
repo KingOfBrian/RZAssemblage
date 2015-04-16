@@ -31,7 +31,6 @@
 		ABADD3AF1A787F1900397031 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3AE1A787F1900397031 /* AppDelegate.m */; };
 		ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B41A787F1900397031 /* MasterViewController.m */; };
 		ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BC1A787F1900397031 /* Images.xcassets */; };
-		ABADD3C01A787F1900397031 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BE1A787F1900397031 /* LaunchScreen.xib */; };
 		ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 		ABB6EF7C1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB6EF7A1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABB6EF7D1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB6EF7B1ABBB2EA0014224A /* RZAssemblageCollectionViewCellFactory.m */; };
@@ -565,7 +564,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABADD3C01A787F1900397031 /* LaunchScreen.xib in Resources */,
 				ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
