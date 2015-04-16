@@ -81,6 +81,62 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     XCTAssertEqual([a nodeAtIndex:0], [a nodeAtIndex:0]);
 }
 
+- (void)testExternalProxy
+{
+    self.testProxyArray = [NSMutableArray array];
+    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
+    pa.delegate = self;
+    NSMutableArray *externalProxy = [self mutableArrayValueForKey:@"testProxyArray"];
+    // This only causes the observer change event
+    [pa openBatchUpdate];
+    [externalProxy addObject:@(0)];
+    [externalProxy addObject:@(1)];
+    [externalProxy removeObjectAtIndex:0];
+    [externalProxy removeObjectAtIndex:0];
+    [pa closeBatchUpdate];
+}
+
+- (void)testInternalProxy
+{
+    self.testProxyArray = [NSArray array];
+    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
+    pa.delegate = self;
+    NSMutableArray *proxyArray = [pa mutableChildren];
+    [pa openBatchUpdate];
+    // This causes double change events (setter + observer)
+    [proxyArray addObject:@"0"];
+    [proxyArray addObject:@"1"];
+    [proxyArray removeObjectAtIndex:0];
+    [proxyArray removeObjectAtIndex:0];
+    [pa closeBatchUpdate];
+    XCTAssertEqual(proxyArray.count, self.testProxyArray.count);
+}
+
+#define ITERATION_TEST_COUNT 1000//00
+- (void)testArrayProxyPerformance
+{
+    self.testProxyArray = [NSArray array];
+
+    [self measureBlock:^{
+        NSMutableArray *proxy = [self mutableArrayValueForKey:@"testProxyArray"];
+        for ( NSUInteger i = 0; i < ITERATION_TEST_COUNT; i++ ) {
+            [proxy addObject:@(i)];
+        }
+    }];
+}
+
+- (void)testMutableArrayProxyPerformance
+{
+    self.testProxyArray = [NSMutableArray array];
+
+    [self measureBlock:^{
+        NSMutableArray *proxy = [self mutableArrayValueForKey:@"testProxyArray"];
+        for ( NSUInteger i = 0; i < ITERATION_TEST_COUNT; i++ ) {
+            [proxy addObject:@(i)];
+        }
+    }];
+}
+
 - (void)testUpdate
 {
     NSIndexPath *top = [NSIndexPath indexPathWithIndexes:topSongPath length:2];

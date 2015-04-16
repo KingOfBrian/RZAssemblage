@@ -358,14 +358,14 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 #define EVEN_CHILD_COUNT 12 / 2
 #define THIRD_CHILD_COUNT 12 / 3
 
-    RZFilterAssemblage *s1 = [m1 filterAssemblage];
-    NSMutableArray *s1proxy = [s1 mutableChildren];
-    s1.delegate = self;
-    XCTAssertEqual([s1 children].count, CHILD_COUNT);
-    s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
+    RZFilterAssemblage *f1 = [m1 filterAssemblage];
+    NSMutableArray *f1proxy = [f1 mutableChildren];
+    f1.delegate = self;
+    XCTAssertEqual([f1 children].count, CHILD_COUNT);
+    f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
         return [n unsignedIntegerValue] % 2 == 0;
     }];
-    XCTAssertEqual([s1 children].count, EVEN_CHILD_COUNT);
+    XCTAssertEqual([f1 children].count, EVEN_CHILD_COUNT);
     XCTAssert(self.delegateEvents.count == EVEN_CHILD_COUNT);
     for ( NSUInteger i = 0; i < EVEN_CHILD_COUNT; i++ ) {
         RZAssemblageDelegateEvent *ev = self.delegateEvents[i];
@@ -374,17 +374,47 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     [self.delegateEvents removeAllObjects];
 
 
-    s1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
+    f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
         return [n unsignedIntegerValue] % 3 == 0;
     }];
-    XCTAssert([[s1proxy objectAtIndex:0] integerValue] == 3);
-    XCTAssert([[s1proxy objectAtIndex:1] integerValue] == 6);
-    XCTAssert([[s1proxy objectAtIndex:2] integerValue] == 9);
-    XCTAssert([[s1proxy objectAtIndex:3] integerValue] == 12);
+    XCTAssert([[f1proxy objectAtIndex:0] integerValue] == 3);
+    XCTAssert([[f1proxy objectAtIndex:1] integerValue] == 6);
+    XCTAssert([[f1proxy objectAtIndex:2] integerValue] == 9);
+    XCTAssert([[f1proxy objectAtIndex:3] integerValue] == 12);
 
-    XCTAssertEqual([s1 children].count, THIRD_CHILD_COUNT);
+    XCTAssertEqual([f1 children].count, THIRD_CHILD_COUNT);
 
     [self.delegateEvents removeAllObjects];
+}
+
+- (void)testFilterUpdate
+{
+    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@1, @2, @3, @4, @5]];
+    RZFilterAssemblage *f1 = [m1 filterAssemblage];
+    f1.delegate = self;
+    XCTAssertEqual([f1 children].count, 5);
+    XCTAssertEqualObjects([f1 children], (@[@1, @2, @3, @4, @5]));
+    f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
+        return [n unsignedIntegerValue] % 2 == 0;
+    }];
+    XCTAssertEqual([f1 children].count, 2);
+    XCTAssertEqualObjects([f1 children], (@[@2, @4]));
+    XCTAssertEqual(self.changeSet.removedIndexPaths.count, 3);
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths, (@[[NSIndexPath indexPathWithIndex:0],
+                                                               [NSIndexPath indexPathWithIndex:2],
+                                                               [NSIndexPath indexPathWithIndex:4]]));
+    f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
+        return [n unsignedIntegerValue] % 3 == 0;
+    }];
+    XCTAssertEqual([f1 children].count, 1);
+    XCTAssertEqualObjects([f1 children], (@[@3]));
+    XCTAssertEqual(self.changeSet.insertedIndexPaths.count, 1);
+    XCTAssertEqual(self.changeSet.removedIndexPaths.count, 2);
+    XCTAssertEqualObjects(self.changeSet.insertedIndexPaths, (@[[NSIndexPath indexPathWithIndex:0]]));
+    XCTAssertEqualObjects(self.changeSet.removedIndexPaths, (@[[NSIndexPath indexPathWithIndex:0],
+                                                               [NSIndexPath indexPathWithIndex:1]]));
+
+
 }
 
 - (void)testFilteredRealIndex
@@ -688,62 +718,6 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     [m1proxy removeObjectAtIndex:0];
     [m1 closeBatchUpdate];
     [self.changeSet generateMoveEventsFromAssemblage:m1];
-}
-
-- (void)testExternalProxy
-{
-    self.testProxyArray = [NSMutableArray array];
-    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
-    pa.delegate = self;
-    NSMutableArray *externalProxy = [self mutableArrayValueForKey:@"testProxyArray"];
-    // This only causes the observer change event
-    [pa openBatchUpdate];
-    [externalProxy addObject:@(0)];
-    [externalProxy addObject:@(1)];
-    [externalProxy removeObjectAtIndex:0];
-    [externalProxy removeObjectAtIndex:0];
-    [pa closeBatchUpdate];
-}
-
-- (void)testInternalProxy
-{
-    self.testProxyArray = [NSArray array];
-    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
-    pa.delegate = self;
-    NSMutableArray *proxyArray = [pa mutableChildren];
-    [pa openBatchUpdate];
-    // This causes double change events (setter + observer)
-    [proxyArray addObject:@"0"];
-    [proxyArray addObject:@"1"];
-    [proxyArray removeObjectAtIndex:0];
-    [proxyArray removeObjectAtIndex:0];
-    [pa closeBatchUpdate];
-    XCTAssertEqual(proxyArray.count, self.testProxyArray.count);
-}
-
-#define ITERATION_TEST_COUNT 1000//00
-- (void)testArrayProxyPerformance
-{
-    self.testProxyArray = [NSArray array];
-
-    [self measureBlock:^{
-        NSMutableArray *proxy = [self mutableArrayValueForKey:@"testProxyArray"];
-        for ( NSUInteger i = 0; i < ITERATION_TEST_COUNT; i++ ) {
-            [proxy addObject:@(i)];
-        }
-    }];
-}
-
-- (void)testMutableArrayProxyPerformance
-{
-    self.testProxyArray = [NSMutableArray array];
-
-    [self measureBlock:^{
-        NSMutableArray *proxy = [self mutableArrayValueForKey:@"testProxyArray"];
-        for ( NSUInteger i = 0; i < ITERATION_TEST_COUNT; i++ ) {
-            [proxy addObject:@(i)];
-        }
-    }];
 }
 
 @end
