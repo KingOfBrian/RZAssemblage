@@ -17,6 +17,13 @@ FOUNDATION_EXPORT const unsigned char RZAssemblageVersionString[];
 
 OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 
+
+typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
+    RZAssemblageEnumerationNoOptions = 0,
+    RZAssemblageEnumerationBreadthFirst = 1 << 1, // Default is depth first
+    RZAssemblageEnumerationIncludeNilRepresentedObject = 1 << 2,
+};
+
 @protocol RZAssemblageDelegate;
 
 /**
@@ -60,9 +67,12 @@ OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
- * Enumerate all nodes of the assemblage.  obj can be nil, if there is no represented object at the node.
+ * Enumerate all nodes of the assemblage.  This does a depth first enumeration of all nodes, but it
+ * will skip nodes with no representedObject.
  */
 - (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
+
+- (void)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
 
 /**
  * The delegate to inform of changes.

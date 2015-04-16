@@ -80,32 +80,56 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 - (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
 {
-    NSParameterAssert(block);
-    NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:NULL length:0];
-    RZAssemblage *assemblage = [self assemblageAtIndexPath:indexPath];
-    [assemblage enumerateObjectsForIndexPath:indexPath usingBlock:block];
+    [self enumerateObjectsWithOptions:RZAssemblageEnumerationNoOptions usingBlock:block];
 }
 
-- (BOOL)enumerateObjectsForIndexPath:(NSIndexPath *)indexPath usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block
+- (void)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
+{
+    NSParameterAssert(block);
+    NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:NULL length:0];
+    [self enumerateObjectsWithOptions:options forIndexPath:indexPath usingBlock:block];
+}
+
+- (BOOL)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options forIndexPath:(NSIndexPath *)indexPath usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block
 {
     NSParameterAssert(block);
     BOOL stop = NO;
-    block(self.representedObject, indexPath, &stop);
+
+    BOOL includeNil = ((options & RZAssemblageEnumerationIncludeNilRepresentedObject) == RZAssemblageEnumerationIncludeNilRepresentedObject);
+    BOOL breadthFirst = ((options & RZAssemblageEnumerationBreadthFirst) == RZAssemblageEnumerationBreadthFirst);
+
+    if ( self.representedObject || includeNil ) {
+        block(self.representedObject, indexPath, &stop);
+    }
 
     if ( stop == NO ) {
         for ( NSUInteger index = 0; index < self.children.count; index++ ) {
             NSIndexPath *childIndexPath = [indexPath indexPathByAddingIndex:index];
             RZAssemblage *assemblage = [self nodeAtIndex:index];
             if ( assemblage ) {
-                stop = [assemblage enumerateObjectsForIndexPath:childIndexPath usingBlock:block];
+                if ( breadthFirst == NO ) {
+                    stop = [assemblage enumerateObjectsWithOptions:options forIndexPath:childIndexPath usingBlock:block];
+                }
             }
             else {
                 id object = [self objectInElementsAtIndex:index];
-                block(object, childIndexPath, &stop);
+                if ( object || includeNil ) {
+                    block(object, childIndexPath, &stop);
+                }
             }
 
             if ( stop ) {
                 break;
+            }
+        }
+        if ( breadthFirst && stop == NO ) {
+            for ( NSUInteger index = 0; index < self.children.count; index++ ) {
+                NSIndexPath *childIndexPath = [indexPath indexPathByAddingIndex:index];
+                RZAssemblage *assemblage = [self nodeAtIndex:index];
+                if ( [assemblage enumerateObjectsWithOptions:options forIndexPath:childIndexPath usingBlock:block] ) {
+                    stop = YES;
+                    break;
+                }
             }
         }
     }
