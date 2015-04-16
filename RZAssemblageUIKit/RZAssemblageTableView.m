@@ -7,6 +7,9 @@
 //
 
 #import "RZAssemblageTableView.h"
+#import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblageTableViewCellFactory.h"
+#import "RZAssemblage.h"
 
 @interface RZAssemblageTableView ()
 

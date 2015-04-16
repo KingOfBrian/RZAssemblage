@@ -11,6 +11,7 @@
 #import "PersonViewController.h"
 
 @import RZAssemblage;
+@import RZAssemblageUIKit;
 // @import RZAssemblageTestData fails... Why?!
 #import "RZAssemblageTestData.h"
 

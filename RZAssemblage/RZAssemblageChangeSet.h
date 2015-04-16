@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class RZMutableIndexPathSet;
 @class RZAssemblage;
 
 @interface RZAssemblageChangeSet : NSObject

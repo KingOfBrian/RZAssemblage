@@ -13,6 +13,7 @@
 #import "PersonListViewController.h"
 
 @import RZAssemblage;
+@import RZAssemblageUIKit;
 
 @interface MasterViewController () <UITableViewDataSource, UITableViewDelegate>
 

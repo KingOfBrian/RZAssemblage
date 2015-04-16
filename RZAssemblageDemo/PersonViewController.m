@@ -9,6 +9,7 @@
 #import "PersonViewController.h"
 
 @import RZAssemblage;
+@import RZAssemblageUIKit;
 #import "RZAssemblageTestData.h"
 
 @interface PersonViewController () <UITableViewDelegate, UITableViewDataSource>

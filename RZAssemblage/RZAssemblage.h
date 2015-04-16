@@ -127,10 +127,3 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
 @end
 
 #import "RZFilterAssemblage.h"
-
-#import "RZAssemblageTableView.h"
-#import "RZAssemblageTableViewDataSource.h"
-#import "RZAssemblageTableViewCellFactory.h"
-#import "RZAssemblageCollectionViewDataSource.h"
-#import "RZAssemblageCollectionViewCellFactory.h"
-

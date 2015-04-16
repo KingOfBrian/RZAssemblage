@@ -7,8 +7,14 @@
 //
 
 #import "RZAssemblageCollectionViewDataSource.h"
+#import "RZAssemblage.h"
+#import "RZAssemblageCollectionViewCellFactory.h"
 #import "RZAssemblageDefines.h"
 #import "RZAssemblageChangeSet.h"
+
+@interface RZAssemblageCollectionViewDataSource () <RZAssemblageDelegate>
+
+@end
 
 @implementation RZAssemblageCollectionViewDataSource
 

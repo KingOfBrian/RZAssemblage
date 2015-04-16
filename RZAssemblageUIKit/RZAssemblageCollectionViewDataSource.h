@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RZAssemblage.h"
-#import "RZAssemblageCollectionViewCellFactory.h"
 
-@interface RZAssemblageCollectionViewDataSource : NSObject <UICollectionViewDataSource, RZAssemblageDelegate>
+@class RZAssemblage;
+@class RZAssemblageCollectionViewCellFactory;
+
+@interface RZAssemblageCollectionViewDataSource : NSObject <UICollectionViewDataSource>
 
 - (id)initWithAssemblage:(RZAssemblage *)assemblage
        forCollectionView:(UICollectionView *)collectionView

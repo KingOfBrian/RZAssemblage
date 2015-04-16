@@ -7,7 +7,7 @@
 //
 
 #import "RZAssemblage.h"
-
+#import "RZIndexPathSet.h"
 /**
  * Private subclass for filtering an arbitrary assemblage. This does not maintain the filteredIndexPaths, it just
  * filters the injected assemblage

@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RZAssemblage.h"
-#import "RZAssemblageTableViewCellFactory.h"
+@class RZAssemblage;
+@class RZAssemblageTableViewCellFactory;
 
-@interface RZAssemblageTableViewDataSource : NSObject <UITableViewDataSource, RZAssemblageDelegate>
+@interface RZAssemblageTableViewDataSource : NSObject <UITableViewDataSource>
 
 - (id)initWithAssemblage:(RZAssemblage *)assemblage
             forTableView:(UITableView *)tableView

@@ -7,10 +7,12 @@
 //
 
 #import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblageTableViewCellFactory.h"
 #import "RZAssemblageDefines.h"
 #import "RZAssemblageChangeSet.h"
+#import "RZAssemblage.h"
 
-@interface RZAssemblageTableViewDataSource()
+@interface RZAssemblageTableViewDataSource() <RZAssemblageDelegate>
 
 @end
 

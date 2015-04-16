@@ -8,6 +8,7 @@
 
 #import "FilteredAssemblageTableViewController.h"
 @import RZAssemblage;
+@import RZAssemblageUIKit;
 
 @interface FilteredAssemblageTableViewController () <UITableViewDataSource, UITableViewDelegate>
 
