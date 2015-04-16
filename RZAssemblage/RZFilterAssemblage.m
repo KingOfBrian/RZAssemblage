@@ -90,29 +90,39 @@
 {
     [self openBatchUpdate];
     RZAssemblageEnumerationOptions options = RZAssemblageEnumerationBreadthFirst;
-    // Process removals first, and do not modify the internal
-    // index state, to ensure that the indexes generated are valid when used on the
-    // assemblage before the filter change.
-    [self.unfilteredAssemblage enumerateObjectsWithOptions:options usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
-        if ( [self isObjectFiltered:object] && [self.filteredIndexPaths containsIndexPath:indexPath] == NO) {
-            indexPath = [self exposedIndexPathFromIndexPath:indexPath];
-            [self.changeSet removeObject:object atIndexPath:indexPath];
-        }
-    }];
-    [self.unfilteredAssemblage enumerateObjectsWithOptions:RZAssemblageEnumerationBreadthFirst usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
-        if ( [self isObjectFiltered:object] && [self.filteredIndexPaths containsIndexPath:indexPath] == NO) {
-            [self.filteredIndexPaths addIndexPath:indexPath];
-        }
-    }];
-    // Next generate insert events and always ensure that the indexes are valid against
-    // the current state.
-    [self.unfilteredAssemblage enumerateObjectsWithOptions:RZAssemblageEnumerationBreadthFirst usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
-        if ( [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
-            NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
-            [self.changeSet insertAtIndexPath:exposedIndexPath];
-            [self.filteredIndexPaths removeIndexPath:indexPath];
-        }
-    }];
+    // Terrible, terrible implementation.
+#define MAX_DEPTH 4
+    for ( NSUInteger depth = 1; depth < MAX_DEPTH; depth++ ) {
+        // Process removals first, and do not modify the internal
+        // index state, to ensure that the indexes generated are valid when used on the
+        // assemblage before the filter change.
+        [self.unfilteredAssemblage enumerateObjectsWithOptions:options usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
+            if ( indexPath.length == depth ) {
+                if ( [self isObjectFiltered:object] && [self.filteredIndexPaths containsIndexPath:indexPath] == NO) {
+                    indexPath = [self exposedIndexPathFromIndexPath:indexPath];
+                    [self.changeSet removeObject:object atIndexPath:indexPath];
+                }
+            }
+        }];
+        [self.unfilteredAssemblage enumerateObjectsWithOptions:RZAssemblageEnumerationBreadthFirst usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
+            if ( indexPath.length == depth ) {
+                if ( [self isObjectFiltered:object] && [self.filteredIndexPaths containsIndexPath:indexPath] == NO) {
+                    [self.filteredIndexPaths addIndexPath:indexPath];
+                }
+            }
+        }];
+        // Next generate insert events and always ensure that the indexes are valid against
+        // the current state.
+        [self.unfilteredAssemblage enumerateObjectsWithOptions:RZAssemblageEnumerationBreadthFirst usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
+            if ( indexPath.length == depth ) {
+                if ( [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
+                    NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
+                    [self.changeSet insertAtIndexPath:exposedIndexPath];
+                    [self.filteredIndexPaths removeIndexPath:indexPath];
+                }
+            }
+        }];
+    }
     [self closeBatchUpdate];
 }
 
