@@ -12,8 +12,7 @@
 #import "FilteredAssemblageTableViewController.h"
 #import "PersonListViewController.h"
 
-#import "RZAssemblage.h"
-#import "RZAssemblageTableView.h"
+@import RZAssemblage;
 
 @interface MasterViewController () <UITableViewDataSource, UITableViewDelegate>
 

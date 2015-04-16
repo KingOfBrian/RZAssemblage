@@ -10,11 +10,10 @@
 #import "AppDelegate.h"
 #import "PersonViewController.h"
 
-#import "RZAssemblage.h"
-#import "RZFRCAssemblage.h"
-#import "RZAssemblageTableView.h"
-#import "RZAssemblageTableViewDataSource.h"
+@import RZAssemblage;
+// @import RZAssemblageTestData fails... Why?!
 #import "RZAssemblageTestData.h"
+
 
 @interface PersonListViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -47,9 +46,10 @@
 {
     [super viewDidLoad];
     // This assemblage is a normal FRC with sections.
-    RZFRCAssemblage *content = [[RZFRCAssemblage alloc] initWithFetchedResultsController:[self fetchedResultsController]];
+    NSFetchedResultsController *frc = [self fetchedResultsController];
+    RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
     NSError *error = nil;
-    [content load:&error];
+    [frc performFetch:&error];
     NSAssert(error == nil, @"");
     self.assemblage = content;
     self.tableView.assemblage = self.assemblage;

@@ -39,6 +39,7 @@
     self = [super init];
     if ( self ) {
         _fetchedResultsController = fetchedResultsController;
+        _fetchedResultsController.delegate = self;
     }
     return self;
 }
@@ -46,12 +47,6 @@
 - (BOOL)hasSections
 {
     return self.fetchedResultsController.sectionNameKeyPath != nil;
-}
-
-- (BOOL)load:(out NSError **)error;
-{
-    self.fetchedResultsController.delegate = self;
-    return [self.fetchedResultsController performFetch:error];
 }
 
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath

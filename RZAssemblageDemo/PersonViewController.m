@@ -8,12 +8,8 @@
 
 #import "PersonViewController.h"
 
-#import "RZAssemblage.h"
-#import "RZFRCAssemblage.h"
-#import "RZAssemblageTableView.h"
-#import "RZAssemblageTableViewDataSource.h"
-#import "Person.h"
-#import "Team.h"
+@import RZAssemblage;
+#import "RZAssemblageTestData.h"
 
 @interface PersonViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -48,9 +44,10 @@
 {
     [super viewDidLoad];
     // Create a flat FRC on person with a predicate that restricts the results to friends of this person
-    RZFRCAssemblage *friends = [[RZFRCAssemblage alloc] initWithFetchedResultsController:[self fetchedResultsController]];
+    NSFetchedResultsController *frc = [self fetchedResultsController];
+    RZAssemblage *friends = [RZAssemblage assemblageForFetchedResultsController:frc];
     NSError *error = nil;
-    [friends load:&error];
+    [frc performFetch:&error];
     NSAssert(error == nil, @"");
 
     // Create a proxy assemblage for enemies. Same result as above, but slightly easier. Note that you can remove enemies, since this assemblage is mutable.

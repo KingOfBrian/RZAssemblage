@@ -15,6 +15,7 @@ FOUNDATION_EXPORT const unsigned char RZAssemblageVersionString[];
 
 OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
 
+@class NSFetchedResultsController;
 
 typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
     RZAssemblageEnumerationNoOptions = 0,
@@ -37,6 +38,7 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
 + (RZAssemblage *)assemblageTreeWithObject:(id)object arrayKeypaths:(NSArray *)keypaths;
 + (RZAssemblage *)assemblageTreeWithObject:(id)object arrayTreeKeypath:(NSArray *)keypaths;
 + (RZAssemblage *)assemblageWithObject:(id)object leafKeypaths:(NSArray *)keypaths;
++ (RZAssemblage *)assemblageForFetchedResultsController:(NSFetchedResultsController *)frc;
 //+ (RZAssemblage *)assemblageTreeWithObject:(id)object setKeypaths:(NSArray *)keypaths sortDescriptors:(NSArray *)sortDescriptors;
 
 /**

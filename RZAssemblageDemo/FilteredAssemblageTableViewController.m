@@ -7,9 +7,7 @@
 //
 
 #import "FilteredAssemblageTableViewController.h"
-#import "RZAssemblageTableView.h"
-#import "RZFilterAssemblage.h"
-#import "RZAssemblage.h"
+@import RZAssemblage;
 
 @interface FilteredAssemblageTableViewController () <UITableViewDataSource, UITableViewDelegate>
 

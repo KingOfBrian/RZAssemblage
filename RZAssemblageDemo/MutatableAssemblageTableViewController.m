@@ -13,9 +13,7 @@ code;                                                                   \
 _Pragma("clang diagnostic pop")                                         \
 
 #import "MutatableAssemblageTableViewController.h"
-#import "RZAssemblage.h"
-#import "RZAssemblageTableView.h"
-#import "RZAssemblageTableViewDataSource.h"
+@import RZAssemblage;
 
 @interface MutatableAssemblageTableViewController () <UITableViewDataSource, UITableViewDelegate>
 

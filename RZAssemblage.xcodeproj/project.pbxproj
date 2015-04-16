@@ -262,12 +262,12 @@
 		ABADD3441A776C7C00397031 /* RZAssemblage */ = {
 			isa = PBXGroup;
 			children = (
-				AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */,
-				AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */,
 				ABADD3661A776EE100397031 /* RZAssemblage.h */,
 				ABADD3671A776EE100397031 /* RZAssemblage.m */,
 				ABAC82D81A7CA8A4001CDC27 /* RZFilterAssemblage.h */,
 				ABAC82D91A7CA8A4001CDC27 /* RZFilterAssemblage.m */,
+				AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */,
+				AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */,
 				AB05787E1AB7B27C00E5A1E1 /* UIKit */,
 				ABD2E1FB1ADF52500029E98D /* Private */,
 				ABADD3451A776C7C00397031 /* Supporting Files */,

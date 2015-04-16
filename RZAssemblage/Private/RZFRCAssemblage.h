@@ -14,8 +14,6 @@
 
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
 
-- (BOOL)load:(out NSError **)error;
-
 @property (strong, nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 
 @end

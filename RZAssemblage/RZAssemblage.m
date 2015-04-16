@@ -16,6 +16,7 @@
 #import "RZArrayAssemblage.h"
 #import "RZProxyAssemblage.h"
 #import "RZPropertyAssemblage.h"
+#import "RZFRCAssemblage.h"
 
 static NSString *RZAssemblageElementsKey = @"elements";
 
@@ -49,6 +50,11 @@ static NSString *RZAssemblageElementsKey = @"elements";
 + (RZAssemblage *)assemblageWithObject:(id)object leafKeypaths:(NSArray *)keypaths
 {
     return [[RZPropertyAssemblage alloc] initWithObject:object keypaths:keypaths];
+}
+
++ (RZAssemblage *)assemblageForFetchedResultsController:(NSFetchedResultsController *)frc
+{
+    return [[RZFRCAssemblage alloc] initWithFetchedResultsController:frc];
 }
 
 @synthesize delegate = _delegate;
