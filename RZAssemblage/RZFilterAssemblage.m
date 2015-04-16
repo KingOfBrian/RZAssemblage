@@ -110,10 +110,6 @@
         if ( [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
             NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
             [self.changeSet insertAtIndexPath:exposedIndexPath];
-        }
-    }];
-    [self.unfilteredAssemblage enumerateObjectsWithOptions:RZAssemblageEnumerationBreadthFirst usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
-        if ( [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
             [self.filteredIndexPaths removeIndexPath:indexPath];
         }
     }];
