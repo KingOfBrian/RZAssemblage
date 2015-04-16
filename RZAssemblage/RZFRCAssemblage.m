@@ -66,38 +66,62 @@
     return object;
 }
 
-- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
-{
-    RZAssemblage *assemblage = nil;
-    if ( indexPath.length == 0 ) {
-        assemblage = self;
-    }
-    else if ( indexPath.length == 1 && self.hasSections ) {
-        NSUInteger index = [indexPath indexAtPosition:0];
-        id<NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[index];
-        assemblage = [[RZStaticArrayAssemblage alloc] initWithArray:sectionInfo.objects representingObject:sectionInfo];
-    }
-    else {
-        RZRaize(NO, @"No assemblage at index path %@", indexPath);
-    }
-    return assemblage;
-}
-
 - (NSMutableArray *)mutableChildren;
 {
     return nil;
 }
 
-- (NSArray *)children
+- (NSUInteger)countOfElements
 {
-    NSArray *children = nil;
-    if ( self.hasSections == NO ) {
-        children = self.fetchedResultsController.fetchedObjects;
+    NSUInteger countOfElements = NSNotFound;
+    if ( self.hasSections ) {
+        countOfElements = self.fetchedResultsController.sections.count;
     }
     else {
-        children = [super children];
+        countOfElements = self.fetchedResultsController.fetchedObjects.count;
     }
-    return children;
+    return countOfElements;
+}
+
+- (id)objectInElementsAtIndex:(NSUInteger)index
+{
+    id object = nil;
+    if ( self.hasSections ) {
+        object = self.fetchedResultsController.sections[index];
+    }
+    else {
+        object = self.fetchedResultsController.fetchedObjects[index];
+    }
+    return object;
+}
+
+- (NSUInteger)elementsIndexOfObject:(id)object
+{
+    NSUInteger index = NSNotFound;
+    if ( self.hasSections ) {
+        index = [self.fetchedResultsController.sections indexOfObject:object];
+    }
+    else {
+        index = [self.fetchedResultsController.fetchedObjects indexOfObject:object];
+    }
+    return index;
+}
+
+// This should not be needed, only used to determine the origin of a change event
+- (NSUInteger)indexOfAssemblage:(RZAssemblage *)assemblage
+{
+    RZRaize(NO, @"%@ should not be needed", NSStringFromSelector(_cmd));
+    return NSNotFound;
+}
+
+- (RZAssemblage *)nodeAtIndex:(NSUInteger)index
+{
+    RZAssemblage *node = nil;
+    if ( self.hasSections ) {
+        id<NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[index];
+        node = [[RZStaticArrayAssemblage alloc] initWithArray:sectionInfo.objects representingObject:sectionInfo];
+    }
+    return node;
 }
 
 - (id)representedObject

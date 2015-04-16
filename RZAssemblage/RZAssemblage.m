@@ -253,6 +253,11 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return index;
 }
 
+- (NSUInteger)elementsIndexOfObject:(id)object
+{
+    RZSubclassMustImplement(NSNotFound);
+}
+
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement();
@@ -261,11 +266,6 @@ static NSString *RZAssemblageElementsKey = @"elements";
 - (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement();
-}
-
-- (NSUInteger)elementsIndexOfObject:(id)object
-{
-    RZSubclassMustImplement(NSNotFound);
 }
 
 - (void)addMonitorsForObject:(NSObject *)anObject
