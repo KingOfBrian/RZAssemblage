@@ -91,8 +91,8 @@
     [self openBatchUpdate];
     RZAssemblageEnumerationOptions options = RZAssemblageEnumerationBreadthFirst;
     // Terrible, terrible implementation.
-#define MAX_DEPTH 4
-    for ( NSUInteger depth = 1; depth < MAX_DEPTH; depth++ ) {
+    __block NSUInteger maxDepth = 1;
+    for ( NSUInteger depth = 1; depth <= maxDepth; depth++ ) {
         // Process removals first, and do not modify the internal
         // index state, to ensure that the indexes generated are valid when used on the
         // assemblage before the filter change.
@@ -103,6 +103,7 @@
                     [self.changeSet removeObject:object atIndexPath:indexPath];
                 }
             }
+            maxDepth = MAX(maxDepth, indexPath.length);
         }];
         [self.unfilteredAssemblage enumerateObjectsWithOptions:RZAssemblageEnumerationBreadthFirst usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
             if ( indexPath.length == depth ) {
