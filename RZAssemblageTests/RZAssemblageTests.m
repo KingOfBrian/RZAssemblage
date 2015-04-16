@@ -260,13 +260,13 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testJoinIndexPathMutation
 {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[]];
-    RZAssemblage *f1m1 = [RZAssemblage assemblageForArray:@[]];
-    RZAssemblage *f1m2 = [RZAssemblage assemblageForArray:@[]];
-    RZAssemblage *f1 = [RZAssemblage joinedAssemblages:@[f1m1, f1m2]];
-    RZAssemblage *assemblage = [RZAssemblage assemblageForArray:@[m1, f1]];
+    RZAssemblage *j1m1 = [RZAssemblage assemblageForArray:@[]];
+    RZAssemblage *j1m2 = [RZAssemblage assemblageForArray:@[]];
+    RZAssemblage *j1 = [RZAssemblage joinedAssemblages:@[j1m1, j1m2]];
+    RZAssemblage *assemblage = [RZAssemblage assemblageForArray:@[m1, j1]];
     assemblage.delegate = self;
 
-    for ( RZAssemblage *assemblage in @[m1, f1m1] ) {
+    for ( RZAssemblage *assemblage in @[m1, j1m1] ) {
         NSMutableArray *ma = [assemblage mutableChildren];
         [ma addObject:@1];
         [ma addObject:@2];
@@ -275,51 +275,51 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
     XCTAssertTrue([m1 children].count == 2);
-    XCTAssertTrue([f1 children].count == 2);
-    XCTAssertTrue([f1m1 children].count == 2);
-    XCTAssertTrue([f1m2 children].count == 0);
+    XCTAssertTrue([j1 children].count == 2);
+    XCTAssertTrue([j1m1 children].count == 2);
+    XCTAssertTrue([j1m2 children].count == 0);
 
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                           toIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
 
     XCTAssertTrue([m1 children].count == 1);
-    XCTAssertTrue([f1 children].count == 3);
-    XCTAssertTrue([f1m1 children].count == 3);
-    XCTAssertTrue([f1m2 children].count == 0);
+    XCTAssertTrue([j1 children].count == 3);
+    XCTAssertTrue([j1m1 children].count == 3);
+    XCTAssertTrue([j1m2 children].count == 0);
 
-    [[f1m2 mutableChildren] addObject:@4];
+    [[j1m2 mutableChildren] addObject:@4];
     XCTAssertTrue([m1 children].count == 1);
-    XCTAssertTrue([f1 children].count == 4);
-    XCTAssertTrue([f1m1 children].count == 3);
-    XCTAssertTrue([f1m2 children].count == 1);
+    XCTAssertTrue([j1 children].count == 4);
+    XCTAssertTrue([j1m1 children].count == 3);
+    XCTAssertTrue([j1m2 children].count == 1);
 
     [assemblage insertObject:@5 atIndexPath:[NSIndexPath indexPathForRow:4 inSection:1]];
     XCTAssertTrue([m1 children].count == 1);
-    XCTAssertTrue([f1 children].count == 5);
-    XCTAssertTrue([f1m1 children].count == 3);
-    XCTAssertTrue([f1m2 children].count == 2);
+    XCTAssertTrue([j1 children].count == 5);
+    XCTAssertTrue([j1m1 children].count == 3);
+    XCTAssertTrue([j1m2 children].count == 2);
 
     [assemblage moveObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]
                           toIndexPath:[NSIndexPath indexPathForRow:4 inSection:1]];
     XCTAssertTrue([m1 children].count == 1);
-    XCTAssertTrue([f1 children].count == 5);
-    XCTAssertTrue([f1m1 children].count == 2);
-    XCTAssertTrue([f1m2 children].count == 3);
-    NSMutableArray *proxy = [f1m1 mutableChildren];
+    XCTAssertTrue([j1 children].count == 5);
+    XCTAssertTrue([j1m1 children].count == 2);
+    XCTAssertTrue([j1m2 children].count == 3);
+    NSMutableArray *proxy = [j1m1 mutableChildren];
     [proxy removeObjectAtIndex:0];
     [proxy removeObjectAtIndex:0];
     XCTAssertTrue([m1 children].count == 1);
-    XCTAssertTrue([f1 children].count == 3);
-    XCTAssertTrue([f1m1 children].count == 0);
-    XCTAssertTrue([f1m2 children].count == 3);
+    XCTAssertTrue([j1 children].count == 3);
+    XCTAssertTrue([j1m1 children].count == 0);
+    XCTAssertTrue([j1m2 children].count == 3);
 
     // The first composed assemblage is empty, and we are removing from the head.
     // Ensure that this results in a removal from f1m2, not a index-violation on f1m1
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
      XCTAssertTrue([m1 children].count == 1);
-     XCTAssertTrue([f1 children].count == 2);
-     XCTAssertTrue([f1m1 children].count == 0);
-     XCTAssertTrue([f1m2 children].count == 2);
+     XCTAssertTrue([j1 children].count == 2);
+     XCTAssertTrue([j1m1 children].count == 0);
+     XCTAssertTrue([j1m2 children].count == 2);
 }
 
 - (void)testNestedGroupedMutableDelegation

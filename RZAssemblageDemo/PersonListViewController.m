@@ -14,8 +14,7 @@
 #import "RZFRCAssemblage.h"
 #import "RZAssemblageTableView.h"
 #import "RZAssemblageTableViewDataSource.h"
-#import "Person.h"
-#import "Team.h"
+#import "RZAssemblageTestData.h"
 
 @interface PersonListViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -81,7 +80,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (NSManagedObjectContext *)managedObjectContext
 {
-    return [(AppDelegate *)[UIApplication sharedApplication].delegate managedObjectContext];
+    return [[RZAssemblageTestData shared] managedObjectContext];
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
