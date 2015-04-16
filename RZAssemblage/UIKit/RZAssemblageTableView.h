@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblage.h"
 @class RZAssemblageTableViewCellFactory;
 
 @interface RZAssemblageTableView : UITableView

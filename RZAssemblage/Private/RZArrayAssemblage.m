@@ -41,7 +41,7 @@ static char RZAssemblageUpdateContext;
 
 - (void)dealloc
 {
-    for ( NSObject *object in _childrenStorage ) {
+    for ( id object in _childrenStorage ) {
         [self removeMonitorsForObject:object];
     }
     if ( _representedObject ) {
@@ -137,7 +137,7 @@ static char RZAssemblageUpdateContext;
 {
     if ( context == &RZAssemblageUpdateContext ) {
         [self openBatchUpdate];
-        if ( object == _representedObject ) {
+        if ( object == self.representedObject ) {
             [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndexes:NULL length:0]];
         }
         else {

@@ -1,5 +1,5 @@
 //
-//  RZBaseAssemblage.h
+//  RZAssemblage.h
 //  RZAssemblage
 //
 //  Created by Brian King on 1/27/15.

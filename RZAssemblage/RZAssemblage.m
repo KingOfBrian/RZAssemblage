@@ -1,5 +1,5 @@
 //
-//  RZBaseAssemblage.m
+//  RZAssemblage.m
 //  RZAssemblage
 //
 //  Created by Brian King on 1/27/15.
@@ -56,8 +56,6 @@ static NSString *RZAssemblageElementsKey = @"elements";
 {
     return [[RZFRCAssemblage alloc] initWithFetchedResultsController:frc];
 }
-
-@synthesize delegate = _delegate;
 
 - (id)representedObject
 {
