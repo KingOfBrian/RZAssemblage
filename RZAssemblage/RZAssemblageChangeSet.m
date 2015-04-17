@@ -40,6 +40,7 @@
 {
     self = [super init];
     if ( self ) {
+        _shiftIndexes = YES;
         _inserts = [RZMutableIndexPathSet set];
         _updates = [RZMutableIndexPathSet set];
         _removedObjectsByIndexPath = [NSMutableDictionary dictionary];
@@ -84,8 +85,10 @@
 
 - (void)insertAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.updates shiftIndexesStartingAtIndexPath:indexPath by:1];
-    [self.inserts shiftIndexesStartingAtIndexPath:indexPath by:1];
+    if ( self.shiftIndexes ) {
+        [self.updates shiftIndexesStartingAtIndexPath:indexPath by:1];
+        [self.inserts shiftIndexesStartingAtIndexPath:indexPath by:1];
+    }
 
     [self.inserts addIndexPath:indexPath];
 }
@@ -97,19 +100,24 @@
 
 - (void)removeObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 {
-    BOOL insertWasRemoved = [self.inserts containsIndexPath:indexPath];
+    if ( self.shiftIndexes ) {
+        BOOL insertWasRemoved = [self.inserts containsIndexPath:indexPath];
 
-    [self.updates shiftIndexesStartingAfterIndexPath:indexPath by:-1];
-    [self.inserts shiftIndexesStartingAfterIndexPath:indexPath by:-1];
+        [self.updates shiftIndexesStartingAfterIndexPath:indexPath by:-1];
+        [self.inserts shiftIndexesStartingAfterIndexPath:indexPath by:-1];
 
-    // Do nothing if the removal was an un-propagated insertion
-    if ( insertWasRemoved == NO) {
-        // If the index has already been removed, shift it down till it finds an empty index.
-        NSIndexPath *indexPathToRemove = indexPath;
-        while ( [self.removedIndexPaths containsObject:indexPathToRemove] ) {
-            indexPathToRemove = [indexPathToRemove rz_indexPathWithLastIndexShiftedBy:1];
+        // Do nothing if the removal was an un-propagated insertion
+        if ( insertWasRemoved == NO) {
+            // If the index has already been removed, shift it down till it finds an empty index.
+            NSIndexPath *indexPathToRemove = indexPath;
+            while ( [self.removedIndexPaths containsObject:indexPathToRemove] ) {
+                indexPathToRemove = [indexPathToRemove rz_indexPathWithLastIndexShiftedBy:1];
+            }
+            self.removedObjectsByIndexPath[indexPathToRemove] = object;
         }
-        self.removedObjectsByIndexPath[indexPathToRemove] = object;
+    }
+    else {
+        self.removedObjectsByIndexPath[indexPath] = object;
     }
 }
 

@@ -31,11 +31,7 @@
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
 {
     NSAssert(fetchedResultsController.delegate == nil, @"The NSFetchedResultsController delegate is already configured");
-    if ( fetchedResultsController.sectionNameKeyPath ) {
-        NSSortDescriptor *sortDescriptor = [fetchedResultsController.fetchRequest.sortDescriptors firstObject];
-        RZRaize(sortDescriptor && [sortDescriptor.key isEqualToString:fetchedResultsController.sectionNameKeyPath],
-                @"The first sort descriptor in the NSFetchRequest must match the sectionNameKeyPath or bad things happen.");
-    }
+
     self = [super init];
     if ( self ) {
         _fetchedResultsController = fetchedResultsController;
@@ -131,6 +127,7 @@
     NSAssert(self.changeSet == nil, @"Do not support concurrent NSFRC changes");
     RZFRCLog(@"%@", controller);
     [self openBatchUpdate];
+    self.changeSet.shiftIndexes = NO;
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -146,7 +143,7 @@
 
     switch ( type ) {
         case NSFetchedResultsChangeInsert: {
-            [self.changeSet insertAtIndexPath:indexPath];
+            [self.changeSet insertAtIndexPath:newIndexPath];
             break;
         }
         case NSFetchedResultsChangeDelete: {
