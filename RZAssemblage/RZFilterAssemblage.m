@@ -12,6 +12,7 @@
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
+#import "NSIndexSet+RZAssemblage.h"
 
 @interface RZFilterAssemblage()
 
@@ -90,37 +91,56 @@
 {
     [self openBatchUpdate];
     RZAssemblageEnumerationOptions options = RZAssemblageEnumerationBreadthFirst;
-    // Terrible, terrible implementation.
-    __block NSUInteger maxDepth = 1;
-    for ( NSUInteger depth = 1; depth <= maxDepth; depth++ ) {
-        // Process removals first, and do not modify the internal
-        // index state, to ensure that the indexes generated are valid when used on the
-        // assemblage before the filter change.
-        [self.unfilteredAssemblage enumerateObjectsWithOptions:options usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
-            if ( indexPath.length == depth ) {
-                if ( [self isObjectFiltered:object] && [self.filteredIndexPaths containsIndexPath:indexPath] == NO) {
-                    indexPath = [self exposedIndexPathFromIndexPath:indexPath];
-                    [self.changeSet removeObject:object atIndexPath:indexPath];
-                }
+    RZMutableIndexPathSet *insertedIndexPaths = [RZMutableIndexPathSet set];
+    RZMutableIndexPathSet *removedIndexPaths = [RZMutableIndexPathSet set];
+    __block NSUInteger maxTreeDepth = 0;
+    [self.unfilteredAssemblage enumerateObjectsWithOptions:options usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
+        BOOL objectIsFiltered = [self isObjectFiltered:object];
+        BOOL indexIsFiltered = [self.filteredIndexPaths containsIndexPath:indexPath];
+        if ( objectIsFiltered && indexIsFiltered == NO) {
+            [removedIndexPaths addIndexPath:indexPath];
+        }
+        else if ( indexIsFiltered && objectIsFiltered == NO) {
+            [insertedIndexPaths addIndexPath:indexPath];
+        }
+        maxTreeDepth = MAX(maxTreeDepth, indexPath.length);
+    }];
+    // Enumerate changes based on depth. Peers do not want the changes
+    // in indexes to be reflected, but nodes do want their parent changes
+    // to be reflected.
+    for ( NSUInteger depth = 0; depth < maxTreeDepth; depth++ ) {
+        // Process removals first, and do not modify the index filter until after the
+        // change set for removals has been created to ensure that the indexes generated
+        // are valid pre-mutation values.
+        [removedIndexPaths enumerateIndexesUsingBlock:^(NSIndexPath *parentPath, NSIndexSet *indexes, BOOL *stop) {
+            if ( parentPath.length == depth ) {
+                [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                    NSIndexPath *indexPath = [parentPath indexPathByAddingIndex:idx];
+                    NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
+                    id object = [self.unfilteredAssemblage objectAtIndexPath:indexPath];
+                    [self.changeSet removeObject:object atIndexPath:exposedIndexPath];
+                }];
             }
-            maxDepth = MAX(maxDepth, indexPath.length);
         }];
-        [self.unfilteredAssemblage enumerateObjectsWithOptions:RZAssemblageEnumerationBreadthFirst usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
-            if ( indexPath.length == depth ) {
-                if ( [self isObjectFiltered:object] && [self.filteredIndexPaths containsIndexPath:indexPath] == NO) {
+        // Update the filtered indexes now that removals have been added to the change set.
+        [removedIndexPaths enumerateIndexesUsingBlock:^(NSIndexPath *parentPath, NSIndexSet *indexes, BOOL *stop) {
+            if ( parentPath.length == depth ) {
+                [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                    NSIndexPath *indexPath = [parentPath indexPathByAddingIndex:idx];
                     [self.filteredIndexPaths addIndexPath:indexPath];
-                }
+                }];
             }
         }];
-        // Next generate insert events and always ensure that the indexes are valid against
-        // the current state.
-        [self.unfilteredAssemblage enumerateObjectsWithOptions:RZAssemblageEnumerationBreadthFirst usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
-            if ( indexPath.length == depth ) {
-                if ( [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO) {
+        // Update the change set with the insertion events. Insertions do not self-interfere
+        // with their index space so this can be done in one pass.
+        [insertedIndexPaths enumerateIndexesUsingBlock:^(NSIndexPath *parentPath, NSIndexSet *indexes, BOOL *stop) {
+            if ( parentPath.length == depth ) {
+                [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                    NSIndexPath *indexPath = [parentPath indexPathByAddingIndex:idx];
                     NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
                     [self.changeSet insertAtIndexPath:exposedIndexPath];
                     [self.filteredIndexPaths removeIndexPath:indexPath];
-                }
+                }];
             }
         }];
     }
@@ -199,12 +219,8 @@
     NSIndexPath *parentIndexPath = [NSIndexPath indexPathWithIndexes:NULL length:0];
     for ( NSUInteger indexPosition = 0; indexPosition < indexPath.length; indexPosition++ ) {
         NSIndexSet *filtered = [self.filteredIndexPaths indexesAtIndexPath:parentIndexPath];
-        __block NSUInteger index = [indexPath indexAtPosition:0];
-        [filtered enumerateRangesUsingBlock:^(NSRange range, BOOL *stop) {
-            if ( index >=  range.location ) {
-                index += range.length;
-            }
-        }];
+        NSUInteger index = [indexPath indexAtPosition:0];
+        index += [filtered rz_countOfIndexesInRangesBeforeOrContainingIndex:index];
         indexPath = [indexPath rz_indexPathByReplacingIndexAtPosition:indexPosition withIndex:index];
     }
     return indexPath;

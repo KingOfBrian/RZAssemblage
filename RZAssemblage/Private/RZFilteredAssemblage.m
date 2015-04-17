@@ -8,6 +8,7 @@
 
 #import "RZFilteredAssemblage.h"
 #import "RZAssemblage+Private.h"
+#import "NSIndexSet+RZAssemblage.h"
 
 @interface RZFilteredAssemblage() <RZAssemblageDelegate>
 @property (strong, nonatomic) RZAssemblage *assemblage;
@@ -37,16 +38,10 @@
     return index;
 }
 
-- (NSUInteger)indexFromExposedIndex:(NSUInteger)idx
+- (NSUInteger)indexFromExposedIndex:(NSUInteger)index
 {
-    __block NSUInteger index = idx;
     NSIndexSet *filtered = [self.filteredIndexPaths indexesAtIndexPath:nil];
-    [filtered enumerateRangesUsingBlock:^(NSRange range, BOOL *stop) {
-        if ( index >=  range.location ) {
-            index += range.length;
-        }
-    }];
-
+    index += [filtered rz_countOfIndexesInRangesBeforeOrContainingIndex:index];
     return index;
 }
 
@@ -64,23 +59,23 @@
 
 - (id)objectInElementsAtIndex:(NSUInteger)index
 {
-    index = [self indexFromExposedIndex:index];
-    return [self.assemblage objectInElementsAtIndex:index];
+    NSUInteger exposedIndex = [self indexFromExposedIndex:index];
+    return [self.assemblage objectInElementsAtIndex:exposedIndex];
 }
 
 - (NSUInteger)elementsIndexOfObject:(id)object
 {
     NSUInteger index = [self.assemblage elementsIndexOfObject:object];
-    index = [self exposedIndexFromIndex:index];
-    return index;
+    NSUInteger exposedIndex = [self exposedIndexFromIndex:index];
+    return exposedIndex;
 }
 
 - (id)nodeAtIndex:(NSUInteger)index;
 {
-    index = [self indexFromExposedIndex:index];
-    RZAssemblage *assemblage = [self.assemblage nodeAtIndex:index];
+    NSUInteger exposedIndex = [self indexFromExposedIndex:index];
+    RZAssemblage *assemblage = [self.assemblage nodeAtIndex:exposedIndex];
     if ( assemblage ) {
-        RZMutableIndexPathSet *childIndexPathSet = [self.filteredIndexPaths indexPathSetAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
+        RZMutableIndexPathSet *childIndexPathSet = [self.filteredIndexPaths indexPathSetAtIndexPath:[NSIndexPath indexPathWithIndex:exposedIndex]];
         assemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:assemblage filteredIndexPaths:childIndexPathSet];
     }
     return assemblage;
@@ -88,14 +83,14 @@
 
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
-    index = [self indexFromExposedIndex:index];
-    [[self.assemblage mutableChildren] removeObjectAtIndex:index];
+    NSUInteger exposedIndex = [self indexFromExposedIndex:index];
+    [[self.assemblage mutableChildren] removeObjectAtIndex:exposedIndex];
 }
 
 - (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
-    index = [self indexFromExposedIndex:index];
-    [[self.assemblage mutableChildren] insertObject:object atIndex:index];
+    NSUInteger exposedIndex = [self indexFromExposedIndex:index];
+    [[self.assemblage mutableChildren] insertObject:object atIndex:exposedIndex];
 }
 
 - (void)setDelegate:(id<RZAssemblageDelegate>)delegate
