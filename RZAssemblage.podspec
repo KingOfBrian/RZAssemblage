@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "RZAssemblage"
-  s.version = "0.1"
+  s.version = "0.2"
   s.summary = "A framework for organizing and filtering data to be bound to application views."
   s.homepage = "http://github.com/KingOfBrian/RZAssemblage"
   s.license = { :type => "MIT", :file => "LICENSE" }
