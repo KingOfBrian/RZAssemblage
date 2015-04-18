@@ -12,13 +12,13 @@
 
 - (NSUInteger)rz_countOfIndexesInRangesBeforeOrContainingIndex:(NSUInteger)index
 {
-    __block NSUInteger count = 0;
+    __block NSUInteger endIndex = index;
     [self enumerateRangesUsingBlock:^(NSRange range, BOOL *stop) {
-        if ( index >= range.location ) {
-            count += range.length;
+        if ( endIndex >= range.location ) {
+            endIndex += range.length;
         }
     }];
-    return count;
+    return endIndex - index;
 }
 
 @end
