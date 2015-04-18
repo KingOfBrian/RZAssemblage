@@ -60,11 +60,47 @@
             }
             NSUInteger cursor = [indexPathCursor indexAtPosition:depth];
             NSUInteger index = [indexPath indexAtPosition:depth];
-            XCTAssert(index == cursor || index + 1 == cursor);
+            XCTAssert(index == cursor || index == cursor + 1 || index == 0);
             indexPathCursor = [indexPathCursor rz_indexPathByReplacingIndexAtPosition:depth withIndex:index];
         }
     }
+}
 
+- (void)testStartupInsertFilter
+{
+    NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
+    RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
+    RZFilterAssemblage *filter = [[RZFilterAssemblage alloc] initWithAssemblage:content];
+    filter.delegate = self;
+    filter.filter = [NSPredicate predicateWithBlock:^BOOL(Person *person, NSDictionary *bindings) {
+        BOOL match = YES;
+        if ( [person isKindOfClass:[Person class]] ) {
+            match = [person.firstName hasPrefix:@"J"] || [person.lastName hasPrefix:@"J"];
+        }
+        return match;
+    }];
+    NSError *error = nil;
+    [frc performFetch:&error];
+    NSAssert(error == nil, @"");
+
+    XCTAssert([[content children] count] == 0);
+    [[RZAssemblageTestData shared] createFakeData];
+    [[RZAssemblageTestData shared] saveContext];
+    XCTAssert([[content children] count] == 4);
+
+    // Ensure that all of the index paths are sequental
+    NSIndexPath *indexPathCursor = [NSIndexPath indexPathWithIndex:0];
+    for ( NSIndexPath *indexPath in self.changeSet.insertedIndexPaths ) {
+        for ( NSUInteger depth = 0; depth < indexPath.length; depth++ ) {
+            if ( indexPathCursor.length <= depth ) {
+                indexPathCursor = [indexPathCursor indexPathByAddingIndex:0];
+            }
+            NSUInteger cursor = [indexPathCursor indexAtPosition:depth];
+            NSUInteger index = [indexPath indexAtPosition:depth];
+            XCTAssert(index == cursor || index == cursor + 1 || index == 0);
+            indexPathCursor = [indexPathCursor rz_indexPathByReplacingIndexAtPosition:depth withIndex:index];
+        }
+    }
 }
 
 @end
