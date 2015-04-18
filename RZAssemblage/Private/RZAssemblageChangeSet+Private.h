@@ -14,6 +14,7 @@ typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *ind
 
 @interface RZAssemblageChangeSet ()
 
+@property (assign, nonatomic) BOOL shiftIndexes;
 @property (strong, nonatomic) RZMutableIndexPathSet *inserts;
 @property (strong, nonatomic) RZMutableIndexPathSet *updates;
 
