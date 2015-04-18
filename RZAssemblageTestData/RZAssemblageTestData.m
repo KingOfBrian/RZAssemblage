@@ -31,6 +31,11 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
+- (NSURL *)storeURL
+{
+    return [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"RZAssemblageDemo.sqlite"];
+}
+
 - (NSManagedObjectModel *)managedObjectModel {
     // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
     if (_managedObjectModel != nil) {
@@ -51,25 +56,32 @@
     // Create the coordinator and store
 
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"RZAssemblageDemo.sqlite"];
+    NSURL *storeURL = [self storeURL];
     NSError *error = nil;
-    NSString *failureReason = @"There was an error creating or loading the application's saved data.";
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-        // Report any error we got.
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
-        dict[NSLocalizedFailureReasonErrorKey] = failureReason;
-        dict[NSUnderlyingErrorKey] = error;
-        error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
-        // Replace this with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+        [self encounteredFatalError:error];
     }
 
     return _persistentStoreCoordinator;
 }
 
+- (void)encounteredFatalError:(NSError *)error
+{
+    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+    abort();
+}
+
+- (void)reset
+{
+    NSError *error = nil;
+    BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:&error];
+
+    if ( !ok ) {
+        [self encounteredFatalError:error];
+    }
+    _persistentStoreCoordinator = nil;
+    _managedObjectContext = nil;
+}
 
 - (NSManagedObjectContext *)managedObjectContext {
     // Returns the managed object context for the application (which is already bound to the persistent store coordinator for tRZAssemblageDemo.xcdatamodeldhe application.)
@@ -86,9 +98,29 @@
     return _managedObjectContext;
 }
 
+- (NSFetchedResultsController *)frcForPersonsByTeam
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"team.name" ascending:NO],
+                                [NSSortDescriptor sortDescriptorWithKey:@"firstName" ascending:YES]];
+    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[self managedObjectContext] sectionNameKeyPath:@"team.name" cacheName:nil];
+    return fetchedResultsController;
+}
+
+- (NSFetchedResultsController *)frcForFriendsOfPerson:(Person *)person
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"firstName" ascending:YES]];
+    request.predicate = [NSPredicate predicateWithFormat:@"self in %@", person.friends];
+    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[person managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+    return fetchedResultsController;
+}
+
+
 #pragma mark - Core Data Saving support
 
-- (void)saveContext {
+- (void)saveContext
+{
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
         NSError *error = nil;

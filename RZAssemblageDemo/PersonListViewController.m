@@ -47,7 +47,7 @@
 {
     [super viewDidLoad];
     // This assemblage is a normal FRC with sections.
-    NSFetchedResultsController *frc = [self fetchedResultsController];
+    NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
     RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
     NSError *error = nil;
     [frc performFetch:&error];
@@ -77,20 +77,6 @@ RZAssemblageTableViewDataSourceIsControllingCells()
     PersonViewController *pvc = [[PersonViewController alloc] initWithPerson:p];
     [self.navigationController pushViewController:pvc animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-- (NSManagedObjectContext *)managedObjectContext
-{
-    return [[RZAssemblageTestData shared] managedObjectContext];
-}
-
-- (NSFetchedResultsController *)fetchedResultsController
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"team.name" ascending:NO],
-                                [NSSortDescriptor sortDescriptorWithKey:@"firstName" ascending:YES]];
-    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[self managedObjectContext] sectionNameKeyPath:@"team.name" cacheName:nil];
-    return fetchedResultsController;
 }
 
 @end

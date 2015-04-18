@@ -12,6 +12,7 @@
 		AB559B521AC383B600DFB024 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B511AC383B600DFB024 /* PersonViewController.m */; };
 		AB9B31B61A8679FB00C39876 /* RZAssemblageChangeSet.h in Headers */ = {isa = PBXBuildFile; fileRef = AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AB9B31B71A8679FB00C39876 /* RZAssemblageChangeSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */; };
+		ABA348BB1AE2BAD100892E17 /* RZFRCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA348BA1AE2BAD100892E17 /* RZFRCTests.m */; };
 		ABA6EC0B1ABCA6CC00201944 /* RZProxyAssemblageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA6EC0A1ABCA6CC00201944 /* RZProxyAssemblageTests.m */; };
 		ABA6EC0E1ABCA71500201944 /* TestModels.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA6EC0D1ABCA71500201944 /* TestModels.m */; };
 		ABAC82DA1A7CA8A5001CDC27 /* RZFilterAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAC82D81A7CA8A4001CDC27 /* RZFilterAssemblage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -26,6 +27,8 @@
 		ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B41A787F1900397031 /* MasterViewController.m */; };
 		ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BC1A787F1900397031 /* Images.xcassets */; };
 		ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
+		ABC020A81AE2C39C005DE831 /* RZAssemblageTestData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; };
+		ABC020A91AE2C40B005DE831 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFE4D241A80A17700A73BA3 /* UIKit.framework */; };
 		ABD2E1E01ADF49310029E98D /* RZAssemblageTestData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; };
 		ABD2E1E11ADF49310029E98D /* RZAssemblageTestData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		ABD2E1EF1ADF49AD0029E98D /* Person.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1E91ADF49AD0029E98D /* Person.h */; };
@@ -33,7 +36,6 @@
 		ABD2E1F11ADF49AD0029E98D /* RZAssemblageDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1EB1ADF49AD0029E98D /* RZAssemblageDemo.xcdatamodeld */; };
 		ABD2E1F21ADF49AD0029E98D /* Team.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1ED1ADF49AD0029E98D /* Team.h */; };
 		ABD2E1F31ADF49AD0029E98D /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1EE1ADF49AD0029E98D /* Team.m */; };
-		ABD2E1F61ADF4A010029E98D /* RZAssemblageTestData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; };
 		ABD2E1F81ADF4A7F0029E98D /* RZAssemblageTestData.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1F71ADF4A7F0029E98D /* RZAssemblageTestData.m */; };
 		ABD2E1FA1ADF4AA10029E98D /* RZAssemblageTestData.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1F91ADF4AA10029E98D /* RZAssemblageTestData.h */; };
 		ABD2E2081ADF52500029E98D /* RZArrayAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1FC1ADF52500029E98D /* RZArrayAssemblage.h */; };
@@ -73,7 +75,6 @@
 		ABD2E2781AE04A400029E98D /* NSIndexSet+RZAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2761AE04A400029E98D /* NSIndexSet+RZAssemblage.h */; };
 		ABD2E2791AE04A400029E98D /* NSIndexSet+RZAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2771AE04A400029E98D /* NSIndexSet+RZAssemblage.m */; };
 		ABE1FA501A86ED700069B37F /* RZMutableIndexPathSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */; };
-		ABFE4D251A80A17700A73BA3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFE4D241A80A17700A73BA3 /* UIKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = ABADD3411A776C7C00397031;
 			remoteInfo = RZAssemblage;
+		};
+		ABC020A61AE2C380005DE831 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABADD3391A776C7C00397031 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ABD2E1C81ADF49310029E98D;
+			remoteInfo = RZAssemblageTestData;
 		};
 		ABD2E1DE1ADF49310029E98D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -137,6 +145,7 @@
 		AB559B511AC383B600DFB024 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
 		AB9B31B41A8679FB00C39876 /* RZAssemblageChangeSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageChangeSet.h; sourceTree = "<group>"; };
 		AB9B31B51A8679FB00C39876 /* RZAssemblageChangeSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageChangeSet.m; sourceTree = "<group>"; };
+		ABA348BA1AE2BAD100892E17 /* RZFRCTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFRCTests.m; sourceTree = "<group>"; };
 		ABA6EC0A1ABCA6CC00201944 /* RZProxyAssemblageTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZProxyAssemblageTests.m; sourceTree = "<group>"; };
 		ABA6EC0C1ABCA71500201944 /* TestModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestModels.h; sourceTree = "<group>"; };
 		ABA6EC0D1ABCA71500201944 /* TestModels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestModels.m; sourceTree = "<group>"; };
@@ -216,7 +225,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABFE4D251A80A17700A73BA3 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,7 +232,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABD2E1F61ADF4A010029E98D /* RZAssemblageTestData.framework in Frameworks */,
+				ABC020A91AE2C40B005DE831 /* UIKit.framework in Frameworks */,
+				ABC020A81AE2C39C005DE831 /* RZAssemblageTestData.framework in Frameworks */,
 				ABADD34E1A776C7C00397031 /* RZAssemblage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -323,6 +332,7 @@
 				ABA6EC0D1ABCA71500201944 /* TestModels.m */,
 				ABA6EC0A1ABCA6CC00201944 /* RZProxyAssemblageTests.m */,
 				ABADD3541A776C7C00397031 /* RZAssemblageTests.m */,
+				ABA348BA1AE2BAD100892E17 /* RZFRCTests.m */,
 				ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */,
 				ABADD3521A776C7C00397031 /* Supporting Files */,
 			);
@@ -527,6 +537,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				ABC020A71AE2C380005DE831 /* PBXTargetDependency */,
 				ABADD3501A776C7C00397031 /* PBXTargetDependency */,
 			);
 			name = RZAssemblageTests;
@@ -731,6 +742,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABA348BB1AE2BAD100892E17 /* RZFRCTests.m in Sources */,
 				ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */,
 				ABE1FA501A86ED700069B37F /* RZMutableIndexPathSetTests.m in Sources */,
 				ABA6EC0B1ABCA6CC00201944 /* RZProxyAssemblageTests.m in Sources */,
@@ -795,6 +807,11 @@
 			isa = PBXTargetDependency;
 			target = ABADD3411A776C7C00397031 /* RZAssemblage */;
 			targetProxy = ABADD3D31A7890DF00397031 /* PBXContainerItemProxy */;
+		};
+		ABC020A71AE2C380005DE831 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ABD2E1C81ADF49310029E98D /* RZAssemblageTestData */;
+			targetProxy = ABC020A61AE2C380005DE831 /* PBXContainerItemProxy */;
 		};
 		ABD2E1DF1ADF49310029E98D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1146,6 +1163,7 @@
 				ABD2E23C1ADFE62E0029E98D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		ABD2E23D1ADFE62E0029E98D /* Build configuration list for PBXNativeTarget "RZAssemblageUIKitTests" */ = {
 			isa = XCConfigurationList;
@@ -1154,6 +1172,7 @@
 				ABD2E23F1ADFE62E0029E98D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

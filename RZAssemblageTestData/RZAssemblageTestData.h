@@ -28,7 +28,12 @@ FOUNDATION_EXPORT const unsigned char RZAssemblageTestDataVersionString[];
 
 - (NSManagedObjectContext *)managedObjectContext;
 - (void)saveContext;
+- (void)reset;
 - (NSURL *)applicationDocumentsDirectory;
 - (void)createFakeData;
+
+- (NSFetchedResultsController *)frcForPersonsByTeam;
+- (NSFetchedResultsController *)frcForFriendsOfPerson:(Person *)person;
+
 
 @end

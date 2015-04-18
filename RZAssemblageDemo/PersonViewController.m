@@ -45,7 +45,7 @@
 {
     [super viewDidLoad];
     // Create a flat FRC on person with a predicate that restricts the results to friends of this person
-    NSFetchedResultsController *frc = [self fetchedResultsController];
+    NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForFriendsOfPerson:self.person];
     RZAssemblage *friends = [RZAssemblage assemblageForFetchedResultsController:frc];
     NSError *error = nil;
     [frc performFetch:&error];
@@ -154,13 +154,5 @@ RZAssemblageTableViewDataSourceIsControllingCells()
     }
 }
 
-- (NSFetchedResultsController *)fetchedResultsController
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"firstName" ascending:YES]];
-    request.predicate = [NSPredicate predicateWithFormat:@"self in %@", self.person.friends];
-    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[self.person managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
-    return fetchedResultsController;
-}
 
 @end
