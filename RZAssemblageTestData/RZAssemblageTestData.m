@@ -74,10 +74,12 @@
 - (void)reset
 {
     NSError *error = nil;
-    BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:&error];
+    if ( [[NSFileManager defaultManager] fileExistsAtPath:self.storeURL.path] ) {
+        BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:&error];
 
-    if ( !ok ) {
-        [self encounteredFatalError:error];
+        if ( !ok ) {
+            [self encounteredFatalError:error];
+        }
     }
     _persistentStoreCoordinator = nil;
     _managedObjectContext = nil;
