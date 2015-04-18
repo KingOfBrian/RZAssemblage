@@ -152,10 +152,10 @@
 - (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
     [changeSet.removedObjectsByIndexPath enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *indexPath, id obj, BOOL *stop) {
-        NSIndexPath *parentIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
+        NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
 
         if ( [self.filteredIndexPaths containsIndexPath:indexPath] == NO ) {
-            [self.changeSet removeObject:obj atIndexPath:parentIndexPath];
+            [self.changeSet removeObject:obj atIndexPath:exposedIndexPath];
         }
     }];
     // Clean up the index set.   If we shift a lot of items sequentially,
@@ -167,12 +167,12 @@
     }
 
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
-        NSIndexPath *parentIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
+        NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
         [self.filteredIndexPaths shiftIndexesStartingAtIndexPath:indexPath by:1];
 
         id object = [assemblage objectAtIndexPath:indexPath];
         if ( [self isObjectFiltered:object] == NO ) {
-            [self.changeSet insertAtIndexPath:parentIndexPath];
+            [self.changeSet insertAtIndexPath:exposedIndexPath];
         }
         else {
             [self.filteredIndexPaths addIndexPath:indexPath];
@@ -182,19 +182,19 @@
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         id object = [assemblage objectAtIndexPath:indexPath];
 
-        NSIndexPath *parentIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
+        NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
         if ( [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO ) {
             [self.filteredIndexPaths removeIndexPath:indexPath];
 
-            [self.changeSet insertAtIndexPath:parentIndexPath];
+            [self.changeSet insertAtIndexPath:exposedIndexPath];
         }
         else if ( [self.filteredIndexPaths containsIndexPath:indexPath] == NO && [self isObjectFiltered:object] ) {
             [self.filteredIndexPaths addIndexPath:indexPath];
 
-            [self.changeSet removeObject:object atIndexPath:parentIndexPath];
+            [self.changeSet removeObject:object atIndexPath:exposedIndexPath];
         }
         else {
-            [self.changeSet updateAtIndexPath:parentIndexPath];
+            [self.changeSet updateAtIndexPath:exposedIndexPath];
         }
     }
     [self closeBatchUpdate];
