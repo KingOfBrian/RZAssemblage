@@ -151,6 +151,8 @@
 
 - (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
 {
+    // Transform the removals. Any removals that were filtered are removed from the change set. Other removals
+    // are translated to occur at the 'exposed' index path.
     [changeSet.removedObjectsByIndexPath enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *indexPath, id obj, BOOL *stop) {
         NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
 
@@ -158,20 +160,21 @@
             [self.changeSet removeObject:obj atIndexPath:exposedIndexPath];
         }
     }];
-    // Clean up the index set.   If we shift a lot of items sequentially,
-    // indexes can get improperly preserved, so remove them, and then shift them.
+    // Clean up the index set. Clear out any filtered indexes and shift down the rest
     [self.filteredIndexPaths removeIndexPathsInArray:changeSet.removedIndexPaths];
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         NSIndexPath *newIndexPath = [indexPath rz_indexPathWithLastIndexShiftedBy:1];
         [self.filteredIndexPaths shiftIndexesStartingAtIndexPath:newIndexPath by:-1];
     }
 
+    // Transform the insertions. Any insertions that are filtered are removed from the change set. Other insertions
+    // are translated to occur at the 'exposed' index path.
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
-        NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
         [self.filteredIndexPaths shiftIndexesStartingAtIndexPath:indexPath by:1];
 
         id object = [assemblage objectAtIndexPath:indexPath];
         if ( [self isObjectFiltered:object] == NO ) {
+            NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
             [self.changeSet insertAtIndexPath:exposedIndexPath];
         }
         else {
@@ -208,8 +211,11 @@
     for ( NSUInteger indexPosition = 0; indexPosition < indexPath.length; indexPosition++ ) {
         NSIndexSet *filtered = [self.filteredIndexPaths indexesAtIndexPath:parentIndexPath];
         NSUInteger index = [indexPath indexAtPosition:indexPosition];
-        index -= [filtered countOfIndexesInRange:NSMakeRange(0, index)];
-        indexPath = [indexPath rz_indexPathByReplacingIndexAtPosition:indexPosition withIndex:index];
+        NSUInteger exposedIndex = index - [filtered countOfIndexesInRange:NSMakeRange(0, index)];
+        if ( index != exposedIndex ) {
+            indexPath = [indexPath rz_indexPathByReplacingIndexAtPosition:indexPosition withIndex:exposedIndex];
+        }
+        parentIndexPath = [parentIndexPath indexPathByAddingIndex:index];
     }
     return indexPath;
 }
@@ -220,8 +226,11 @@
     for ( NSUInteger indexPosition = 0; indexPosition < indexPath.length; indexPosition++ ) {
         NSIndexSet *filtered = [self.filteredIndexPaths indexesAtIndexPath:parentIndexPath];
         NSUInteger index = [indexPath indexAtPosition:0];
-        index += [filtered rz_countOfIndexesInRangesBeforeOrContainingIndex:index];
-        indexPath = [indexPath rz_indexPathByReplacingIndexAtPosition:indexPosition withIndex:index];
+        NSUInteger exposedIndex = index + [filtered rz_countOfIndexesInRangesBeforeOrContainingIndex:index];
+        if ( index != exposedIndex ) {
+            indexPath = [indexPath rz_indexPathByReplacingIndexAtPosition:indexPosition withIndex:exposedIndex];
+        }
+        parentIndexPath = [parentIndexPath indexPathByAddingIndex:index];
     }
     return indexPath;
 }
