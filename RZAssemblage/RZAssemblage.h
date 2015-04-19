@@ -75,6 +75,17 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
 - (void)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
 
 /**
+ * Short hand to look up a child node.
+ */
+- (RZAssemblage *)objectAtIndexedSubscript:(NSUInteger)index;
+
+/**
+ * Short hand to access a contained object. If the index path points to a node, the representedObject is returned,
+ * otherwise, the representedObject is returned.
+ */
+- (id)objectForKeyedSubscript:(NSIndexPath *)indexPath;
+
+/**
  * The delegate to inform of changes.
  */
 @property (weak, nonatomic) id<RZAssemblageDelegate> delegate;

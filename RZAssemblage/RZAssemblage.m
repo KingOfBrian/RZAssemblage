@@ -140,6 +140,16 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return stop;
 }
 
+- (RZAssemblage *)objectAtIndexedSubscript:(NSUInteger)index;
+{
+    return [self nodeAtIndex:index];
+}
+
+- (id)objectForKeyedSubscript:(NSIndexPath *)indexPath
+{
+    return [self objectAtIndexPath:indexPath];
+}
+
 - (NSMutableArray *)mutableChildren
 {
     return [self mutableArrayValueForKey:RZAssemblageElementsKey];
