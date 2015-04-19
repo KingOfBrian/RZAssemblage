@@ -48,7 +48,7 @@
     return [self.filteredAssemblage countOfElements];
 }
 
-- (id)objectInElementsAtIndex:(NSUInteger)index
+- (nullable id)objectInElementsAtIndex:(NSUInteger)index
 {
     return [self.filteredAssemblage objectInElementsAtIndex:index];
 }

@@ -13,12 +13,12 @@ FOUNDATION_EXPORT const unsigned char RZAssemblageVersionString[];
 
 #import "RZAssemblageChangeSet.h"
 
-OBJC_EXTERN NSString *const RZAssemblageUpdateKey;
+OBJC_EXTERN NSString * __nonnull const RZAssemblageUpdateKey;
 
 @class NSFetchedResultsController;
 
 typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
-    RZAssemblageEnumerationNoOptions = 0,
+    RZAssemblageEnumerationNoOptions = kNilOptions,
     RZAssemblageEnumerationBreadthFirst = 1 << 1, // Default is depth first
     RZAssemblageEnumerationIncludeNilRepresentedObject = 1 << 2, // Default is to skip nil representations
 };
@@ -32,63 +32,70 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
  */
 @interface RZAssemblage : NSObject
 
-+ (RZAssemblage *)assemblageForArray:(NSArray *)array;
-+ (RZAssemblage *)assemblageForArray:(NSArray *)array representedObject:(id)representedObject;
-+ (RZAssemblage *)joinedAssemblages:(NSArray *)array;
-+ (RZAssemblage *)assemblageTreeWithObject:(id)object arrayKeypaths:(NSArray *)keypaths;
-+ (RZAssemblage *)assemblageTreeWithObject:(id)object arrayTreeKeypath:(NSArray *)keypaths;
-+ (RZAssemblage *)assemblageWithObject:(id)object leafKeypaths:(NSArray *)keypaths;
-+ (RZAssemblage *)assemblageForFetchedResultsController:(NSFetchedResultsController *)frc;
-//+ (RZAssemblage *)assemblageTreeWithObject:(id)object setKeypaths:(NSArray *)keypaths sortDescriptors:(NSArray *)sortDescriptors;
++ (nonnull RZAssemblage *)assemblageForArray:(nonnull NSArray *)array;
++ (nonnull RZAssemblage *)assemblageForArray:(nonnull NSArray *)array representedObject:(nullable id)representedObject;
++ (nonnull RZAssemblage *)assemblageForFetchedResultsController:(nonnull NSFetchedResultsController *)frc;
++ (nonnull RZAssemblage *)joinedAssemblages:(nonnull NSArray *)array;
++ (nonnull RZAssemblage *)assemblageTreeWithObject:(nonnull id)object descendingKeypaths:(nonnull NSArray *)keypaths;
++ (nonnull RZAssemblage *)assemblageTreeWithObject:(nonnull id)object repeatingKeypath:(nonnull NSString *)keypath;
++ (nonnull RZAssemblage *)assemblageWithObject:(nonnull id)object leafKeypaths:(nonnull NSArray *)keypaths;
 
 /**
  *  Return the object that this assemblage represents.
  */
-- (id)representedObject;
+- (nullable id)representedObject;
 
 /**
  * Return an array of objects representing the children of this node.
  */
-- (NSArray *)children;
+- (nonnull NSArray *)children;
 
 /**
- * Return a mutable array of objects representing the children of this node.
+ * Return a mutable array of objects representing the children of this node. 
+ *
+ * If this node does not support proxy mutation, a nil object is returned.
  */
-- (NSMutableArray *)mutableChildren;
+- (nullable NSMutableArray *)mutableChildren;
 
 /**
- * Return the node at the specified index path.
+ * Return the node at the specified index path. 
+ *
+ * This will raise an exception if an invalid index path is specified.
  */
-- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath;
+- (nonnull RZAssemblage *)assemblageAtIndexPath:(nonnull NSIndexPath *)indexPath;
 
 /**
- * Return the node value at the specified index path.
+ * Return the node value at the specified index path. 
+ *
+ * If nil is specified as an indexPath, it will be treated as an empty index path
+ * This will return nil if there's no representedObject at the index path.
+ * This will raise an exception if an invalid index path is specified.
  */
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath;
+- (nullable id)objectAtIndexPath:(nullable NSIndexPath *)indexPath;
 
 /**
  * Enumerate all nodes of the assemblage.  This does a depth first enumeration of all nodes, but it
  * will skip nodes with no representedObject.
  */
-- (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
+- (void)enumerateObjectsUsingBlock:(nonnull void (^)(id __nullable obj, NSIndexPath * __nonnull indexPath, BOOL * __nonnull stop))block;
 
-- (void)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
+- (void)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options usingBlock:(nonnull void (^)(id __nullable obj, NSIndexPath * __nonnull indexPath, BOOL * __nonnull stop))block;
 
 /**
  * Short hand to look up a child node.
  */
-- (RZAssemblage *)objectAtIndexedSubscript:(NSUInteger)index;
+- (nonnull RZAssemblage *)objectAtIndexedSubscript:(NSUInteger)index;
 
 /**
  * Short hand to access a contained object. If the index path points to a node, the representedObject is returned,
  * otherwise, the representedObject is returned.
  */
-- (id)objectForKeyedSubscript:(NSIndexPath *)indexPath;
+- (nullable id)objectForKeyedSubscript:(nonnull NSIndexPath *)indexPath;
 
 /**
  * The delegate to inform of changes.
  */
-@property (weak, nonatomic) id<RZAssemblageDelegate> delegate;
+@property (weak, nonatomic, nullable) id<RZAssemblageDelegate> delegate;
 
 /**
  *  Open a batch of updates.   This will hold onto all changes until a matching
@@ -99,7 +106,7 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
 /**
  *  Notify a change to an object.   This is not required if the Key Value Observing is used.
  */
-- (void)notifyObjectUpdate:(id)object;
+- (void)notifyObjectUpdate:(nonnull id)object;
 
 /**
  *  Close a batch of updates.
@@ -109,19 +116,19 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
 /**
  *  Insert an object into the assemblage tree at the index path.
  */
-- (void)insertObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
+- (void)insertObject:(nonnull id)object atIndexPath:(nullable NSIndexPath *)indexPath;
 
 /**
  *  Remove the object at the specified index path.
  */
-- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath;
+- (void)removeObjectAtIndexPath:(nullable NSIndexPath *)indexPath;
 
 /**
  *  Move an object from the specified index path to the specified index path.
  *  This change will be notified as a remove and an insert, unless generateMoveEventsFromAssemblage
  *  is called.
  */
-- (void)moveObjectAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
+- (void)moveObjectAtIndexPath:(nullable NSIndexPath *)fromIndexPath toIndexPath:(nullable NSIndexPath *)toIndexPath;
 
 @end
 
@@ -130,10 +137,10 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
  */
 @protocol RZAssemblageDelegate <NSObject>
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet;
+- (void)assemblage:(nonnull RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(nonnull RZAssemblageChangeSet *)changeSet;
 
 @optional
-- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage;
+- (void)willBeginUpdatesForAssemblage:(nonnull RZAssemblage *)assemblage;
 
 @end
 

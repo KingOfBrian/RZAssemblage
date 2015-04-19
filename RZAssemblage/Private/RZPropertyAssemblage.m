@@ -73,7 +73,7 @@ static void *const RZPropertyContext = (void *)&RZPropertyContext;
     return self.keypaths.count;
 }
 
-- (id)objectInElementsAtIndex:(NSUInteger)index
+- (nullable id)objectInElementsAtIndex:(NSUInteger)index
 {
     NSString *keypath = self.keypaths[index];
     return [self.representedObject valueForKeyPath:keypath];

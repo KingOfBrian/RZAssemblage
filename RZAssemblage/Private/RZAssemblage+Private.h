@@ -13,7 +13,7 @@
 
 @interface RZAssemblage() <RZAssemblageDelegate>
 
-@property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
+@property (strong, nonatomic, nullable) RZAssemblageChangeSet *changeSet;
 
 @property (nonatomic) NSUInteger updateCount;
 
@@ -23,15 +23,15 @@
 
 // These methods should be implemented by subclasses.
 - (NSUInteger)countOfElements;
-- (id)objectInElementsAtIndex:(NSUInteger)index;
+- (nullable id)objectInElementsAtIndex:(NSUInteger)index;
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index;
-- (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index;
-- (NSUInteger)elementsIndexOfObject:(id)object;
+- (void)insertObject:(nonnull NSObject *)object inElementsAtIndex:(NSUInteger)index;
+- (NSUInteger)elementsIndexOfObject:(nonnull id)object;
 
-- (RZAssemblage *)nodeAtIndex:(NSUInteger)index;
-- (NSUInteger)indexOfAssemblage:(RZAssemblage *)assemblage;
+- (nullable RZAssemblage *)nodeAtIndex:(NSUInteger)index;
+- (NSUInteger)indexOfAssemblage:(nonnull RZAssemblage *)assemblage;
 
-- (void)addMonitorsForObject:(id)anObject;
-- (void)removeMonitorsForObject:(id)anObject;
+- (void)addMonitorsForObject:(nonnull id)anObject;
+- (void)removeMonitorsForObject:(nonnull id)anObject;
 
 @end

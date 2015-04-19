@@ -22,49 +22,49 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 @implementation RZAssemblage
 
-+ (RZAssemblage *)assemblageForArray:(NSArray *)array
++ (nonnull RZAssemblage *)assemblageForArray:(nonnull NSArray *)array
 {
     return [self assemblageForArray:array representedObject:nil];
 }
 
-+ (RZAssemblage *)assemblageForArray:(NSArray *)array representedObject:(id)representedObject
++ (nonnull RZAssemblage *)assemblageForArray:(nonnull NSArray *)array representedObject:(nullable id)representedObject
 {
     return [[RZArrayAssemblage alloc] initWithArray:array representingObject:representedObject];
 }
 
-+ (RZAssemblage *)joinedAssemblages:(NSArray *)array
-{
-    return [[RZJoinAssemblage alloc] initWithAssemblages:array];
-}
-
-+ (RZAssemblage *)assemblageTreeWithObject:(id)object arrayKeypaths:(NSArray *)keypaths
-{
-    return [[RZProxyAssemblage alloc] initWithObject:object keypaths:keypaths];
-}
-
-+ (RZAssemblage *)assemblageTreeWithObject:(id)object arrayTreeKeypath:(NSString *)keypath
-{
-    return [[RZProxyAssemblage alloc] initWithObject:object childKey:keypath];
-}
-
-+ (RZAssemblage *)assemblageWithObject:(id)object leafKeypaths:(NSArray *)keypaths
-{
-    return [[RZPropertyAssemblage alloc] initWithObject:object keypaths:keypaths];
-}
-
-+ (RZAssemblage *)assemblageForFetchedResultsController:(NSFetchedResultsController *)frc
++ (nonnull RZAssemblage *)assemblageForFetchedResultsController:(nonnull NSFetchedResultsController *)frc
 {
     return [[RZFRCAssemblage alloc] initWithFetchedResultsController:frc];
 }
 
-- (id)representedObject
++ (nonnull RZAssemblage *)joinedAssemblages:(nonnull NSArray *)array
+{
+    return [[RZJoinAssemblage alloc] initWithAssemblages:array];
+}
+
++ (nonnull RZAssemblage *)assemblageTreeWithObject:(nonnull id)object descendingKeypaths:(nonnull NSArray *)keypaths
+{
+    return [[RZProxyAssemblage alloc] initWithObject:object keypaths:keypaths];
+}
+
++ (nonnull RZAssemblage *)assemblageTreeWithObject:(nonnull id)object repeatingKeypath:(nonnull NSString *)keypath
+{
+    return [[RZProxyAssemblage alloc] initWithObject:object childKey:keypath];
+}
+
++ (nonnull RZAssemblage *)assemblageWithObject:(nonnull id)object leafKeypaths:(nonnull NSArray *)keypaths
+{
+    return [[RZPropertyAssemblage alloc] initWithObject:object keypaths:keypaths];
+}
+
+- (nullable id)representedObject
 {
     return nil;
 }
 
 #pragma mark - <RZAssemblage>
 
-- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
+- (nonnull RZAssemblage *)assemblageAtIndexPath:(nonnull NSIndexPath *)indexPath
 {
     NSUInteger length = [indexPath length];
     RZAssemblage *assemblage = self;
@@ -76,18 +76,18 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return assemblage;
 }
 
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath
+- (nullable id)objectAtIndexPath:(nullable NSIndexPath *)indexPath
 {
     RZAssemblage *parent = [self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]];
     return [parent objectInElementsAtIndex:[indexPath rz_lastIndex]];
 }
 
-- (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
+- (void)enumerateObjectsUsingBlock:(nonnull void (^)(id __nullable obj, NSIndexPath * __nonnull indexPath, BOOL * __nonnull stop))block
 {
     [self enumerateObjectsWithOptions:RZAssemblageEnumerationNoOptions usingBlock:block];
 }
 
-- (void)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block;
+- (void)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options usingBlock:(nonnull void (^)(id __nullable obj, NSIndexPath * __nonnull indexPath, BOOL * __nonnull stop))block;
 {
     NSParameterAssert(block);
     NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:NULL length:0];
@@ -140,22 +140,22 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return stop;
 }
 
-- (RZAssemblage *)objectAtIndexedSubscript:(NSUInteger)index;
+- (nonnull RZAssemblage *)objectAtIndexedSubscript:(NSUInteger)index
 {
     return [self nodeAtIndex:index];
 }
 
-- (id)objectForKeyedSubscript:(NSIndexPath *)indexPath
+- (nullable id)objectForKeyedSubscript:(nonnull NSIndexPath *)indexPath
 {
     return [self objectAtIndexPath:indexPath];
 }
 
-- (NSMutableArray *)mutableChildren
+- (nullable NSMutableArray *)mutableChildren
 {
     return [self mutableArrayValueForKey:RZAssemblageElementsKey];
 }
 
-- (NSArray *)children
+- (nonnull NSArray *)children
 {
     return [self valueForKey:RZAssemblageElementsKey];
 }
@@ -185,12 +185,12 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 #pragma mark - RZAssemblageDelegate
 
-- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
+- (void)willBeginUpdatesForAssemblage:(nonnull RZAssemblage *)assemblage
 {
     [self openBatchUpdate];
 }
 
-- (void)notifyObjectUpdate:(id)anObject
+- (void)notifyObjectUpdate:(nonnull id)anObject
 {
     NSParameterAssert(anObject);
     NSUInteger index = [self elementsIndexOfObject:anObject];
@@ -201,7 +201,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
     [self closeBatchUpdate];
 }
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)assemblage:(nonnull RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(nonnull RZAssemblageChangeSet *)changeSet
 {
     RZRaize(self.changeSet != nil, @"Must begin an update on the parent assemblage before mutating a child assemblage");
     NSUInteger assemblageIndex = [self indexOfAssemblage:assemblage];
@@ -213,19 +213,19 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 #pragma mark - Index Path Helpers
 
-- (void)insertObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+- (void)insertObject:(nonnull id)object atIndexPath:(nullable NSIndexPath *)indexPath
 {
     NSMutableArray *proxy = [[self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]] mutableChildren];
     [proxy insertObject:object atIndex:[indexPath rz_lastIndex]];
 }
 
-- (void)removeObjectAtIndexPath:(NSIndexPath *)indexPath
+- (void)removeObjectAtIndexPath:(nullable NSIndexPath *)indexPath
 {
     NSMutableArray *proxy = [[self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]] mutableChildren];
     [proxy removeObjectAtIndex:[indexPath rz_lastIndex]];
 }
 
-- (void)moveObjectAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+- (void)moveObjectAtIndexPath:(nullable NSIndexPath *)fromIndexPath toIndexPath:(nullable NSIndexPath *)toIndexPath
 {
     NSMutableArray *fproxy = [[self assemblageAtIndexPath:[fromIndexPath indexPathByRemovingLastIndex]] mutableChildren];
     NSMutableArray *tproxy = [[self assemblageAtIndexPath:[toIndexPath indexPathByRemovingLastIndex]] mutableChildren];
@@ -244,17 +244,17 @@ static NSString *RZAssemblageElementsKey = @"elements";
     RZSubclassMustImplement(NSNotFound);
 }
 
-- (id)objectInElementsAtIndex:(NSUInteger)index
+- (nullable id)objectInElementsAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement(nil);
 }
 
-- (RZAssemblage *)nodeAtIndex:(NSUInteger)index
+- (nullable RZAssemblage *)nodeAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement(nil);
 }
 
-- (NSUInteger)indexOfAssemblage:(RZAssemblage *)assemblage
+- (NSUInteger)indexOfAssemblage:(nonnull RZAssemblage *)assemblage
 {
     NSUInteger index = NSNotFound;
     for ( NSUInteger i = 0; i < [self countOfElements]; i++ ) {
@@ -267,7 +267,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return index;
 }
 
-- (NSUInteger)elementsIndexOfObject:(id)object
+- (NSUInteger)elementsIndexOfObject:(nonnull id)object
 {
     RZSubclassMustImplement(NSNotFound);
 }
@@ -277,19 +277,19 @@ static NSString *RZAssemblageElementsKey = @"elements";
     RZSubclassMustImplement();
 }
 
-- (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
+- (void)insertObject:(nonnull NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement();
 }
 
-- (void)addMonitorsForObject:(id)anObject
+- (void)addMonitorsForObject:(nonnull id)anObject
 {
     if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
         [(RZAssemblage *)anObject setDelegate:self];
     }
 }
 
-- (void)removeMonitorsForObject:(id)anObject;
+- (void)removeMonitorsForObject:(nonnull id)anObject;
 {
     if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
         [(RZAssemblage *)anObject setDelegate:nil];

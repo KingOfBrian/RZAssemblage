@@ -70,7 +70,7 @@ static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContex
     return self.childrenStorage.count;
 }
 
-- (id)objectInElementsAtIndex:(NSUInteger)index
+- (nullable id)objectInElementsAtIndex:(NSUInteger)index
 {
     id object = [self.childrenStorage objectAtIndex:index];
     return [object isKindOfClass:[RZAssemblage class]] ? [object representedObject] : object;
