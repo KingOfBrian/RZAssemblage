@@ -15,14 +15,14 @@ OBJC_EXTERN NSString * __nonnull const RZTreeUpdateKey;
 
 @class RZChangeSet;
 @class NSFetchedResultsController;
+@protocol RZTreeObserver;
+@protocol RZFilterableTree;
 
 typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
     RZTreeEnumerationNoOptions = kNilOptions,
     RZTreeEnumerationBreadthFirst = 1 << 1, // Default is depth first
     RZTreeEnumerationIncludeNilRepresentedObject = 1 << 2, // Default is to skip nil representations
 };
-
-@protocol RZTreeObserver;
 
 /**
  *  RZTree helps building trees of objects that can be
@@ -85,6 +85,11 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
  *  node will start at the count of the previous node.
  */
 + (nonnull RZTree *)nodeWithJoinedNodes:(nonnull NSArray *)joinedNodes;
+
+/**
+ *  Return a filterable node that filters all children of node.
+ */
++ (nonnull RZTree<RZFilterableTree> *)filterableNodeWithNode:(nonnull RZTree *)node;
 
 /**
  *  Return the object that this assemblage represents.
@@ -192,5 +197,11 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 
 @optional
 - (void)willBeginUpdatesForNode:(nonnull RZTree *)node;
+
+@end
+
+@protocol RZFilterableTree <NSObject>
+
+- (void)setFilter:(nullable NSPredicate *)filter;
 
 @end

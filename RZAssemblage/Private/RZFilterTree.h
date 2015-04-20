@@ -8,10 +8,10 @@
 
 #import "RZTree.h"
 
-@interface RZFilterTree : RZTree
+@interface RZFilterTree : RZTree <RZFilterableTree>
 
-- (nonnull instancetype)initWithAssemblage:(nonnull RZTree *)node;
+- (instancetype)initWithAssemblage:(RZTree *)node;
 
-@property (strong, nonatomic, nullable) NSPredicate *filter;
+@property (strong, nonatomic) NSPredicate *filter;
 
 @end

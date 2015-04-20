@@ -15,7 +15,7 @@
 
 @property (strong, nonatomic) RZTree *data;
 @property (strong, nonatomic) RZTree *assemblage;
-@property (strong, nonatomic) RZFilterTree *filtered;
+@property (strong, nonatomic) RZTree<RZFilterableTree> *filtered;
 
 @property (assign, nonatomic) NSUInteger divisbleBy;
 
@@ -52,7 +52,7 @@
         [oneHundered addObject:@(i+1)];
     }
     self.data = [RZTree nodeWithChildren:oneHundered];
-    self.filtered = [[RZFilterTree alloc] initWithAssemblage:self.data];
+    self.filtered = [RZTree filterableNodeWithNode:self.data];
     self.assemblage = [RZTree nodeWithChildren:@[self.filtered]];
 
     self.filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {

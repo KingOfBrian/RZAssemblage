@@ -92,7 +92,7 @@
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
     RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
-    RZFilterTree *filter = [[RZFilterTree alloc] initWithAssemblage:content];
+    RZTree<RZFilterableTree> *filter = [RZTree filterableNodeWithNode:content];
     [filter addObserver:self];
     filter.filter = [NSPredicate predicateWithBlock:^BOOL(Person *person, NSDictionary *bindings) {
         BOOL match = YES;
@@ -147,7 +147,7 @@
     [frc performFetch:&error];
     NSAssert(error == nil, @"");
 
-    RZFilterTree *filter = [[RZFilterTree alloc] initWithAssemblage:combinded];
+    RZTree<RZFilterableTree> *filter = [RZTree filterableNodeWithNode:combinded];
     [filter addObserver:self];
 
     filter.filter = [NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {

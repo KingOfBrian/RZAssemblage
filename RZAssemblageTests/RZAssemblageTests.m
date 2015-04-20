@@ -358,7 +358,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 #define EVEN_CHILD_COUNT 12 / 2
 #define THIRD_CHILD_COUNT 12 / 3
 
-    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:m1];
+    RZTree<RZFilterableTree> *f1 = [RZTree filterableNodeWithNode:m1];
 
     NSMutableArray *f1proxy = [f1 mutableChildren];
     [f1 addObserver:self];
@@ -391,7 +391,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilterUpdate
 {
     RZTree *m1 = [RZTree nodeWithChildren:@[@1, @2, @3, @4, @5]];
-    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:m1];
+    RZTree<RZFilterableTree> *f1 = [RZTree filterableNodeWithNode:m1];
 
     [f1 addObserver:self];
     XCTAssertEqual([f1 children].count, 5);
@@ -422,7 +422,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilteredRealIndex
 {
     NSArray *values = [self.class values];
-    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:[RZTree nodeWithChildren:values]];
+    RZTree<RZFilterableTree> *f1 = [RZTree filterableNodeWithNode:[RZTree nodeWithChildren:values]];
 
     NSMutableArray *s1proxy = [f1 mutableChildren];
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
@@ -474,7 +474,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 {
     NSArray *values = [self.class values];
     RZTree *a1 = [RZTree nodeWithChildren:values];
-    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:a1];
+    RZTree<RZFilterableTree> *f1 = [RZTree filterableNodeWithNode:a1];
 
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
@@ -515,7 +515,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
                              [RZTree nodeWithChildren:values],
                              [RZTree nodeWithChildren:values]];
     RZTree *j1 = [RZTree nodeWithJoinedNodes:assemblages];
-    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:j1];
+    RZTree<RZFilterableTree> *f1 = [RZTree filterableNodeWithNode:j1];
     NSMutableArray *f1proxy = [f1 mutableChildren];
     [f1 addObserver:self];
     XCTAssertEqual([f1 children].count, values.count * assemblages.count);
@@ -573,7 +573,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 {
     RZTree *m = [RZTree nodeWithChildren:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
     NSMutableArray *mproxy = [m mutableChildren];
-    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:m];
+    RZTree<RZFilterableTree> *filtered = [RZTree filterableNodeWithNode:m];
     NSMutableArray *filteredproxy = [filtered mutableChildren];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
@@ -592,7 +592,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 {
     RZTree *m = [RZTree nodeWithChildren:@[]];
     NSMutableArray *mproxy = [m mutableChildren];
-    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:m];
+    RZTree<RZFilterableTree> *filtered = [RZTree filterableNodeWithNode:m];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -622,7 +622,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZTree *m3 = [RZTree nodeWithChildren:@[@"7", @"8", @"9",]];
     RZTree *m4 = [RZTree nodeWithChildren:@[@"10", @"11", @"12",]];
     RZTree *j1 = [RZTree nodeWithJoinedNodes:@[m3, m4]];
-    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:j1];
+    RZTree<RZFilterableTree> *filtered = [RZTree filterableNodeWithNode:j1];
 
     NSMutableArray *filteredproxy = [filtered mutableChildren];
 
@@ -648,7 +648,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilterRemoval
 {
     RZTree *m1 = [RZTree nodeWithChildren:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
-    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:m1];
+    RZTree<RZFilterableTree> *filtered = [RZTree filterableNodeWithNode:m1];
     NSMutableArray *filteredproxy = [filtered mutableChildren];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;

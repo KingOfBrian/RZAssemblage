@@ -57,6 +57,11 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return [[RZPropertyTree alloc] initWithObject:object keypaths:keypaths];
 }
 
++ (nonnull RZTree<RZFilterableTree> *)filterableNodeWithNode:(nonnull RZTree *)node;
+{
+    return [[RZFilterTree alloc] initWithAssemblage:node];
+}
+
 - (nullable id)representedObject
 {
     return nil;

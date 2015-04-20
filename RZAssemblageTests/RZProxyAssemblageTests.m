@@ -165,7 +165,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     Artist *pf = [Artist pinkFloyd];
     RZProxyTree *a = [[RZProxyTree alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
-    RZFilterTree *f = [[RZFilterTree alloc] initWithAssemblage:a];
+    RZTree<RZFilterableTree> *f = [RZTree filterableNodeWithNode:a];
     [f addObserver:self];
 
     f.filter = [NSPredicate predicateWithBlock:^BOOL(Albumn *albumn, NSDictionary *bindings) {

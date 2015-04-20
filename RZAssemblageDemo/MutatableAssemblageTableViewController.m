@@ -59,7 +59,7 @@ _Pragma("clang diagnostic pop")                                         \
 
     RZTree *f1 = [RZTree nodeWithJoinedNodes:@[m3, m4]];
 
-    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:f1];
+    RZTree<RZFilterableTree> *filtered = [RZTree filterableNodeWithNode:f1];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
