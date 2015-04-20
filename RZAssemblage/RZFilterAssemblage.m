@@ -31,9 +31,14 @@
         _filteredIndexPaths = [RZMutableIndexPathSet set];
         _filteredAssemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:assemblage filteredIndexPaths:_filteredIndexPaths];
         _unfilteredAssemblage = assemblage;
-        _unfilteredAssemblage.delegate = self;
+        [_unfilteredAssemblage addObserver:self];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [_unfilteredAssemblage removeObserver:self];
 }
 
 - (NSString *)description

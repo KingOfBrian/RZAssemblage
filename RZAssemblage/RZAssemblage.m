@@ -166,8 +166,10 @@ static NSString *RZAssemblageElementsKey = @"elements";
 {
     if ( self.updateCount == 0 ) {
         self.changeSet = [[RZAssemblageChangeSet alloc] init];
-        if ( [self.delegate respondsToSelector:@selector(willBeginUpdatesForAssemblage:)] ) {
-            [self.delegate willBeginUpdatesForAssemblage:self];
+        for ( id<RZAssemblageObserver>observer in self.observers ) {
+            if ( [observer respondsToSelector:@selector(willBeginUpdatesForAssemblage:)] ) {
+                [observer willBeginUpdatesForAssemblage:self];
+            }
         }
     }
     self.updateCount += 1;
@@ -177,13 +179,48 @@ static NSString *RZAssemblageElementsKey = @"elements";
 {
     self.updateCount -= 1;
     if ( self.updateCount == 0 ) {
-        RZAssemblageLog(@"Change:%@ -> %p:\n%@", self, self.delegate, self.changeSet);
-        [self.delegate assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
+        for ( id<RZAssemblageObserver>observer in self.observers ) {
+            RZAssemblageLog(@"Change:%@ -> %p:\n%@", self, observer, self.changeSet);
+            [observer assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
+        }
         self.changeSet = nil;
     }
 }
 
 #pragma mark - RZAssemblageDelegate
+
+@synthesize observers = _observers;
+
+- (NSPointerArray *)observers
+{
+    if ( _observers == nil ) {
+        _observers = [NSPointerArray weakObjectsPointerArray];
+    }
+    return _observers;
+}
+
+- (void)addObserver:(nonnull id<RZAssemblageObserver>)observer;
+{
+    NSParameterAssert(observer);
+    [self.observers addPointer:(__bridge void *)observer];
+}
+
+- (void)removeObserver:(nonnull id<RZAssemblageObserver>)observer
+{
+    NSParameterAssert(observer);
+    NSUInteger index = NSNotFound;
+    [self.observers compact];
+    for ( NSUInteger i = 0; i < self.observers.count; i++ ) {
+        if ( [self.observers pointerAtIndex:i] == (__bridge void *)observer ) {
+            index = i;
+            break;
+        }
+    }
+    // It's common for observers to be nil'd out before the removeObserver call
+    if ( index != NSNotFound ) {
+        [self.observers removePointerAtIndex:index];
+    }
+}
 
 - (void)willBeginUpdatesForAssemblage:(nonnull RZAssemblage *)assemblage
 {
@@ -285,14 +322,14 @@ static NSString *RZAssemblageElementsKey = @"elements";
 - (void)addMonitorsForObject:(nonnull id)anObject
 {
     if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
-        [(RZAssemblage *)anObject setDelegate:self];
+        [(RZAssemblage *)anObject addObserver:self];
     }
 }
 
 - (void)removeMonitorsForObject:(nonnull id)anObject;
 {
     if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
-        [(RZAssemblage *)anObject setDelegate:nil];
+        [(RZAssemblage *)anObject removeObserver:self];
     }
 }
 

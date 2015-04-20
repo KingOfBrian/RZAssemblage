@@ -23,7 +23,7 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
     RZAssemblageEnumerationIncludeNilRepresentedObject = 1 << 2, // Default is to skip nil representations
 };
 
-@protocol RZAssemblageDelegate;
+@protocol RZAssemblageObserver;
 
 /**
  *  RZAssemblage allows objects to be composed into trees of objects that can be
@@ -93,9 +93,14 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
 - (nullable id)objectForKeyedSubscript:(nonnull NSIndexPath *)indexPath;
 
 /**
- * The delegate to inform of changes.
+ *  Register an observer to be notified of changes to the tree.
  */
-@property (weak, nonatomic, nullable) id<RZAssemblageDelegate> delegate;
+- (void)addObserver:(nonnull id<RZAssemblageObserver>)observer;
+
+/**
+ *  Unregister an observer.
+ */
+- (void)removeObserver:(nonnull id<RZAssemblageObserver>)observer;
 
 /**
  *  Open a batch of updates.   This will hold onto all changes until a matching
@@ -135,7 +140,7 @@ typedef NS_OPTIONS(NSUInteger, RZAssemblageEnumerationOptions) {
 /**
  *  This protocol informs the delegate of changes to the assemblage.
  */
-@protocol RZAssemblageDelegate <NSObject>
+@protocol RZAssemblageObserver <NSObject>
 
 - (void)assemblage:(nonnull RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(nonnull RZAssemblageChangeSet *)changeSet;
 

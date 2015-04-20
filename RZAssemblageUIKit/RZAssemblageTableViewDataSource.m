@@ -12,7 +12,7 @@
 #import "RZAssemblageChangeSet.h"
 #import "RZAssemblage.h"
 
-@interface RZAssemblageTableViewDataSource() <RZAssemblageDelegate>
+@interface RZAssemblageTableViewDataSource() <RZAssemblageObserver>
 
 @end
 
@@ -30,7 +30,7 @@
     self = [super init];
     if ( self ) {
         _assemblage = assemblage;
-        _assemblage.delegate = self;
+        [_assemblage addObserver:self];
         _cellFactory = cellFactory;
         _tableView = tableView;
         _addSectionAnimation = UITableViewRowAnimationFade;

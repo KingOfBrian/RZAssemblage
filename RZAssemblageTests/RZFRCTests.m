@@ -13,7 +13,7 @@
 #import "RZAssemblageTestData.h"
 #import "NSIndexPath+RZAssemblage.h"
 
-@interface RZFRCTests : XCTestCase<RZAssemblageDelegate>
+@interface RZFRCTests : XCTestCase<RZAssemblageObserver>
 
 @property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
 
@@ -74,7 +74,7 @@
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
     RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
-    content.delegate = self;
+    [content addObserver:self];
     NSError *error = nil;
     [frc performFetch:&error];
     NSAssert(error == nil, @"");
@@ -92,7 +92,7 @@
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
     RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
     RZFilterAssemblage *filter = [[RZFilterAssemblage alloc] initWithAssemblage:content];
-    filter.delegate = self;
+    [filter addObserver:self];
     filter.filter = [NSPredicate predicateWithBlock:^BOOL(Person *person, NSDictionary *bindings) {
         BOOL match = YES;
         if ( [person isKindOfClass:[Person class]] ) {
@@ -147,7 +147,8 @@
     NSAssert(error == nil, @"");
 
     RZFilterAssemblage *filter = [[RZFilterAssemblage alloc] initWithAssemblage:combinded];
-    filter.delegate = self;
+    [filter addObserver:self];
+
     filter.filter = [NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
         BOOL match = YES;
         if ( [object isKindOfClass:[Person class]] ) {

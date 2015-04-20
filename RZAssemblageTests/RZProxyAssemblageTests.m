@@ -17,7 +17,7 @@
 NSUInteger topSongPath[2] = {0,0};
 NSUInteger firstWriterPath[3] = {0,0,0};
 
-@interface RZProxyAssemblageTests : XCTestCase<RZAssemblageDelegate>
+@interface RZProxyAssemblageTests : XCTestCase<RZAssemblageObserver>
 
 @property (nonatomic, strong) NSMutableArray *delegateEvents;
 @property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
@@ -85,7 +85,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     self.testProxyArray = [NSMutableArray array];
     RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
-    pa.delegate = self;
+    [pa addObserver:self];
     NSMutableArray *externalProxy = [self mutableArrayValueForKey:@"testProxyArray"];
     // This only causes the observer change event
     [pa openBatchUpdate];
@@ -100,7 +100,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     self.testProxyArray = [NSArray array];
     RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
-    pa.delegate = self;
+    [pa addObserver:self];
     NSMutableArray *proxyArray = [pa mutableChildren];
     [pa openBatchUpdate];
     // This causes double change events (setter + observer)
@@ -142,7 +142,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     NSIndexPath *top = [NSIndexPath indexPathWithIndexes:topSongPath length:2];
     Artist *pf = [Artist pinkFloyd];
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
-    a.delegate = self;
+    [a addObserver:self];
 
     pf.name = @"Pink-ish Floyd";
     XCTAssertTrue(self.changeSet.updatedIndexPaths.count == 1);
@@ -166,7 +166,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     Artist *pf = [Artist pinkFloyd];
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
     RZFilterAssemblage *f = [[RZFilterAssemblage alloc] initWithAssemblage:a];
-    f.delegate = self;
+    [f addObserver:self];
 
     f.filter = [NSPredicate predicateWithBlock:^BOOL(Albumn *albumn, NSDictionary *bindings) {
         BOOL match = YES;

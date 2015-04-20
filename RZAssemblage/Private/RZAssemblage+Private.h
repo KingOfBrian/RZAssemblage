@@ -11,9 +11,10 @@
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
 
-@interface RZAssemblage() <RZAssemblageDelegate>
+@interface RZAssemblage() <RZAssemblageObserver>
 
 @property (strong, nonatomic, nullable) RZAssemblageChangeSet *changeSet;
+@property (strong, nonatomic, readonly, nonnull) NSPointerArray *observers;
 
 @property (nonatomic) NSUInteger updateCount;
 

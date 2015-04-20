@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 @end
 
-@interface RZAssemblageTests : XCTestCase <RZAssemblageDelegate>
+@interface RZAssemblageTests : XCTestCase <RZAssemblageObserver>
 
 @property (nonatomic, strong) NSMutableArray *delegateEvents;
 @property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
@@ -180,7 +180,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testMutableDelegation
 {
     RZAssemblage *mutableAssemblage = [RZAssemblage assemblageForArray:@[]];
-    mutableAssemblage.delegate = self;
+    [mutableAssemblage addObserver:self];
 
     NSMutableArray *mutableValues = [mutableAssemblage mutableChildren];
     [mutableValues addObject:@1];
@@ -213,7 +213,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testGroupedMutableDelegationNoOp
 {
     RZAssemblage *mutableAssemblage = [RZAssemblage assemblageForArray:@[]];
-    mutableAssemblage.delegate = self;
+    [mutableAssemblage addObserver:self];
 
     NSMutableArray *mutableValues = [mutableAssemblage mutableChildren];
     [mutableAssemblage openBatchUpdate];
@@ -233,7 +233,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *m3 = [RZAssemblage assemblageForArray:@[]];
     NSArray *assemblages = @[m1, m2, m3];
     RZAssemblage *assemblage = [RZAssemblage joinedAssemblages:@[m1, m2, m3]];
-    assemblage.delegate = self;
+    [assemblage addObserver:self];
 
     [assemblage openBatchUpdate];
     for ( RZAssemblage *assemblage in assemblages ) {
@@ -264,7 +264,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *j1m2 = [RZAssemblage assemblageForArray:@[]];
     RZAssemblage *j1 = [RZAssemblage joinedAssemblages:@[j1m1, j1m2]];
     RZAssemblage *assemblage = [RZAssemblage assemblageForArray:@[m1, j1]];
-    assemblage.delegate = self;
+    [assemblage addObserver:self];
 
     for ( RZAssemblage *assemblage in @[m1, j1m1] ) {
         NSMutableArray *ma = [assemblage mutableChildren];
@@ -330,7 +330,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *mutableValues = [RZAssemblage assemblageForArray:@[]];
     [parentproxy addObject:mutableValues];
 
-    parent.delegate = self;
+    [parent addObserver:self];
     [parent openBatchUpdate];
     NSMutableArray *proxy = [mutableValues mutableChildren];
     [proxy addObject:@1];
@@ -361,7 +361,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZFilterAssemblage *f1 = [[RZFilterAssemblage alloc] initWithAssemblage:m1];
 
     NSMutableArray *f1proxy = [f1 mutableChildren];
-    f1.delegate = self;
+    [f1 addObserver:self];
     XCTAssertEqual([f1 children].count, CHILD_COUNT);
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
         return [n unsignedIntegerValue] % 2 == 0;
@@ -393,7 +393,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@1, @2, @3, @4, @5]];
     RZFilterAssemblage *f1 = [[RZFilterAssemblage alloc] initWithAssemblage:m1];
 
-    f1.delegate = self;
+    [f1 addObserver:self];
     XCTAssertEqual([f1 children].count, 5);
     XCTAssertEqualObjects([f1 children], (@[@1, @2, @3, @4, @5]));
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *n, NSDictionary *bindings) {
@@ -451,7 +451,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 {
     NSArray *values = [self.class values];
     RZAssemblage *a1 = [RZAssemblage assemblageForArray:values];
-    a1.delegate = self;
+    [a1 addObserver:self];
 
     NSArray *array = [a1 mutableChildren];
     [a1 openBatchUpdate];
@@ -480,7 +480,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
         return [s hasPrefix:@"b"] == NO;
     }];
     NSArray *array = [f1 mutableChildren];
-    f1.delegate = self;
+    [f1 addObserver:self];
     [a1 openBatchUpdate];
     [[a1 mutableChildren] sortUsingComparator:^NSComparisonResult(NSString *s1, NSString *s2) {
         return [[s1 substringFromIndex:1] compare:[s2 substringFromIndex:1]];
@@ -517,7 +517,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *j1 = [RZAssemblage joinedAssemblages:assemblages];
     RZFilterAssemblage *f1 = [[RZFilterAssemblage alloc] initWithAssemblage:j1];
     NSMutableArray *f1proxy = [f1 mutableChildren];
-    f1.delegate = self;
+    [f1 addObserver:self];
     XCTAssertEqual([f1 children].count, values.count * assemblages.count);
     f1.filter = aFilter;
 
@@ -579,7 +579,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
-    filtered.delegate = self;
+    [filtered addObserver:self];
 
     XCTAssert([filtered children].count == 3);
     [mproxy removeObjectAtIndex:2]; // 9
@@ -631,7 +631,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     }];
     RZAssemblage *assemblage = [RZAssemblage assemblageForArray:@[m1, m2, filtered]];
 
-    assemblage.delegate = self;
+    [assemblage addObserver:self];
 
     [assemblage removeObjectAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
 
@@ -653,7 +653,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
-    filtered.delegate = self;
+    [filtered addObserver:self];
 
     XCTAssert([filtered children].count == 3);
     for ( NSUInteger i = 0; i < 3; i++ ) {
@@ -687,7 +687,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3", @"4"]];
     NSMutableArray *m1proxy = [m1 mutableChildren];
 
-    m1.delegate = self;
+    [m1 addObserver:self];
     [m1 openBatchUpdate];
     [m1proxy removeObjectAtIndex:0];
     [m1proxy removeObjectAtIndex:0];
@@ -702,7 +702,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3"]];
     NSMutableArray *m1proxy = [m1 mutableChildren];
 
-    m1.delegate = self;
+    [m1 addObserver:self];
     [m1 openBatchUpdate];
     [m1proxy removeObjectAtIndex:0];
     [m1proxy removeObjectAtIndex:0];
@@ -715,7 +715,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 {
     RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[]];
     NSMutableArray *m1proxy = [m1 mutableChildren];
-    m1.delegate = self;
+    [m1 addObserver:self];
     [m1 openBatchUpdate];
     [m1proxy addObject:@"2"];
     [m1proxy addObject:@"2"];

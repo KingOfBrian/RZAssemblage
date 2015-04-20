@@ -10,7 +10,7 @@
 #import "RZAssemblage+Private.h"
 #import "NSIndexSet+RZAssemblage.h"
 
-@interface RZFilteredAssemblage() <RZAssemblageDelegate>
+@interface RZFilteredAssemblage()
 @property (strong, nonatomic) RZAssemblage *assemblage;
 @end
 
@@ -93,9 +93,9 @@
     [[self.assemblage mutableChildren] insertObject:object atIndex:exposedIndex];
 }
 
-- (void)setDelegate:(id<RZAssemblageDelegate>)delegate
+- (void)addObserver:(nonnull id<RZAssemblageObserver>)observer
 {
-    RZRaize(NO, @"Do not configure delegate on internal class %@", self);
+    RZRaize(NO, @"Do not observe filtered assemblages %@", self);
 }
 
 - (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage

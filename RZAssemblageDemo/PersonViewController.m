@@ -52,7 +52,7 @@
     NSAssert(error == nil, @"");
 
     // Create a proxy assemblage for enemies. Same result as above, but slightly easier. Note that you can remove enemies, since this assemblage is mutable.
-    RZAssemblage *enemies = [RZAssemblage assemblageTreeWithObject:self.person arrayKeypaths:@[@"enemiesByFirstName"]];
+    RZAssemblage *enemies = [RZAssemblage assemblageTreeWithObject:self.person descendingKeypaths:@[@"enemiesByFirstName"]];
 
     // Create a leaf assemblage for some attributes we want to display
     NSArray *keypaths = @[@"team.name", @"firstName", @"lastName"];

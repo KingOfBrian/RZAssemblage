@@ -41,11 +41,11 @@ static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContex
 
 - (void)dealloc
 {
-    for ( id object in _childrenStorage ) {
-        [self removeMonitorsForObject:object];
-    }
-    if ( _representedObject ) {
-        [self removeMonitorsForObject:_representedObject];
+    if ( self.class.shouldObserveContents ) {
+        for ( id object in _childrenStorage ) {
+            [self removeMonitorsForObject:object];
+        }
+        self.representedObject = nil;
     }
 }
 

@@ -12,7 +12,7 @@
 #import "RZAssemblageDefines.h"
 #import "RZAssemblageChangeSet.h"
 
-@interface RZAssemblageCollectionViewDataSource () <RZAssemblageDelegate>
+@interface RZAssemblageCollectionViewDataSource () <RZAssemblageObserver>
 
 @end
 

@@ -57,14 +57,15 @@
     }
 }
 
-- (BOOL)ignoreAssemblageChanges
-{
-    return self.assemblage.delegate == nil;
-}
-
 - (void)setIgnoreAssemblageChanges:(BOOL)ignoreAssemblageChanges
 {
-    self.assemblage.delegate = ignoreAssemblageChanges ? nil : (id)self.internalDataSource;
+    _ignoreAssemblageChanges = ignoreAssemblageChanges;
+    if ( ignoreAssemblageChanges ) {
+        [self.assemblage removeObserver:(id)self.internalDataSource];
+    }
+    else {
+        [self.assemblage addObserver:(id)self.internalDataSource];
+    }
 }
 
 @end

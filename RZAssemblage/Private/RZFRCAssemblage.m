@@ -26,8 +26,6 @@
 
 @implementation RZFRCAssemblage
 
-@synthesize delegate = _delegate;
-
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
 {
     NSAssert(fetchedResultsController.delegate == nil, @"The NSFetchedResultsController delegate is already configured");
