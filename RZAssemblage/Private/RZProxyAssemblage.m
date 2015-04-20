@@ -1,14 +1,14 @@
 //
 //  RZProxyAssemblage.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 3/19/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
 #import "RZProxyAssemblage.h"
-#import "RZAssemblageChangeSet.h"
-#import "RZAssemblage+Private.h"
+#import "RZChangeSet.h"
+#import "RZTree+Private.h"
 #import "RZIndexPathSet.h"
 #import "RZAssemblageDefines.h"
 

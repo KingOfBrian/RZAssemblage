@@ -1,26 +1,26 @@
 //
-//  RZAssemblage+Private.h
-//  RZAssemblage
+//  RZTree+Private.h
+//  RZTree
 //
 //  Created by Brian King on 1/27/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZAssemblage.h"
-#import "RZAssemblageChangeSet+Private.h"
+#import "RZTree.h"
+#import "RZChangeSet+Private.h"
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
 
-@interface RZAssemblage() <RZAssemblageObserver>
+@interface RZTree () <RZTreeObserver>
 
-@property (strong, nonatomic, nullable) RZAssemblageChangeSet *changeSet;
+@property (strong, nonatomic, nullable) RZChangeSet *changeSet;
 @property (strong, nonatomic, readonly, nonnull) NSPointerArray *observers;
 
 @property (nonatomic) NSUInteger updateCount;
 
 @end
 
-@interface RZAssemblage (Protected)
+@interface RZTree (Protected)
 
 // These methods should be implemented by subclasses.
 - (NSUInteger)countOfElements;
@@ -29,8 +29,8 @@
 - (void)insertObject:(nonnull NSObject *)object inElementsAtIndex:(NSUInteger)index;
 - (NSUInteger)elementsIndexOfObject:(nonnull id)object;
 
-- (nullable RZAssemblage *)nodeAtIndex:(NSUInteger)index;
-- (NSUInteger)indexOfAssemblage:(nonnull RZAssemblage *)assemblage;
+- (nullable RZTree *)nodeAtIndex:(NSUInteger)index;
+- (NSUInteger)indexOfNode:(nonnull RZTree *)node;
 
 - (void)addMonitorsForObject:(nonnull id)anObject;
 - (void)removeMonitorsForObject:(nonnull id)anObject;

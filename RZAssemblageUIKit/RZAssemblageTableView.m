@@ -1,6 +1,6 @@
 //
 //  RZAssemblageTableView.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 3/16/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -9,7 +9,7 @@
 #import "RZAssemblageTableView.h"
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZAssemblageTableViewCellFactory.h"
-#import "RZAssemblage.h"
+#import "RZTree.h"
 
 @interface RZAssemblageTableView ()
 
@@ -22,9 +22,9 @@
 @synthesize cellFactory = _cellFactory;
 @synthesize internalDataSource = _internalDataSource;
 
-- (void)setAssemblage:(RZAssemblage *)assemblage
+- (void)setAssemblage:(RZTree *)node
 {
-    _assemblage = assemblage;
+    _assemblage = node;
 
     if ( _assemblage ) {
         _internalDataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:_assemblage

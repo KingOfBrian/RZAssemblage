@@ -1,6 +1,6 @@
 //
 //  RZAssemblageTableViewDataSource.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 1/27/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -9,10 +9,10 @@
 #import "RZAssemblageTableViewDataSource.h"
 #import "RZAssemblageTableViewCellFactory.h"
 #import "RZAssemblageDefines.h"
-#import "RZAssemblageChangeSet.h"
-#import "RZAssemblage.h"
+#import "RZChangeSet.h"
+#import "RZTree.h"
 
-@interface RZAssemblageTableViewDataSource() <RZAssemblageObserver>
+@interface RZAssemblageTableViewDataSource() <RZTreeObserver>
 
 @end
 
@@ -23,13 +23,13 @@
     return indexPath.length == 1;
 }
 
-- (id)initWithAssemblage:(RZAssemblage *)assemblage
+- (id)initWithAssemblage:(RZTree *)node
             forTableView:(UITableView *)tableView
              cellFactory:(RZAssemblageTableViewCellFactory *)cellFactory;
 {
     self = [super init];
     if ( self ) {
-        _assemblage = assemblage;
+        _assemblage = node;
         [_assemblage addObserver:self];
         _cellFactory = cellFactory;
         _tableView = tableView;
@@ -53,7 +53,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSUInteger count = [self.assemblage assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:section]].children.count;
+    NSUInteger count = [self.assemblage nodeAtIndexPath:[NSIndexPath indexPathWithIndex:section]].children.count;
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
@@ -67,9 +67,9 @@
 
 #pragma mark - RZAssemblageDelegate
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet
 {
-    [changeSet generateMoveEventsFromAssemblage:assemblage];
+    [changeSet generateMoveEventsFromNode:node];
     RZDataSourceLog(@"Update = %@", changeSet);
     // The RZAssemblageChangeSet needs a better API here.
     [self.tableView beginUpdates];

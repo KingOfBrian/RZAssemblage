@@ -1,6 +1,6 @@
 //
-//  NSIndexPath+RZAssemblage.h
-//  RZAssemblage
+//  NSIndexPath+RZTree.h
+//  RZTree
 //
 //  Created by Brian King on 1/29/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.

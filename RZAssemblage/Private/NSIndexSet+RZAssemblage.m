@@ -1,6 +1,6 @@
 //
-//  NSIndexSet+RZAssemblage.m
-//  RZAssemblage
+//  NSIndexSet+RZTree.m
+//  RZTree
 //
 //  Created by Brian King on 4/16/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.

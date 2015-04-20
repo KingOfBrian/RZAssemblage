@@ -1,6 +1,6 @@
 //
 //  RZProxyAssemblageTests.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 3/20/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -8,19 +8,19 @@
 
 @import UIKit;
 #import "RZProxyAssemblage.h"
-#import "RZFilterAssemblage.h"
+#import "RZFilterTree.h"
 
-#import "RZAssemblage+Private.h"
+#import "RZTree+Private.h"
 #import "TestModels.h"
 #import <XCTest/XCTest.h>
 
 NSUInteger topSongPath[2] = {0,0};
 NSUInteger firstWriterPath[3] = {0,0,0};
 
-@interface RZProxyAssemblageTests : XCTestCase<RZAssemblageObserver>
+@interface RZProxyAssemblageTests : XCTestCase<RZTreeObserver>
 
 @property (nonatomic, strong) NSMutableArray *delegateEvents;
-@property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
+@property (nonatomic, strong) RZChangeSet *changeSet;
 
 @property (nonatomic, strong) NSArray *testProxyArray;
 
@@ -39,7 +39,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     [super tearDown];
 }
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet
 {
     self.changeSet = changeSet;
 }
@@ -77,7 +77,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     Artist *pf = [Artist pinkFloyd];
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs"]];
-    XCTAssertTrue([[a nodeAtIndex:0] isKindOfClass:[RZAssemblage class]]);
+    XCTAssertTrue([[a nodeAtIndex:0] isKindOfClass:[RZTree class]]);
     XCTAssertEqual([a nodeAtIndex:0], [a nodeAtIndex:0]);
 }
 
@@ -153,7 +153,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 
     Song *s = [a objectAtIndexPath:top];
     s.name = @"Not Sure";
-    NSMutableArray *writers = [[a assemblageAtIndexPath:top] mutableChildren];
+    NSMutableArray *writers = [[a nodeAtIndexPath:top] mutableChildren];
     [writers removeAllObjects];
     [a closeBatchUpdate];
 
@@ -165,7 +165,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     Artist *pf = [Artist pinkFloyd];
     RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
-    RZFilterAssemblage *f = [[RZFilterAssemblage alloc] initWithAssemblage:a];
+    RZFilterTree *f = [[RZFilterTree alloc] initWithAssemblage:a];
     [f addObserver:self];
 
     f.filter = [NSPredicate predicateWithBlock:^BOOL(Albumn *albumn, NSDictionary *bindings) {

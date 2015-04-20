@@ -1,20 +1,21 @@
 //
 //  FilteredAssemblageTableViewController.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 2/1/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
 #import "FilteredAssemblageTableViewController.h"
+
 @import RZAssemblage;
 @import RZAssemblageUIKit;
 
 @interface FilteredAssemblageTableViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) RZAssemblage *data;
-@property (strong, nonatomic) RZAssemblage *assemblage;
-@property (strong, nonatomic) RZFilterAssemblage *filtered;
+@property (strong, nonatomic) RZTree *data;
+@property (strong, nonatomic) RZTree *assemblage;
+@property (strong, nonatomic) RZFilterTree *filtered;
 
 @property (assign, nonatomic) NSUInteger divisbleBy;
 
@@ -50,9 +51,9 @@
     for ( NSUInteger i = 0; i < 100; i++ ) {
         [oneHundered addObject:@(i+1)];
     }
-    self.data = [RZAssemblage assemblageForArray:oneHundered];
-    self.filtered = [[RZFilterAssemblage alloc] initWithAssemblage:self.data];
-    self.assemblage = [RZAssemblage assemblageForArray:@[self.filtered]];
+    self.data = [RZTree nodeWithChildren:oneHundered];
+    self.filtered = [[RZFilterTree alloc] initWithAssemblage:self.data];
+    self.assemblage = [RZTree nodeWithChildren:@[self.filtered]];
 
     self.filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return YES;
@@ -103,7 +104,7 @@
     self.filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSNumber *num, NSDictionary *bindings) {
         return [num integerValue] % self.divisbleBy == 0;
     }];
-    NSLog(@"Showing filters divisible by %@ = %@", @(self.divisbleBy + 1), @([[[self.assemblage assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:0]] children] count]));
+    NSLog(@"Showing filters divisible by %@ = %@", @(self.divisbleBy + 1), @([[[self.assemblage nodeAtIndexPath:[NSIndexPath indexPathWithIndex:0]] children] count]));
 }
 
 RZAssemblageTableViewDataSourceIsControllingCells()

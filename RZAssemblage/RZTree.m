@@ -1,18 +1,18 @@
 //
-//  RZAssemblage.m
-//  RZAssemblage
+//  RZTree.m
+//  RZTree
 //
 //  Created by Brian King on 1/27/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZAssemblage+Private.h"
+#import "RZTree+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
 
 #import "RZJoinAssemblage.h"
-#import "RZFilterAssemblage.h"
+#import "RZFilterTree.h"
 #import "RZArrayAssemblage.h"
 #import "RZProxyAssemblage.h"
 #import "RZPropertyAssemblage.h"
@@ -20,39 +20,39 @@
 
 static NSString *RZAssemblageElementsKey = @"elements";
 
-@implementation RZAssemblage
+@implementation RZTree
 
-+ (nonnull RZAssemblage *)assemblageForArray:(nonnull NSArray *)array
++ (nonnull RZTree *)nodeWithChildren:(nonnull NSArray *)array
 {
-    return [self assemblageForArray:array representedObject:nil];
+    return [self nodeWithObject:nil children:array];
 }
 
-+ (nonnull RZAssemblage *)assemblageForArray:(nonnull NSArray *)array representedObject:(nullable id)representedObject
++ (nonnull RZTree *)nodeWithObject:(nullable id)representedObject children:(nonnull NSArray *)array;
 {
     return [[RZArrayAssemblage alloc] initWithArray:array representingObject:representedObject];
 }
 
-+ (nonnull RZAssemblage *)assemblageForFetchedResultsController:(nonnull NSFetchedResultsController *)frc
++ (nonnull RZTree *)nodeBackedByFetchedResultsController:(nonnull NSFetchedResultsController *)frc
 {
     return [[RZFRCAssemblage alloc] initWithFetchedResultsController:frc];
 }
 
-+ (nonnull RZAssemblage *)joinedAssemblages:(nonnull NSArray *)array
++ (nonnull RZTree *)nodeWithJoinedNodes:(nonnull NSArray *)joinedNodes
 {
-    return [[RZJoinAssemblage alloc] initWithAssemblages:array];
+    return [[RZJoinAssemblage alloc] initWithAssemblages:joinedNodes];
 }
 
-+ (nonnull RZAssemblage *)assemblageTreeWithObject:(nonnull id)object descendingKeypaths:(nonnull NSArray *)keypaths
++ (nonnull RZTree *)nodeWithObject:(nonnull id)object descendingKeypaths:(nonnull NSArray *)keypaths
 {
     return [[RZProxyAssemblage alloc] initWithObject:object keypaths:keypaths];
 }
 
-+ (nonnull RZAssemblage *)assemblageTreeWithObject:(nonnull id)object repeatingKeypath:(nonnull NSString *)keypath
++ (nonnull RZTree *)nodeWithObject:(nonnull id)object repeatingKeypath:(nonnull NSString *)keypath
 {
     return [[RZProxyAssemblage alloc] initWithObject:object childKey:keypath];
 }
 
-+ (nonnull RZAssemblage *)assemblageWithObject:(nonnull id)object leafKeypaths:(nonnull NSArray *)keypaths
++ (nonnull RZTree *)nodeWithObject:(nonnull id)object leafKeypaths:(nonnull NSArray *)keypaths
 {
     return [[RZPropertyAssemblage alloc] initWithObject:object keypaths:keypaths];
 }
@@ -62,45 +62,45 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return nil;
 }
 
-#pragma mark - <RZAssemblage>
+#pragma mark - <RZTree>
 
-- (nonnull RZAssemblage *)assemblageAtIndexPath:(nonnull NSIndexPath *)indexPath
+- (nonnull RZTree *)nodeAtIndexPath:(nonnull NSIndexPath *)indexPath
 {
     NSUInteger length = [indexPath length];
-    RZAssemblage *assemblage = self;
+    RZTree *assemblage = self;
 
     if ( length > 0 ) {
         assemblage = [self nodeAtIndex:[indexPath indexAtPosition:0]];
-        assemblage = [assemblage assemblageAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        assemblage = [assemblage nodeAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
     return assemblage;
 }
 
 - (nullable id)objectAtIndexPath:(nullable NSIndexPath *)indexPath
 {
-    RZAssemblage *parent = [self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]];
+    RZTree *parent = [self nodeAtIndexPath:[indexPath indexPathByRemovingLastIndex]];
     return [parent objectInElementsAtIndex:[indexPath rz_lastIndex]];
 }
 
 - (void)enumerateObjectsUsingBlock:(nonnull void (^)(id __nullable obj, NSIndexPath * __nonnull indexPath, BOOL * __nonnull stop))block
 {
-    [self enumerateObjectsWithOptions:RZAssemblageEnumerationNoOptions usingBlock:block];
+    [self enumerateObjectsWithOptions:RZTreeEnumerationNoOptions usingBlock:block];
 }
 
-- (void)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options usingBlock:(nonnull void (^)(id __nullable obj, NSIndexPath * __nonnull indexPath, BOOL * __nonnull stop))block;
+- (void)enumerateObjectsWithOptions:(RZTreeEnumerationOptions)options usingBlock:(nonnull void (^)(id __nullable obj, NSIndexPath * __nonnull indexPath, BOOL * __nonnull stop))block;
 {
     NSParameterAssert(block);
     NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:NULL length:0];
     [self enumerateObjectsWithOptions:options forIndexPath:indexPath usingBlock:block];
 }
 
-- (BOOL)enumerateObjectsWithOptions:(RZAssemblageEnumerationOptions)options forIndexPath:(NSIndexPath *)indexPath usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block
+- (BOOL)enumerateObjectsWithOptions:(RZTreeEnumerationOptions)options forIndexPath:(NSIndexPath *)indexPath usingBlock:(void (^)(id obj, NSIndexPath *indexPath, BOOL *stop))block
 {
     NSParameterAssert(block);
     BOOL stop = NO;
 
-    BOOL includeNil = ((options & RZAssemblageEnumerationIncludeNilRepresentedObject) == RZAssemblageEnumerationIncludeNilRepresentedObject);
-    BOOL breadthFirst = ((options & RZAssemblageEnumerationBreadthFirst) == RZAssemblageEnumerationBreadthFirst);
+    BOOL includeNil = ((options & RZTreeEnumerationIncludeNilRepresentedObject) == RZTreeEnumerationIncludeNilRepresentedObject);
+    BOOL breadthFirst = ((options & RZTreeEnumerationBreadthFirst) == RZTreeEnumerationBreadthFirst);
 
     if ( self.representedObject || includeNil ) {
         block(self.representedObject, indexPath, &stop);
@@ -109,7 +109,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
     if ( stop == NO ) {
         for ( NSUInteger index = 0; index < self.children.count; index++ ) {
             NSIndexPath *childIndexPath = [indexPath indexPathByAddingIndex:index];
-            RZAssemblage *assemblage = [self nodeAtIndex:index];
+            RZTree *assemblage = [self nodeAtIndex:index];
             if ( assemblage ) {
                 if ( breadthFirst == NO ) {
                     stop = [assemblage enumerateObjectsWithOptions:options forIndexPath:childIndexPath usingBlock:block];
@@ -129,7 +129,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
         if ( breadthFirst && stop == NO ) {
             for ( NSUInteger index = 0; index < self.children.count; index++ ) {
                 NSIndexPath *childIndexPath = [indexPath indexPathByAddingIndex:index];
-                RZAssemblage *assemblage = [self nodeAtIndex:index];
+                RZTree *assemblage = [self nodeAtIndex:index];
                 if ( [assemblage enumerateObjectsWithOptions:options forIndexPath:childIndexPath usingBlock:block] ) {
                     stop = YES;
                     break;
@@ -140,7 +140,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return stop;
 }
 
-- (nonnull RZAssemblage *)objectAtIndexedSubscript:(NSUInteger)index
+- (nonnull RZTree *)objectAtIndexedSubscript:(NSUInteger)index
 {
     return [self nodeAtIndex:index];
 }
@@ -165,10 +165,10 @@ static NSString *RZAssemblageElementsKey = @"elements";
 - (void)openBatchUpdate
 {
     if ( self.updateCount == 0 ) {
-        self.changeSet = [[RZAssemblageChangeSet alloc] init];
-        for ( id<RZAssemblageObserver>observer in self.observers ) {
-            if ( [observer respondsToSelector:@selector(willBeginUpdatesForAssemblage:)] ) {
-                [observer willBeginUpdatesForAssemblage:self];
+        self.changeSet = [[RZChangeSet alloc] init];
+        for ( id<RZTreeObserver>observer in self.observers ) {
+            if ( [observer respondsToSelector:@selector(willBeginUpdatesForNode:)] ) {
+                [observer willBeginUpdatesForNode:self];
             }
         }
     }
@@ -179,9 +179,9 @@ static NSString *RZAssemblageElementsKey = @"elements";
 {
     self.updateCount -= 1;
     if ( self.updateCount == 0 ) {
-        for ( id<RZAssemblageObserver>observer in self.observers ) {
+        for ( id<RZTreeObserver>observer in self.observers ) {
             RZAssemblageLog(@"Change:%@ -> %p:\n%@", self, observer, self.changeSet);
-            [observer assemblage:self didEndUpdatesWithChangeSet:self.changeSet];
+            [observer node:self didEndUpdatesWithChangeSet:self.changeSet];
         }
         self.changeSet = nil;
     }
@@ -199,13 +199,13 @@ static NSString *RZAssemblageElementsKey = @"elements";
     return _observers;
 }
 
-- (void)addObserver:(nonnull id<RZAssemblageObserver>)observer;
+- (void)addObserver:(nonnull id<RZTreeObserver>)observer;
 {
     NSParameterAssert(observer);
     [self.observers addPointer:(__bridge void *)observer];
 }
 
-- (void)removeObserver:(nonnull id<RZAssemblageObserver>)observer
+- (void)removeObserver:(nonnull id<RZTreeObserver>)observer
 {
     NSParameterAssert(observer);
     NSUInteger index = NSNotFound;
@@ -222,7 +222,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
     }
 }
 
-- (void)willBeginUpdatesForAssemblage:(nonnull RZAssemblage *)assemblage
+- (void)willBeginUpdatesForNode:(nonnull RZTree *)node
 {
     [self openBatchUpdate];
 }
@@ -238,10 +238,10 @@ static NSString *RZAssemblageElementsKey = @"elements";
     [self closeBatchUpdate];
 }
 
-- (void)assemblage:(nonnull RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(nonnull RZAssemblageChangeSet *)changeSet
+- (void)node:(nonnull RZTree *)node didEndUpdatesWithChangeSet:(nonnull RZChangeSet *)changeSet
 {
     RZRaize(self.changeSet != nil, @"Must begin an update on the parent assemblage before mutating a child assemblage");
-    NSUInteger assemblageIndex = [self indexOfAssemblage:assemblage];
+    NSUInteger assemblageIndex = [self indexOfNode:node];
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
         return [indexPath rz_indexPathByPrependingIndex:assemblageIndex];
     }];
@@ -252,20 +252,20 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 - (void)insertObject:(nonnull id)object atIndexPath:(nullable NSIndexPath *)indexPath
 {
-    NSMutableArray *proxy = [[self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]] mutableChildren];
+    NSMutableArray *proxy = [[self nodeAtIndexPath:[indexPath indexPathByRemovingLastIndex]] mutableChildren];
     [proxy insertObject:object atIndex:[indexPath rz_lastIndex]];
 }
 
 - (void)removeObjectAtIndexPath:(nullable NSIndexPath *)indexPath
 {
-    NSMutableArray *proxy = [[self assemblageAtIndexPath:[indexPath indexPathByRemovingLastIndex]] mutableChildren];
+    NSMutableArray *proxy = [[self nodeAtIndexPath:[indexPath indexPathByRemovingLastIndex]] mutableChildren];
     [proxy removeObjectAtIndex:[indexPath rz_lastIndex]];
 }
 
 - (void)moveObjectAtIndexPath:(nullable NSIndexPath *)fromIndexPath toIndexPath:(nullable NSIndexPath *)toIndexPath
 {
-    NSMutableArray *fproxy = [[self assemblageAtIndexPath:[fromIndexPath indexPathByRemovingLastIndex]] mutableChildren];
-    NSMutableArray *tproxy = [[self assemblageAtIndexPath:[toIndexPath indexPathByRemovingLastIndex]] mutableChildren];
+    NSMutableArray *fproxy = [[self nodeAtIndexPath:[fromIndexPath indexPathByRemovingLastIndex]] mutableChildren];
+    NSMutableArray *tproxy = [[self nodeAtIndexPath:[toIndexPath indexPathByRemovingLastIndex]] mutableChildren];
 
     NSObject *object = [fproxy objectAtIndex:[fromIndexPath rz_lastIndex]];
     [fproxy removeObjectAtIndex:[fromIndexPath rz_lastIndex]];
@@ -274,7 +274,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 @end
 
-@implementation RZAssemblage (Protected)
+@implementation RZTree (Protected)
 
 - (NSUInteger)countOfElements
 {
@@ -286,17 +286,17 @@ static NSString *RZAssemblageElementsKey = @"elements";
     RZSubclassMustImplement(nil);
 }
 
-- (nullable RZAssemblage *)nodeAtIndex:(NSUInteger)index
+- (nullable RZTree *)nodeAtIndex:(NSUInteger)index
 {
     RZSubclassMustImplement(nil);
 }
 
-- (NSUInteger)indexOfAssemblage:(nonnull RZAssemblage *)assemblage
+- (NSUInteger)indexOfNode:(nonnull RZTree *)node
 {
     NSUInteger index = NSNotFound;
     for ( NSUInteger i = 0; i < [self countOfElements]; i++ ) {
-        RZAssemblage *childAssemblage = [self nodeAtIndex:i];
-        if ( childAssemblage == assemblage ) {
+        RZTree *childAssemblage = [self nodeAtIndex:i];
+        if ( childAssemblage == node ) {
             index = i;
             break;
         }
@@ -321,15 +321,15 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 - (void)addMonitorsForObject:(nonnull id)anObject
 {
-    if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
-        [(RZAssemblage *)anObject addObserver:self];
+    if ( [anObject isKindOfClass:[RZTree class]] ) {
+        [(RZTree *)anObject addObserver:self];
     }
 }
 
 - (void)removeMonitorsForObject:(nonnull id)anObject;
 {
-    if ( [anObject isKindOfClass:[RZAssemblage class]] ) {
-        [(RZAssemblage *)anObject removeObserver:self];
+    if ( [anObject isKindOfClass:[RZTree class]] ) {
+        [(RZTree *)anObject removeObserver:self];
     }
 }
 

@@ -1,16 +1,16 @@
 //
 //  RZModifiedAssemblage.h
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 1/31/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZAssemblage.h"
+#import "RZTree.h"
 
-@interface RZFilterAssemblage : RZAssemblage
+@interface RZFilterTree : RZTree
 
-- (nonnull instancetype)initWithAssemblage:(nonnull RZAssemblage *)assemblage;
+- (nonnull instancetype)initWithAssemblage:(nonnull RZTree *)node;
 
 @property (strong, nonatomic, nullable) NSPredicate *filter;
 

@@ -1,6 +1,6 @@
 //
 //  MutatableAssemblageTableViewController.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 1/27/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -13,12 +13,13 @@ code;                                                                   \
 _Pragma("clang diagnostic pop")                                         \
 
 #import "MutatableAssemblageTableViewController.h"
+
 @import RZAssemblage;
 @import RZAssemblageUIKit;
 
 @interface MutatableAssemblageTableViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) RZAssemblage *assemblage;
+@property (strong, nonatomic) RZTree *assemblage;
 
 @property (assign, nonatomic) NSUInteger index;
 @property (strong, nonatomic) NSArray *mutableAssemblages;
@@ -49,20 +50,20 @@ _Pragma("clang diagnostic pop")                                         \
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3", @"4"]];
-    RZAssemblage *m2 = [RZAssemblage assemblageForArray:@[@"4", @"5", @"6", ]];
-    RZAssemblage *m3 = [RZAssemblage assemblageForArray:@[@"7", @"8", @"9", ]];
-    RZAssemblage *m4 = [RZAssemblage assemblageForArray:@[@"10", @"11", @"12", ]];
+    RZTree *m1 = [RZTree nodeWithChildren:@[@"1", @"2", @"3", @"4"]];
+    RZTree *m2 = [RZTree nodeWithChildren:@[@"4", @"5", @"6",]];
+    RZTree *m3 = [RZTree nodeWithChildren:@[@"7", @"8", @"9",]];
+    RZTree *m4 = [RZTree nodeWithChildren:@[@"10", @"11", @"12",]];
     self.index = 12;
     self.mutableAssemblages = @[m1, m2, m3, m4];
 
-    RZAssemblage *f1 = [RZAssemblage joinedAssemblages:@[m3, m4]];
+    RZTree *f1 = [RZTree nodeWithJoinedNodes:@[m3, m4]];
 
-    RZFilterAssemblage *filtered = [[RZFilterAssemblage alloc] initWithAssemblage:f1];
+    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:f1];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
-    self.assemblage = [RZAssemblage assemblageForArray:@[m1, m2, filtered]];
+    self.assemblage = [RZTree nodeWithChildren:@[m1, m2, filtered]];
 
     self.tableView.assemblage = self.assemblage;
     self.tableView.delegate = self;
@@ -145,7 +146,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
     while ( indexPath == nil ) {
         NSUInteger randomSectionIndex = [self randomPopulatedIndexForArray:sections];
         NSIndexPath *sectionIndexPath = randomSectionIndex == NSNotFound ? nil : [NSIndexPath indexPathWithIndex:randomSectionIndex];
-        NSMutableArray *section = [[self.assemblage assemblageAtIndexPath:sectionIndexPath] mutableChildren];
+        NSMutableArray *section = [[self.assemblage nodeAtIndexPath:sectionIndexPath] mutableChildren];
 
         NSUInteger row = [self randomPopulatedIndexForArray:section];
         indexPath = row == NSNotFound ? nil : [NSIndexPath indexPathForRow:row inSection:randomSectionIndex];
@@ -203,7 +204,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (void)clear
 {
     [self.assemblage openBatchUpdate];
-    for ( RZAssemblage *assemblage in self.mutableAssemblages ) {
+    for ( RZTree *assemblage in self.mutableAssemblages ) {
         NSMutableArray *proxy = [assemblage mutableChildren];
         while ( [proxy count] > 2 ) {
             [proxy removeLastObject];

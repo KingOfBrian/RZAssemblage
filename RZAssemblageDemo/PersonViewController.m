@@ -1,6 +1,6 @@
 //
 //  PersonViewController.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 3/25/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -15,7 +15,7 @@
 @interface PersonViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (strong, nonatomic) Person *person;
-@property (strong, nonatomic) RZAssemblage *assemblage;
+@property (strong, nonatomic) RZTree *assemblage;
 
 @end
 
@@ -46,19 +46,19 @@
     [super viewDidLoad];
     // Create a flat FRC on person with a predicate that restricts the results to friends of this person
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForFriendsOfPerson:self.person];
-    RZAssemblage *friends = [RZAssemblage assemblageForFetchedResultsController:frc];
+    RZTree *friends = [RZTree nodeBackedByFetchedResultsController:frc];
     NSError *error = nil;
     [frc performFetch:&error];
     NSAssert(error == nil, @"");
 
     // Create a proxy assemblage for enemies. Same result as above, but slightly easier. Note that you can remove enemies, since this assemblage is mutable.
-    RZAssemblage *enemies = [RZAssemblage assemblageTreeWithObject:self.person descendingKeypaths:@[@"enemiesByFirstName"]];
+    RZTree *enemies = [RZTree nodeWithObject:self.person descendingKeypaths:@[@"enemiesByFirstName"]];
 
     // Create a leaf assemblage for some attributes we want to display
     NSArray *keypaths = @[@"team.name", @"firstName", @"lastName"];
-    RZAssemblage *info = [RZAssemblage assemblageWithObject:self.person leafKeypaths:keypaths];
+    RZTree *info = [RZTree nodeWithObject:self.person leafKeypaths:keypaths];
 
-    self.assemblage = [RZAssemblage assemblageForArray:@[info, friends, enemies]];
+    self.assemblage = [RZTree nodeWithChildren:@[info, friends, enemies]];
     self.tableView.assemblage = self.assemblage;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -136,7 +136,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ( buttonIndex != alertView.cancelButtonIndex ) {
         NSString *name = [alertView textFieldAtIndex:0].text;
-        NSMutableArray *a = [[self.assemblage assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:0]] mutableChildren];
+        NSMutableArray *a = [[self.assemblage nodeAtIndexPath:[NSIndexPath indexPathWithIndex:0]] mutableChildren];
         [a replaceObjectAtIndex:alertView.tag withObject:name];
     }
 }
@@ -144,7 +144,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:[indexPath indexAtPosition:0]];
-    return [[self.assemblage assemblageAtIndexPath:sectionIndexPath] mutableChildren] != nil;
+    return [[self.assemblage nodeAtIndexPath:sectionIndexPath] mutableChildren] != nil;
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath

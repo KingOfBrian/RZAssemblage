@@ -1,18 +1,18 @@
 //
 //  RZChangeSet.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 2/7/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZAssemblageChangeSet+Private.h"
+#import "RZChangeSet+Private.h"
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
-#import "RZAssemblage.h"
+#import "RZTree.h"
 
-@implementation RZAssemblageChangeSet
+@implementation RZChangeSet
 
 + (NSIndexSet *)sectionIndexSetFromIndexPaths:(NSArray *)indexPaths
 {
@@ -121,20 +121,20 @@
     }
 }
 
-- (NSArray *)objectsForIndexPaths:(NSArray *)indexPaths inAssemblage:(RZAssemblage *)assemblage
+- (NSArray *)objectsForIndexPaths:(NSArray *)indexPaths inAssemblage:(RZTree *)node
 {
     NSMutableArray *objects = [NSMutableArray array];
     for ( NSIndexPath *indexPath in indexPaths ) {
-        [objects addObject:[assemblage objectAtIndexPath:indexPath]];
+        [objects addObject:[node objectAtIndexPath:indexPath]];
     }
     return [objects copy];
 }
 
-- (void)generateMoveEventsFromAssemblage:(RZAssemblage *)assemblage
+- (void)generateMoveEventsFromNode:(RZTree *)node
 {
     NSArray *insertedIndexPaths = self.insertedIndexPaths;
 
-    NSArray *insertedObjects = [self objectsForIndexPaths:insertedIndexPaths inAssemblage:assemblage];
+    NSArray *insertedObjects = [self objectsForIndexPaths:insertedIndexPaths inAssemblage:node];
 
     NSMutableDictionary *moveFromToIndexPathMap = [NSMutableDictionary dictionary];
     [insertedObjects enumerateObjectsUsingBlock:^(id insertedObject, NSUInteger insertedIndex, BOOL *stop) {
@@ -170,7 +170,7 @@
     self.moveFromToIndexPathMap[index1] = index2;
 }
 
-- (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
+- (void)mergeChangeSet:(RZChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
 {
     NSParameterAssert(transform);
 

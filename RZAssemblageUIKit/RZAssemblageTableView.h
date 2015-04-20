@@ -1,20 +1,20 @@
 //
 //  RZAssemblageTableView.h
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 3/16/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-@class RZAssemblage;
+@class RZTree;
 @class RZAssemblageTableViewCellFactory;
 
 @interface RZAssemblageTableView : UITableView
 
 @property (strong, nonatomic) RZAssemblageTableViewCellFactory *cellFactory;
 
-@property (weak, nonatomic) RZAssemblage *assemblage;
+@property (weak, nonatomic) RZTree *assemblage;
 
 /**
  * Ignore assemblage delegate events while set to YES.  This should be enabled

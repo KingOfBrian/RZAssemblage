@@ -1,36 +1,36 @@
     //
 //  RZModifiedAssemblage.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 1/31/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZFilterAssemblage.h"
+#import "RZFilterTree.h"
 #import "RZFilteredAssemblage.h"
-#import "RZAssemblage+Private.h"
+#import "RZTree+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
 #import "NSIndexSet+RZAssemblage.h"
 
-@interface RZFilterAssemblage()
+@interface RZFilterTree()
 
 @property (strong, nonatomic) RZFilteredAssemblage *filteredAssemblage;
-@property (strong, nonatomic) RZAssemblage *unfilteredAssemblage;
+@property (strong, nonatomic) RZTree *unfilteredAssemblage;
 @property (strong, nonatomic) RZMutableIndexPathSet *filteredIndexPaths;
 
 @end
 
-@implementation RZFilterAssemblage
+@implementation RZFilterTree
 
-- (instancetype)initWithAssemblage:(RZAssemblage *)assemblage
+- (instancetype)initWithAssemblage:(RZTree *)node
 {
     self = [super init];
     if ( self ) {
         _filteredIndexPaths = [RZMutableIndexPathSet set];
-        _filteredAssemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:assemblage filteredIndexPaths:_filteredIndexPaths];
-        _unfilteredAssemblage = assemblage;
+        _filteredAssemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:node filteredIndexPaths:_filteredIndexPaths];
+        _unfilteredAssemblage = node;
         [_unfilteredAssemblage addObserver:self];
     }
     return self;
@@ -46,7 +46,7 @@
     return [NSString stringWithFormat:@"<%@: %p %@ filter %@", self.class, self, self.filter, self.filteredAssemblage];
 }
 
-#pragma mark - RZAssemblage
+#pragma mark - RZTree
 
 - (NSUInteger)countOfElements
 {
@@ -63,9 +63,9 @@
     return [self.filteredAssemblage nodeAtIndex:index];
 }
 
-- (NSUInteger)indexOfAssemblage:(RZAssemblage *)assemblage
+- (NSUInteger)indexOfNode:(RZTree *)node
 {
-    return [self.filteredAssemblage indexOfAssemblage:assemblage];
+    return [self.filteredAssemblage indexOfNode:node];
 }
 
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
@@ -78,9 +78,9 @@
     [self.filteredAssemblage insertObject:object inElementsAtIndex:index];
 }
 
-- (RZAssemblage *)assemblageAtIndexPath:(NSIndexPath *)indexPath
+- (RZTree *)nodeAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.filteredAssemblage assemblageAtIndexPath:indexPath];
+    return [self.filteredAssemblage nodeAtIndexPath:indexPath];
 }
 
 #pragma mark - Filter Mutation
@@ -95,7 +95,7 @@
 - (void)updateFilterState
 {
     [self openBatchUpdate];
-    RZAssemblageEnumerationOptions options = RZAssemblageEnumerationBreadthFirst;
+    RZTreeEnumerationOptions options = RZTreeEnumerationBreadthFirst;
     RZMutableIndexPathSet *insertedIndexPaths = [RZMutableIndexPathSet set];
     RZMutableIndexPathSet *removedIndexPaths = [RZMutableIndexPathSet set];
     __block NSUInteger maxTreeDepth = 0;
@@ -154,7 +154,7 @@
 
 #pragma mark - RZAssemblageDelegate
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet
 {
     // Transform the removals. Any removals that were filtered are removed from the change set. Other removals
     // are translated to occur at the 'exposed' index path.
@@ -177,7 +177,7 @@
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         [self.filteredIndexPaths shiftIndexesStartingAtIndexPath:indexPath by:1];
 
-        id object = [assemblage objectAtIndexPath:indexPath];
+        id object = [node objectAtIndexPath:indexPath];
         if ( [self isObjectFiltered:object] == NO ) {
             NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
             [self.changeSet insertAtIndexPath:exposedIndexPath];
@@ -188,7 +188,7 @@
     }
 
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
-        id object = [assemblage objectAtIndexPath:indexPath];
+        id object = [node objectAtIndexPath:indexPath];
 
         NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
         if ( [self.filteredIndexPaths containsIndexPath:indexPath] && [self isObjectFiltered:object] == NO ) {

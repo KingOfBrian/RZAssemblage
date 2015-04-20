@@ -1,18 +1,18 @@
 //
 //  RZChangeSet+Private.h
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 2/21/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "RZAssemblageChangeSet.h"
+#import "RZChangeSet.h"
 #import "RZIndexPathSet.h"
 
 typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *indexPath);
 
-@interface RZAssemblageChangeSet ()
+@interface RZChangeSet ()
 
 @property (assign, nonatomic) BOOL shiftIndexes;
 @property (strong, nonatomic) RZMutableIndexPathSet *inserts;
@@ -26,6 +26,6 @@ typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *ind
 - (void)removeObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 - (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2;
 
-- (void)mergeChangeSet:(RZAssemblageChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform;
+- (void)mergeChangeSet:(RZChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform;
 
 @end

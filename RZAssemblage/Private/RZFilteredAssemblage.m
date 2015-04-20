@@ -1,26 +1,26 @@
 //
 //  RZFilteredAssemblage.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 4/14/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
 #import "RZFilteredAssemblage.h"
-#import "RZAssemblage+Private.h"
+#import "RZTree+Private.h"
 #import "NSIndexSet+RZAssemblage.h"
 
 @interface RZFilteredAssemblage()
-@property (strong, nonatomic) RZAssemblage *assemblage;
+@property (strong, nonatomic) RZTree *assemblage;
 @end
 
 @implementation RZFilteredAssemblage
 
-- (instancetype)initWithAssemblage:(RZAssemblage *)assemblage filteredIndexPaths:(RZMutableIndexPathSet *)filteredIndexPaths
+- (instancetype)initWithAssemblage:(RZTree *)node filteredIndexPaths:(RZMutableIndexPathSet *)filteredIndexPaths
 {
     self = [super init];
     if ( self ) {
-        _assemblage = assemblage;
+        _assemblage = node;
         _filteredIndexPaths = filteredIndexPaths;
     }
     return self;
@@ -45,7 +45,7 @@
     return index;
 }
 
-#pragma mark - RZAssemblage
+#pragma mark - RZTree
 
 - (id)representedObject
 {
@@ -73,7 +73,7 @@
 - (id)nodeAtIndex:(NSUInteger)index;
 {
     NSUInteger exposedIndex = [self indexFromExposedIndex:index];
-    RZAssemblage *assemblage = [self.assemblage nodeAtIndex:exposedIndex];
+    RZTree *assemblage = [self.assemblage nodeAtIndex:exposedIndex];
     if ( assemblage ) {
         RZMutableIndexPathSet *childIndexPathSet = [self.filteredIndexPaths indexPathSetAtIndexPath:[NSIndexPath indexPathWithIndex:exposedIndex]];
         assemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:assemblage filteredIndexPaths:childIndexPathSet];
@@ -93,14 +93,14 @@
     [[self.assemblage mutableChildren] insertObject:object atIndex:exposedIndex];
 }
 
-- (void)addObserver:(nonnull id<RZAssemblageObserver>)observer
+- (void)addObserver:(nonnull id<RZTreeObserver>)observer
 {
     RZRaize(NO, @"Do not observe filtered assemblages %@", self);
 }
 
-- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
+- (void)willBeginUpdatesForNode:(RZTree *)node
 {
-    RZRaize(NO, @"Internal filter %@ should never recieve updates for assemblage %@", self, assemblage);
+    RZRaize(NO, @"Internal filter %@ should never recieve updates for assemblage %@", self, node);
 }
 
 @end

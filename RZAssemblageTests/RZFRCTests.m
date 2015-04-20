@@ -1,6 +1,6 @@
 //
 //  RZFRCTests.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 4/18/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+
 @import RZAssemblage;
 
 #import "RZAssemblageTestData.h"
 #import "NSIndexPath+RZAssemblage.h"
 
-@interface RZFRCTests : XCTestCase<RZAssemblageObserver>
+@interface RZFRCTests : XCTestCase<RZTreeObserver>
 
 @property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
 
@@ -21,7 +22,7 @@
 
 @implementation RZFRCTests
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet;
+- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet;
 {
     self.changeSet = changeSet;
 }
@@ -54,11 +55,11 @@
     }
 }
 
-- (void)ensureRowsBeginWithJFor:(RZAssemblage *)assemblage
+- (void)ensureRowsBeginWithJFor:(RZTree *)node
 {
     for ( NSIndexPath *indexPath in self.changeSet.insertedIndexPaths ) {
         if ( indexPath.length == 2 ) {
-            id object = assemblage[indexPath];
+            id object = node[indexPath];
             if ( [object isKindOfClass:[Person class]] ) {
                 Person *p = (id)object;
                 XCTAssert([p.firstName hasPrefix:@"J"] || [p.lastName hasPrefix:@"J"]);
@@ -73,7 +74,7 @@
 - (void)testStartupInsertIsSequential
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
+    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
     [content addObserver:self];
     NSError *error = nil;
     [frc performFetch:&error];
@@ -90,8 +91,8 @@
 - (void)testStartupInsertFilter
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
-    RZFilterAssemblage *filter = [[RZFilterAssemblage alloc] initWithAssemblage:content];
+    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZFilterTree *filter = [[RZFilterTree alloc] initWithAssemblage:content];
     [filter addObserver:self];
     filter.filter = [NSPredicate predicateWithBlock:^BOOL(Person *person, NSDictionary *bindings) {
         BOOL match = YES;
@@ -116,10 +117,10 @@
 - (void)testFRCSectionJoin
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
-    RZAssemblage *staticSection = [RZAssemblage assemblageForArray:@[@"This is a static row"]
-                                                 representedObject:@"static"];
-    RZAssemblage *combinded = [RZAssemblage joinedAssemblages:@[content, staticSection]];
+    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZTree *staticSection = [RZTree nodeWithObject:@"static"
+                                          children:@[@"This is a static row"]];
+    RZTree *combinded = [RZTree nodeWithJoinedNodes:@[content, staticSection]];
     NSError *error = nil;
     [frc performFetch:&error];
     NSAssert(error == nil, @"");
@@ -136,17 +137,17 @@
 - (void)testFRCJoinFilter
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZAssemblage *content = [RZAssemblage assemblageForFetchedResultsController:frc];
-    RZAssemblage *staticRows = [RZAssemblage assemblageForArray:@[@"J is not filtered",
-                                                                 @"This is filtered"]
-                                                 representedObject:@"J Static Section"];
-    RZAssemblage *staticSection = [RZAssemblage assemblageForArray:@[staticRows]];
-    RZAssemblage *combinded = [RZAssemblage joinedAssemblages:@[content, staticSection]];
+    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZTree *staticRows = [RZTree nodeWithObject:@"J Static Section"
+                                       children:@[@"J is not filtered",
+                                                  @"This is filtered"]];
+    RZTree *staticSection = [RZTree nodeWithChildren:@[staticRows]];
+    RZTree *combinded = [RZTree nodeWithJoinedNodes:@[content, staticSection]];
     NSError *error = nil;
     [frc performFetch:&error];
     NSAssert(error == nil, @"");
 
-    RZFilterAssemblage *filter = [[RZFilterAssemblage alloc] initWithAssemblage:combinded];
+    RZFilterTree *filter = [[RZFilterTree alloc] initWithAssemblage:combinded];
     [filter addObserver:self];
 
     filter.filter = [NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {

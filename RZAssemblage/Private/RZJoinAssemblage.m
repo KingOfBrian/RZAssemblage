@@ -1,6 +1,6 @@
 //
 //  RZJoinAssemblage.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 1/29/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import "RZJoinAssemblage.h"
 #import "NSIndexPath+RZAssemblage.h"
-#import "RZAssemblage+Private.h"
+#import "RZTree+Private.h"
 #import "RZAssemblageDefines.h"
 
 @implementation RZJoinAssemblage
@@ -16,9 +16,9 @@
 - (instancetype)initWithAssemblages:(NSArray *)assemblages
 {
     self = [super init];
-    for ( RZAssemblage *assemblage in assemblages ) {
+    for ( RZTree *assemblage in assemblages ) {
         [self addMonitorsForObject:assemblage];
-        RZRaize([assemblage isKindOfClass:[RZAssemblage class]], @"All objects in RZJoinAssemblage must be an RZAssemblage");
+        RZRaize([assemblage isKindOfClass:[RZTree class]], @"All objects in RZJoinAssemblage must be an RZTree");
     }
     _assemblages = assemblages;
     return self;
@@ -29,12 +29,12 @@
     return [NSString stringWithFormat:@"<%@: %p join %@", self.class, self, self.assemblages];
 }
 
-#pragma mark - RZAssemblage
+#pragma mark - RZTree
 
 - (NSUInteger)countOfElements
 {
     NSUInteger count = 0;
-    for ( RZAssemblage *assemblage in self.assemblages ) {
+    for ( RZTree *assemblage in self.assemblages ) {
         count += [assemblage countOfElements];
     }
     return count;
@@ -44,7 +44,7 @@
 {
     NSUInteger offset = 0;
     id object = nil;
-    for ( RZAssemblage *assemblage in self.assemblages ) {
+    for ( RZTree *assemblage in self.assemblages ) {
         NSUInteger count = [assemblage countOfElements];
         NSUInteger currentIndex = index - offset;
         if ( index - offset < count) {
@@ -60,7 +60,7 @@
 {
     NSUInteger offset = 0;
     id object = nil;
-    for ( RZAssemblage *assemblage in self.assemblages ) {
+    for ( RZTree *assemblage in self.assemblages ) {
         NSUInteger count = [assemblage countOfElements];
         NSUInteger currentIndex = index - offset;
         if ( index - offset < count) {
@@ -75,7 +75,7 @@
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
     NSUInteger offset = 0;
-    for ( RZAssemblage *assemblage in self.assemblages ) {
+    for ( RZTree *assemblage in self.assemblages ) {
         NSUInteger count = [assemblage countOfElements];
         NSUInteger currentIndex = index - offset;
         if ( index - offset < count) {
@@ -90,7 +90,7 @@
 - (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
     NSUInteger offset = 0;
-    for ( RZAssemblage *assemblage in self.assemblages ) {
+    for ( RZTree *assemblage in self.assemblages ) {
         NSUInteger count = [assemblage countOfElements];
         NSUInteger currentIndex = index - offset;
         if ( currentIndex <= count) {
@@ -104,10 +104,10 @@
 
 #pragma mark - RZAssemblageDelegate
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet
 {
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
-        NSUInteger offset = [self indexOffsetForAssemblage:assemblage];
+        NSUInteger offset = [self indexOffsetForAssemblage:node];
         return [indexPath rz_indexPathWithLastIndexShiftedBy:offset];
     }];
     [self closeBatchUpdate];
@@ -115,10 +115,10 @@
 
 #pragma mark - Private
 
-- (NSUInteger)indexOffsetForAssemblage:(RZAssemblage *)childAssemblage
+- (NSUInteger)indexOffsetForAssemblage:(RZTree *)childAssemblage
 {
     NSUInteger count = 0;
-    for ( RZAssemblage *partAssemblage in self.assemblages ) {
+    for ( RZTree *partAssemblage in self.assemblages ) {
         if ( partAssemblage == childAssemblage ) {
             break;
         }
@@ -127,10 +127,10 @@
     return count;
 }
 
-- (NSUInteger)indexOfAssemblageContainingParentIndex:(NSUInteger)parentIndex;
+- (NSUInteger)indexOfNodeContainingParentIndex:(NSUInteger)parentIndex;
 {
     NSUInteger index = 0;
-    for ( RZAssemblage *partAssemblage in self.assemblages ) {
+    for ( RZTree *partAssemblage in self.assemblages ) {
         NSUInteger count = [partAssemblage countOfElements];
         if ( parentIndex <= count ) {
             break;

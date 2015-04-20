@@ -1,6 +1,6 @@
 //
 //  RZAssemblageCollectionViewDataSource.h
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 3/19/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@class RZAssemblage;
+@class RZTree;
 @class RZAssemblageCollectionViewCellFactory;
 
 @interface RZAssemblageCollectionViewDataSource : NSObject <UICollectionViewDataSource>
 
-- (id)initWithAssemblage:(RZAssemblage *)assemblage
+- (id)initWithAssemblage:(RZTree *)node
        forCollectionView:(UICollectionView *)collectionView
              cellFactory:(RZAssemblageCollectionViewCellFactory *)cellFactory;
 
-@property (strong, nonatomic, readonly) RZAssemblage *assemblage;
+@property (strong, nonatomic, readonly) RZTree *assemblage;
 
 @property (strong, nonatomic, readonly) RZAssemblageCollectionViewCellFactory *cellFactory;
 

@@ -1,30 +1,30 @@
 //
 //  RZAssemblageCollectionViewDataSource.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 3/19/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
 #import "RZAssemblageCollectionViewDataSource.h"
-#import "RZAssemblage.h"
+#import "RZTree.h"
 #import "RZAssemblageCollectionViewCellFactory.h"
 #import "RZAssemblageDefines.h"
-#import "RZAssemblageChangeSet.h"
+#import "RZChangeSet.h"
 
-@interface RZAssemblageCollectionViewDataSource () <RZAssemblageObserver>
+@interface RZAssemblageCollectionViewDataSource () <RZTreeObserver>
 
 @end
 
 @implementation RZAssemblageCollectionViewDataSource
 
-- (id)initWithAssemblage:(RZAssemblage *)assemblage
+- (id)initWithAssemblage:(RZTree *)node
        forCollectionView:(UICollectionView *)collectionView
              cellFactory:(RZAssemblageCollectionViewCellFactory *)cellFactory;
 {
     self = [super init];
     if ( self ) {
-        _assemblage = assemblage;
+        _assemblage = node;
         _collectionView = collectionView;
         _cellFactory = cellFactory;
     }
@@ -42,7 +42,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSUInteger count = [[self.assemblage assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:section]] children].count;
+    NSUInteger count = [[self.assemblage nodeAtIndexPath:[NSIndexPath indexPathWithIndex:section]] children].count;
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
@@ -67,13 +67,13 @@
     return view;
 }
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet
 {
-    [changeSet generateMoveEventsFromAssemblage:assemblage];
+    [changeSet generateMoveEventsFromNode:node];
     RZDataSourceLog(@"Update = %@", changeSet);
     [self.collectionView performBatchUpdates:^{
-        NSIndexSet *indexesToDelete = [RZAssemblageChangeSet sectionIndexSetFromIndexPaths:changeSet.removedIndexPaths];
-        NSIndexSet *indexesToInsert = [RZAssemblageChangeSet sectionIndexSetFromIndexPaths:changeSet.insertedIndexPaths];
+        NSIndexSet *indexesToDelete = [RZChangeSet sectionIndexSetFromIndexPaths:changeSet.removedIndexPaths];
+        NSIndexSet *indexesToInsert = [RZChangeSet sectionIndexSetFromIndexPaths:changeSet.insertedIndexPaths];
 
         if ( indexesToDelete.count ) {
             [self.collectionView deleteSections:indexesToDelete];
@@ -82,9 +82,9 @@
             [self.collectionView insertSections:indexesToInsert];
         }
 
-        NSArray *insertRows = [RZAssemblageChangeSet rowIndexPathsFromIndexPaths:changeSet.insertedIndexPaths];
-        NSArray *deleteRows = [RZAssemblageChangeSet rowIndexPathsFromIndexPaths:changeSet.removedIndexPaths];
-        NSArray *updateRows = [RZAssemblageChangeSet rowIndexPathsFromIndexPaths:changeSet.updatedIndexPaths];
+        NSArray *insertRows = [RZChangeSet rowIndexPathsFromIndexPaths:changeSet.insertedIndexPaths];
+        NSArray *deleteRows = [RZChangeSet rowIndexPathsFromIndexPaths:changeSet.removedIndexPaths];
+        NSArray *updateRows = [RZChangeSet rowIndexPathsFromIndexPaths:changeSet.updatedIndexPaths];
 
         if ( insertRows.count ) {
             [self.collectionView insertItemsAtIndexPaths:insertRows];

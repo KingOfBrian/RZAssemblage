@@ -8,10 +8,10 @@
 
 @import UIKit;
 #import <XCTest/XCTest.h>
-#import "RZAssemblage.h"
+#import "RZTree.h"
 #import "RZJoinAssemblage.h"
-#import "RZFilterAssemblage.h"
-#import "RZAssemblageChangeSet.h"
+#import "RZFilterTree.h"
+#import "RZChangeSet.h"
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZProxyAssemblage.h"
@@ -20,7 +20,7 @@
 RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \
 [self.delegateEvents addObject:event]; \
 event.delegateSelector = _cmd;\
-event.assemblage = assemblage;
+event.assemblage = node;
 
 typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     RZAssemblageMutationTypeInsert = 0,
@@ -31,7 +31,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 @interface RZAssemblageDelegateEvent : NSObject
 
-@property (strong, nonatomic) RZAssemblage *assemblage;
+@property (strong, nonatomic) RZTree *assemblage;
 @property (assign, nonatomic) SEL delegateSelector;
 @property (assign, nonatomic) RZAssemblageMutationType type;
 @property (strong, nonatomic) id object;
@@ -55,10 +55,10 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 @end
 
-@interface RZAssemblageTests : XCTestCase <RZAssemblageObserver>
+@interface RZAssemblageTests : XCTestCase <RZTreeObserver>
 
 @property (nonatomic, strong) NSMutableArray *delegateEvents;
-@property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
+@property (nonatomic, strong) RZChangeSet *changeSet;
 
 @property (nonatomic, strong) NSArray *testProxyArray;
 
@@ -112,11 +112,11 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     self.delegateEvents = nil;
 }
 
-- (void)willBeginUpdatesForAssemblage:(RZAssemblage *)assemblage
+- (void)willBeginUpdatesForNode:(RZTree *)node
 {
 }
 
-- (void)assemblage:(RZAssemblage *)assemblage didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet
+- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet
 {
     for ( NSIndexPath *indexPath in changeSet.removedIndexPaths ) {
         TRACE_DELEGATE_EVENT
@@ -127,13 +127,13 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     for ( NSIndexPath *indexPath in changeSet.insertedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeInsert;
-        event.object = [assemblage objectAtIndexPath:indexPath];
+        event.object = [node objectAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
     for ( NSIndexPath *indexPath in changeSet.updatedIndexPaths ) {
         TRACE_DELEGATE_EVENT
         event.type = RZAssemblageMutationTypeUpdate;
-        event.object = [assemblage objectAtIndexPath:indexPath];
+        event.object = [node objectAtIndexPath:indexPath];
         event.indexPath = indexPath;
     }
 //    [changeSet.moves enumerateSortedIndexPathsUsingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
@@ -145,7 +145,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     self.changeSet = changeSet;
 }
 
-- (void)didEndUpdatesForEnsemble:(RZAssemblage *)assemblage
+- (void)didEndUpdatesForEnsemble:(RZTree *)node
 {
     TRACE_DELEGATE_EVENT
 }
@@ -162,24 +162,24 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testComposition
 {
-    RZAssemblage *staticValues = [RZAssemblage assemblageForArray:@[@1, @2, @3]];
+    RZTree *staticValues = [RZTree nodeWithChildren:@[@1, @2, @3]];
     XCTAssertEqual([staticValues children].count, 3);
     XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]], @1);
     XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:1]], @2);
     XCTAssertEqualObjects([staticValues objectAtIndexPath:[NSIndexPath indexPathWithIndex:2]], @3);
-    RZAssemblage *mutableValues = [RZAssemblage assemblageForArray:@[]];
+    RZTree *mutableValues = [RZTree nodeWithChildren:@[]];
     XCTAssertEqual([mutableValues children].count, 0);
 
-    RZAssemblage *sectioned = [RZAssemblage assemblageForArray:@[staticValues, mutableValues]];
+    RZTree *sectioned = [RZTree nodeWithChildren:@[staticValues, mutableValues]];
 
     XCTAssertEqual([sectioned children].count, 2);
-    XCTAssertEqual([sectioned assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:0]].children.count, 3);
-    XCTAssertEqual([sectioned assemblageAtIndexPath:[NSIndexPath indexPathWithIndex:1]].children.count, 0);
+    XCTAssertEqual([sectioned nodeAtIndexPath:[NSIndexPath indexPathWithIndex:0]].children.count, 3);
+    XCTAssertEqual([sectioned nodeAtIndexPath:[NSIndexPath indexPathWithIndex:1]].children.count, 0);
 }
 
 - (void)testMutableDelegation
 {
-    RZAssemblage *mutableAssemblage = [RZAssemblage assemblageForArray:@[]];
+    RZTree *mutableAssemblage = [RZTree nodeWithChildren:@[]];
     [mutableAssemblage addObserver:self];
 
     NSMutableArray *mutableValues = [mutableAssemblage mutableChildren];
@@ -212,7 +212,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testGroupedMutableDelegationNoOp
 {
-    RZAssemblage *mutableAssemblage = [RZAssemblage assemblageForArray:@[]];
+    RZTree *mutableAssemblage = [RZTree nodeWithChildren:@[]];
     [mutableAssemblage addObserver:self];
 
     NSMutableArray *mutableValues = [mutableAssemblage mutableChildren];
@@ -228,15 +228,15 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testJoinDelegation
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[]];
-    RZAssemblage *m2 = [RZAssemblage assemblageForArray:@[]];
-    RZAssemblage *m3 = [RZAssemblage assemblageForArray:@[]];
+    RZTree *m1 = [RZTree nodeWithChildren:@[]];
+    RZTree *m2 = [RZTree nodeWithChildren:@[]];
+    RZTree *m3 = [RZTree nodeWithChildren:@[]];
     NSArray *assemblages = @[m1, m2, m3];
-    RZAssemblage *assemblage = [RZAssemblage joinedAssemblages:@[m1, m2, m3]];
+    RZTree *assemblage = [RZTree nodeWithJoinedNodes:@[m1, m2, m3]];
     [assemblage addObserver:self];
 
     [assemblage openBatchUpdate];
-    for ( RZAssemblage *assemblage in assemblages ) {
+    for ( RZTree *assemblage in assemblages ) {
         NSMutableArray *ma = [assemblage mutableChildren];
         [ma addObject:@1];
         [ma removeLastObject];
@@ -246,7 +246,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     [self.delegateEvents removeAllObjects];
 
     [assemblage openBatchUpdate];
-    for ( RZAssemblage *assemblage in assemblages ) {
+    for ( RZTree *assemblage in assemblages ) {
         NSMutableArray *ma = [assemblage mutableChildren];
         [ma addObject:@1];
     }
@@ -259,14 +259,14 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testJoinIndexPathMutation
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[]];
-    RZAssemblage *j1m1 = [RZAssemblage assemblageForArray:@[]];
-    RZAssemblage *j1m2 = [RZAssemblage assemblageForArray:@[]];
-    RZAssemblage *j1 = [RZAssemblage joinedAssemblages:@[j1m1, j1m2]];
-    RZAssemblage *assemblage = [RZAssemblage assemblageForArray:@[m1, j1]];
+    RZTree *m1 = [RZTree nodeWithChildren:@[]];
+    RZTree *j1m1 = [RZTree nodeWithChildren:@[]];
+    RZTree *j1m2 = [RZTree nodeWithChildren:@[]];
+    RZTree *j1 = [RZTree nodeWithJoinedNodes:@[j1m1, j1m2]];
+    RZTree *assemblage = [RZTree nodeWithChildren:@[m1, j1]];
     [assemblage addObserver:self];
 
-    for ( RZAssemblage *assemblage in @[m1, j1m1] ) {
+    for ( RZTree *assemblage in @[m1, j1m1] ) {
         NSMutableArray *ma = [assemblage mutableChildren];
         [ma addObject:@1];
         [ma addObject:@2];
@@ -324,10 +324,10 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testNestedGroupedMutableDelegation
 {
-    RZAssemblage *parent = [RZAssemblage assemblageForArray:@[]];
+    RZTree *parent = [RZTree nodeWithChildren:@[]];
     NSMutableArray *parentproxy = [parent mutableChildren];
-    [parentproxy addObject:[RZAssemblage assemblageForArray:@[]]];
-    RZAssemblage *mutableValues = [RZAssemblage assemblageForArray:@[]];
+    [parentproxy addObject:[RZTree nodeWithChildren:@[]]];
+    RZTree *mutableValues = [RZTree nodeWithChildren:@[]];
     [parentproxy addObject:mutableValues];
 
     [parent addObserver:self];
@@ -343,7 +343,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     XCTAssert(self.delegateEvents.count == 2);
     [self.delegateEvents removeAllObjects];
 
-    [parentproxy addObject:[RZAssemblage assemblageForArray:@[@"Only the assemblage is notified"]]];
+    [parentproxy addObject:[RZTree nodeWithChildren:@[@"Only the assemblage is notified"]]];
     XCTAssert(self.delegateEvents.count == 1);
     XCTAssertEqual(self.firstEvent.type, RZAssemblageMutationTypeInsert);
     XCTAssertEqualObjects(self.firstEvent.indexPath, [NSIndexPath indexPathWithIndex:2]);
@@ -352,13 +352,13 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testFilterNumericA
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12]];
+    RZTree *m1 = [RZTree nodeWithChildren:@[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12]];
 #define START_STOP_EVENT_COUNT 2
 #define CHILD_COUNT 12
 #define EVEN_CHILD_COUNT 12 / 2
 #define THIRD_CHILD_COUNT 12 / 3
 
-    RZFilterAssemblage *f1 = [[RZFilterAssemblage alloc] initWithAssemblage:m1];
+    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:m1];
 
     NSMutableArray *f1proxy = [f1 mutableChildren];
     [f1 addObserver:self];
@@ -390,8 +390,8 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testFilterUpdate
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@1, @2, @3, @4, @5]];
-    RZFilterAssemblage *f1 = [[RZFilterAssemblage alloc] initWithAssemblage:m1];
+    RZTree *m1 = [RZTree nodeWithChildren:@[@1, @2, @3, @4, @5]];
+    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:m1];
 
     [f1 addObserver:self];
     XCTAssertEqual([f1 children].count, 5);
@@ -422,7 +422,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilteredRealIndex
 {
     NSArray *values = [self.class values];
-    RZFilterAssemblage *f1 = [[RZFilterAssemblage alloc] initWithAssemblage:[RZAssemblage assemblageForArray:values]];
+    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:[RZTree nodeWithChildren:values]];
 
     NSMutableArray *s1proxy = [f1 mutableChildren];
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
@@ -450,7 +450,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testSort
 {
     NSArray *values = [self.class values];
-    RZAssemblage *a1 = [RZAssemblage assemblageForArray:values];
+    RZTree *a1 = [RZTree nodeWithChildren:values];
     [a1 addObserver:self];
 
     NSArray *array = [a1 mutableChildren];
@@ -464,7 +464,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
     XCTAssert(self.changeSet.insertedIndexPaths.count == expected.count);
     XCTAssert(self.changeSet.removedIndexPaths.count == expected.count);
-    [self.changeSet generateMoveEventsFromAssemblage:a1];
+    [self.changeSet generateMoveEventsFromNode:a1];
     XCTAssert(self.changeSet.insertedIndexPaths.count == 0);
     XCTAssert(self.changeSet.removedIndexPaths.count == 0);
     XCTAssert(self.changeSet.moveFromToIndexPaths.count == expected.count);
@@ -473,8 +473,8 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 - (void)testFilteredSort
 {
     NSArray *values = [self.class values];
-    RZAssemblage *a1 = [RZAssemblage assemblageForArray:values];
-    RZFilterAssemblage *f1 = [[RZFilterAssemblage alloc] initWithAssemblage:a1];
+    RZTree *a1 = [RZTree nodeWithChildren:values];
+    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:a1];
 
     f1.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *s, NSDictionary *bindings) {
         return [s hasPrefix:@"b"] == NO;
@@ -495,7 +495,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     XCTAssert(self.changeSet.insertedIndexPaths.count == expected.count);
     XCTAssert(self.changeSet.removedIndexPaths.count == expected.count);
     XCTAssert(self.changeSet.moveFromToIndexPaths.count == 0);
-    [self.changeSet generateMoveEventsFromAssemblage:f1];
+    [self.changeSet generateMoveEventsFromNode:f1];
     XCTAssert(self.changeSet.insertedIndexPaths.count == 0);
     XCTAssert(self.changeSet.removedIndexPaths.count == 0);
     XCTAssert(self.changeSet.moveFromToIndexPaths.count == expected.count);
@@ -510,12 +510,12 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     }];
     NSArray *aValues = [values filteredArrayUsingPredicate:aFilter];
 
-    NSArray *assemblages = @[[RZAssemblage assemblageForArray:values],
-                             [RZAssemblage assemblageForArray:values],
-                             [RZAssemblage assemblageForArray:values],
-                             [RZAssemblage assemblageForArray:values]];
-    RZAssemblage *j1 = [RZAssemblage joinedAssemblages:assemblages];
-    RZFilterAssemblage *f1 = [[RZFilterAssemblage alloc] initWithAssemblage:j1];
+    NSArray *assemblages = @[[RZTree nodeWithChildren:values],
+                             [RZTree nodeWithChildren:values],
+                             [RZTree nodeWithChildren:values],
+                             [RZTree nodeWithChildren:values]];
+    RZTree *j1 = [RZTree nodeWithJoinedNodes:assemblages];
+    RZFilterTree *f1 = [[RZFilterTree alloc] initWithAssemblage:j1];
     NSMutableArray *f1proxy = [f1 mutableChildren];
     [f1 addObserver:self];
     XCTAssertEqual([f1 children].count, values.count * assemblages.count);
@@ -571,9 +571,9 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testFilteredRemoval
 {
-    RZAssemblage *m = [RZAssemblage assemblageForArray:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
+    RZTree *m = [RZTree nodeWithChildren:@[@"7", @"8", @"9", @"10", @"11", @"12"]];
     NSMutableArray *mproxy = [m mutableChildren];
-    RZFilterAssemblage *filtered = [[RZFilterAssemblage alloc] initWithAssemblage:m];
+    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:m];
     NSMutableArray *filteredproxy = [filtered mutableChildren];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
@@ -590,9 +590,9 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testFilteredAddition
 {
-    RZAssemblage *m = [RZAssemblage assemblageForArray:@[]];
+    RZTree *m = [RZTree nodeWithChildren:@[]];
     NSMutableArray *mproxy = [m mutableChildren];
-    RZFilterAssemblage *filtered = [[RZFilterAssemblage alloc] initWithAssemblage:m];
+    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:m];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -617,19 +617,19 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testMutation
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3", ]];
-    RZAssemblage *m2 = [RZAssemblage assemblageForArray:@[@"4", @"5", @"6", ]];
-    RZAssemblage *m3 = [RZAssemblage assemblageForArray:@[@"7", @"8", @"9", ]];
-    RZAssemblage *m4 = [RZAssemblage assemblageForArray:@[@"10", @"11", @"12", ]];
-    RZAssemblage *j1 = [RZAssemblage joinedAssemblages:@[m3, m4]];
-    RZFilterAssemblage *filtered = [[RZFilterAssemblage alloc] initWithAssemblage:j1];
+    RZTree *m1 = [RZTree nodeWithChildren:@[@"1", @"2", @"3",]];
+    RZTree *m2 = [RZTree nodeWithChildren:@[@"4", @"5", @"6",]];
+    RZTree *m3 = [RZTree nodeWithChildren:@[@"7", @"8", @"9",]];
+    RZTree *m4 = [RZTree nodeWithChildren:@[@"10", @"11", @"12",]];
+    RZTree *j1 = [RZTree nodeWithJoinedNodes:@[m3, m4]];
+    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:j1];
 
     NSMutableArray *filteredproxy = [filtered mutableChildren];
 
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
-    RZAssemblage *assemblage = [RZAssemblage assemblageForArray:@[m1, m2, filtered]];
+    RZTree *assemblage = [RZTree nodeWithChildren:@[m1, m2, filtered]];
 
     [assemblage addObserver:self];
 
@@ -647,8 +647,8 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testFilterRemoval
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
-    RZFilterAssemblage *filtered = [[RZFilterAssemblage alloc] initWithAssemblage:m1];
+    RZTree *m1 = [RZTree nodeWithChildren:@[@"1", @"2", @"3", @"4", @"5", @"6"]];
+    RZFilterTree *filtered = [[RZFilterTree alloc] initWithAssemblage:m1];
     NSMutableArray *filteredproxy = [filtered mutableChildren];
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
@@ -684,7 +684,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
 
 - (void)testMoveWithIndexConcerns1
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3", @"4"]];
+    RZTree *m1 = [RZTree nodeWithChildren:@[@"1", @"2", @"3", @"4"]];
     NSMutableArray *m1proxy = [m1 mutableChildren];
 
     [m1 addObserver:self];
@@ -694,12 +694,12 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     [m1proxy addObject:@"2"];
     [m1proxy removeObjectAtIndex:0];
     [m1 closeBatchUpdate];
-    [self.changeSet generateMoveEventsFromAssemblage:m1];
+    [self.changeSet generateMoveEventsFromNode:m1];
 }
 
 - (void)testMoveWithIndexConcerns2
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[@"1", @"2", @"3"]];
+    RZTree *m1 = [RZTree nodeWithChildren:@[@"1", @"2", @"3"]];
     NSMutableArray *m1proxy = [m1 mutableChildren];
 
     [m1 addObserver:self];
@@ -708,12 +708,12 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     [m1proxy removeObjectAtIndex:0];
     [m1proxy addObject:@"2"];
     [m1 closeBatchUpdate];
-    [self.changeSet generateMoveEventsFromAssemblage:m1];
+    [self.changeSet generateMoveEventsFromNode:m1];
 }
 
 - (void)testBatchingA
 {
-    RZAssemblage *m1 = [RZAssemblage assemblageForArray:@[]];
+    RZTree *m1 = [RZTree nodeWithChildren:@[]];
     NSMutableArray *m1proxy = [m1 mutableChildren];
     [m1 addObserver:self];
     [m1 openBatchUpdate];
@@ -722,7 +722,7 @@ typedef NS_ENUM(NSUInteger, RZAssemblageMutationType) {
     [m1proxy removeObjectAtIndex:0];
     [m1proxy removeObjectAtIndex:0];
     [m1 closeBatchUpdate];
-    [self.changeSet generateMoveEventsFromAssemblage:m1];
+    [self.changeSet generateMoveEventsFromNode:m1];
 }
 
 @end

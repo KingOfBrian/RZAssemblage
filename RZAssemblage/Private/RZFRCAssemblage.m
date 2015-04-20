@@ -1,6 +1,6 @@
 //
 //  RZFRCAssemblage.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 1/29/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
@@ -10,7 +10,7 @@
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZArrayAssemblage.h"
 #import "RZAssemblageDefines.h"
-#import "RZAssemblageChangeSet+Private.h"
+#import "RZChangeSet+Private.h"
 
 
 #define RZAssertIndexPathLength(indexPath, offset) RZRaize(indexPath.length <= ((self.hasSections ? 2 : 1) + offset), @"Index Path %@ has length of %lu, expected index <= %d", indexPath, (unsigned long)indexPath.length, ((self.hasSections ? 2 : 1) + offset))
@@ -20,7 +20,7 @@
 @interface RZFRCAssemblage() <NSFetchedResultsControllerDelegate>
 
 @property (assign, nonatomic, readonly) BOOL hasSections;
-@property (strong, nonatomic) RZAssemblageChangeSet *changeSet;
+@property (strong, nonatomic) RZChangeSet *changeSet;
 
 @end
 
@@ -97,15 +97,15 @@
 }
 
 // This should not be needed, only used to determine the origin of a change event
-- (NSUInteger)indexOfAssemblage:(RZAssemblage *)assemblage
+- (NSUInteger)indexOfNode:(RZTree *)node
 {
     RZRaize(NO, @"%@ should not be needed", NSStringFromSelector(_cmd));
     return NSNotFound;
 }
 
-- (RZAssemblage *)nodeAtIndex:(NSUInteger)index
+- (RZTree *)nodeAtIndex:(NSUInteger)index
 {
-    RZAssemblage *node = nil;
+    RZTree *node = nil;
     if ( self.hasSections ) {
         id<NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[index];
         node = [[RZStaticArrayAssemblage alloc] initWithArray:sectionInfo.objects representingObject:sectionInfo];

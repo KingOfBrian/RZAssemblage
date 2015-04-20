@@ -1,13 +1,13 @@
 //
 //  RZArrayAssemblage.m
-//  RZAssemblage
+//  RZTree
 //
 //  Created by Brian King on 3/21/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
 #import "RZArrayAssemblage.h"
-#import "RZAssemblage+Private.h"
+#import "RZTree+Private.h"
 
 NSString *const RZAssemblageUpdateKey = @"RZAssemblageUpdateKey";
 static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContext;
@@ -73,13 +73,13 @@ static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContex
 - (nullable id)objectInElementsAtIndex:(NSUInteger)index
 {
     id object = [self.childrenStorage objectAtIndex:index];
-    return [object isKindOfClass:[RZAssemblage class]] ? [object representedObject] : object;
+    return [object isKindOfClass:[RZTree class]] ? [object representedObject] : object;
 }
 
 - (id)nodeAtIndex:(NSUInteger)index
 {
     id node = [self.childrenStorage objectAtIndex:index];
-    return [node isKindOfClass:[RZAssemblage class]] ? node : nil;
+    return [node isKindOfClass:[RZTree class]] ? node : nil;
 }
 
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
