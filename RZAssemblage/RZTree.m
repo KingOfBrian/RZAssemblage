@@ -11,12 +11,12 @@
 #import "RZAssemblageDefines.h"
 #import "RZIndexPathSet.h"
 
-#import "RZJoinAssemblage.h"
+#import "RZJoinedTree.h"
 #import "RZFilterTree.h"
-#import "RZArrayAssemblage.h"
-#import "RZProxyAssemblage.h"
-#import "RZPropertyAssemblage.h"
-#import "RZFRCAssemblage.h"
+#import "RZArrayBackedTree.h"
+#import "RZProxyTree.h"
+#import "RZPropertyTree.h"
+#import "RZFRCTree.h"
 
 static NSString *RZAssemblageElementsKey = @"elements";
 
@@ -29,32 +29,32 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 + (nonnull RZTree *)nodeWithObject:(nullable id)representedObject children:(nonnull NSArray *)array;
 {
-    return [[RZArrayAssemblage alloc] initWithArray:array representingObject:representedObject];
+    return [[RZArrayBackedTree alloc] initWithChildren:array representingObject:representedObject];
 }
 
 + (nonnull RZTree *)nodeBackedByFetchedResultsController:(nonnull NSFetchedResultsController *)frc
 {
-    return [[RZFRCAssemblage alloc] initWithFetchedResultsController:frc];
+    return [[RZFRCTree alloc] initWithFetchedResultsController:frc];
 }
 
 + (nonnull RZTree *)nodeWithJoinedNodes:(nonnull NSArray *)joinedNodes
 {
-    return [[RZJoinAssemblage alloc] initWithAssemblages:joinedNodes];
+    return [[RZJoinedTree alloc] initWithNodes:joinedNodes];
 }
 
 + (nonnull RZTree *)nodeWithObject:(nonnull id)object descendingKeypaths:(nonnull NSArray *)keypaths
 {
-    return [[RZProxyAssemblage alloc] initWithObject:object keypaths:keypaths];
+    return [[RZProxyTree alloc] initWithObject:object keypaths:keypaths];
 }
 
 + (nonnull RZTree *)nodeWithObject:(nonnull id)object repeatingKeypath:(nonnull NSString *)keypath
 {
-    return [[RZProxyAssemblage alloc] initWithObject:object childKey:keypath];
+    return [[RZProxyTree alloc] initWithObject:object childKey:keypath];
 }
 
 + (nonnull RZTree *)nodeWithObject:(nonnull id)object leafKeypaths:(nonnull NSArray *)keypaths
 {
-    return [[RZPropertyAssemblage alloc] initWithObject:object keypaths:keypaths];
+    return [[RZPropertyTree alloc] initWithObject:object keypaths:keypaths];
 }
 
 - (nullable id)representedObject

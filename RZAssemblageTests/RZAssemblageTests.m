@@ -9,12 +9,12 @@
 @import UIKit;
 #import <XCTest/XCTest.h>
 #import "RZTree.h"
-#import "RZJoinAssemblage.h"
+#import "RZJoinedTree.h"
 #import "RZFilterTree.h"
 #import "RZChangeSet.h"
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
-#import "RZProxyAssemblage.h"
+#import "RZProxyTree.h"
 
 #define TRACE_DELEGATE_EVENT \
 RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \

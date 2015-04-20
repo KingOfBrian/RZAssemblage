@@ -1,26 +1,26 @@
 //
-//  RZFilteredAssemblage.m
+//  RZFilteredTree.m
 //  RZTree
 //
 //  Created by Brian King on 4/14/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZFilteredAssemblage.h"
+#import "RZFilteredTree.h"
 #import "RZTree+Private.h"
 #import "NSIndexSet+RZAssemblage.h"
 
-@interface RZFilteredAssemblage()
-@property (strong, nonatomic) RZTree *assemblage;
+@interface RZFilteredTree()
+@property (strong, nonatomic) RZTree *node;
 @end
 
-@implementation RZFilteredAssemblage
+@implementation RZFilteredTree
 
-- (instancetype)initWithAssemblage:(RZTree *)node filteredIndexPaths:(RZMutableIndexPathSet *)filteredIndexPaths
+- (instancetype)initWithNode:(RZTree *)node filteredIndexPaths:(RZMutableIndexPathSet *)filteredIndexPaths
 {
     self = [super init];
     if ( self ) {
-        _assemblage = node;
+        _node = node;
         _filteredIndexPaths = filteredIndexPaths;
     }
     return self;
@@ -28,7 +28,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p %@ filtered from %@", self.class, self, self.filteredIndexPaths, self.assemblage];
+    return [NSString stringWithFormat:@"<%@: %p %@ filtered from %@", self.class, self, self.filteredIndexPaths, self.node];
 }
 
 - (NSUInteger)exposedIndexFromIndex:(NSUInteger)index
@@ -49,23 +49,23 @@
 
 - (id)representedObject
 {
-    return self.assemblage.representedObject;
+    return self.node.representedObject;
 }
 
 - (NSUInteger)countOfElements
 {
-    return [self.assemblage countOfElements] - self.filteredIndexPaths.count;
+    return [self.node countOfElements] - self.filteredIndexPaths.count;
 }
 
 - (id)objectInElementsAtIndex:(NSUInteger)index
 {
     NSUInteger exposedIndex = [self indexFromExposedIndex:index];
-    return [self.assemblage objectInElementsAtIndex:exposedIndex];
+    return [self.node objectInElementsAtIndex:exposedIndex];
 }
 
 - (NSUInteger)elementsIndexOfObject:(id)object
 {
-    NSUInteger index = [self.assemblage elementsIndexOfObject:object];
+    NSUInteger index = [self.node elementsIndexOfObject:object];
     NSUInteger exposedIndex = [self exposedIndexFromIndex:index];
     return exposedIndex;
 }
@@ -73,10 +73,10 @@
 - (id)nodeAtIndex:(NSUInteger)index;
 {
     NSUInteger exposedIndex = [self indexFromExposedIndex:index];
-    RZTree *assemblage = [self.assemblage nodeAtIndex:exposedIndex];
+    RZTree *assemblage = [self.node nodeAtIndex:exposedIndex];
     if ( assemblage ) {
         RZMutableIndexPathSet *childIndexPathSet = [self.filteredIndexPaths indexPathSetAtIndexPath:[NSIndexPath indexPathWithIndex:exposedIndex]];
-        assemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:assemblage filteredIndexPaths:childIndexPathSet];
+        assemblage = [[RZFilteredTree alloc] initWithNode:assemblage filteredIndexPaths:childIndexPathSet];
     }
     return assemblage;
 }
@@ -84,13 +84,13 @@
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
     NSUInteger exposedIndex = [self indexFromExposedIndex:index];
-    [[self.assemblage mutableChildren] removeObjectAtIndex:exposedIndex];
+    [[self.node mutableChildren] removeObjectAtIndex:exposedIndex];
 }
 
 - (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
     NSUInteger exposedIndex = [self indexFromExposedIndex:index];
-    [[self.assemblage mutableChildren] insertObject:object atIndex:exposedIndex];
+    [[self.node mutableChildren] insertObject:object atIndex:exposedIndex];
 }
 
 - (void)addObserver:(nonnull id<RZTreeObserver>)observer

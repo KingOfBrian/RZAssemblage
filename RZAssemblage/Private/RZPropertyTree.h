@@ -1,5 +1,5 @@
 //
-//  RZPropertyAssemblage.h
+//  RZPropertyTree.h
 //  RZTree
 //
 //  Created by Brian King on 3/21/15.
@@ -8,7 +8,7 @@
 
 #import "RZTree.h"
 
-@interface RZPropertyAssemblage : RZTree
+@interface RZPropertyTree : RZTree
 
 - (instancetype)initWithObject:(id)object keypaths:(NSArray *)keypaths;
 

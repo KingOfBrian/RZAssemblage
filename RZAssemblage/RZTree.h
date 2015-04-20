@@ -11,7 +11,7 @@
 FOUNDATION_EXPORT double RZAssemblageVersionNumber;
 FOUNDATION_EXPORT const unsigned char RZAssemblageVersionString[];
 
-OBJC_EXTERN NSString * __nonnull const RZAssemblageUpdateKey;
+OBJC_EXTERN NSString * __nonnull const RZTreeUpdateKey;
 
 @class RZChangeSet;
 @class NSFetchedResultsController;
@@ -25,8 +25,8 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 @protocol RZTreeObserver;
 
 /**
- *  RZTree allows objects to be composed into trees of objects that can be
- *  accessed via NSIndexPath.  It also allows the mutation of the tree to percolate
+ *  RZTree helps building trees of objects that can be
+ *  accessed via NSIndexPath. It also allows the mutation of the tree to percolate
  *  up the tree, and sync with supported UI elements.
  */
 @interface RZTree : NSObject

@@ -16,13 +16,13 @@
 
 @interface RZFRCTests : XCTestCase<RZTreeObserver>
 
-@property (nonatomic, strong) RZAssemblageChangeSet *changeSet;
+@property (nonatomic, strong) RZChangeSet *changeSet;
 
 @end
 
 @implementation RZFRCTests
 
-- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZAssemblageChangeSet *)changeSet;
+- (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet;
 {
     self.changeSet = changeSet;
 }

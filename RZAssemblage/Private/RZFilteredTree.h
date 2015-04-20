@@ -1,5 +1,5 @@
 //
-//  RZFilteredAssemblage.h
+//  RZFilteredTree.h
 //  RZTree
 //
 //  Created by Brian King on 4/14/15.
@@ -12,9 +12,9 @@
  * Private subclass for filtering an arbitrary assemblage. This does not maintain the filteredIndexPaths, it just
  * filters the injected assemblage
  */
-@interface RZFilteredAssemblage : RZTree
+@interface RZFilteredTree : RZTree
 
-- (instancetype)initWithAssemblage:(RZTree *)node filteredIndexPaths:(RZMutableIndexPathSet *)filteredIndexPaths;
+- (instancetype)initWithNode:(RZTree *)node filteredIndexPaths:(RZMutableIndexPathSet *)filteredIndexPaths;
 
 @property (strong, nonatomic, readonly) RZMutableIndexPathSet *filteredIndexPaths;
 

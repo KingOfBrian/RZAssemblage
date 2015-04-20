@@ -1,5 +1,5 @@
 //
-//  RZModifiedAssemblage.h
+//  RZModifiedTree.h
 //  RZTree
 //
 //  Created by Brian King on 1/31/15.

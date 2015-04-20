@@ -82,7 +82,7 @@ static BOOL changeNotifications = YES;
     return pinkFloyd;
 }
 
-+ (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
++ (NSSet *)keyPathsForValuesAffectingRZTreeUpdateKey
 {
     return changeNotifications ? [NSSet setWithObjects:@"name", nil] : nil;
 }
@@ -91,7 +91,7 @@ static BOOL changeNotifications = YES;
 
 @implementation Albumn
 
-+ (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
++ (NSSet *)keyPathsForValuesAffectingRZTreeUpdateKey
 {
     return changeNotifications ? [NSSet setWithObjects:@"name", nil] : nil;
 }
@@ -100,7 +100,7 @@ static BOOL changeNotifications = YES;
 
 @implementation Song
 
-+ (NSSet *)keyPathsForValuesAffectingRZAssemblageUpdateKey
++ (NSSet *)keyPathsForValuesAffectingRZTreeUpdateKey
 {
     return changeNotifications ? [NSSet setWithObjects:@"name", @"duration", nil] : nil;
 }

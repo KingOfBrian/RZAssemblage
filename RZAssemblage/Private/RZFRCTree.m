@@ -1,14 +1,14 @@
 //
-//  RZFRCAssemblage.m
+//  RZFRCTree.m
 //  RZTree
 //
 //  Created by Brian King on 1/29/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZFRCAssemblage.h"
+#import "RZFRCTree.h"
 #import "NSIndexPath+RZAssemblage.h"
-#import "RZArrayAssemblage.h"
+#import "RZArrayBackedTree.h"
 #import "RZAssemblageDefines.h"
 #import "RZChangeSet+Private.h"
 
@@ -17,14 +17,14 @@
 #define RZAssertContainerIndexPath(indexPath) RZAssertIndexPathLength(indexPath, -1)
 #define RZAssertItemIndexPath(indexPath) RZAssertIndexPathLength(indexPath, 0)
 
-@interface RZFRCAssemblage() <NSFetchedResultsControllerDelegate>
+@interface RZFRCTree() <NSFetchedResultsControllerDelegate>
 
 @property (assign, nonatomic, readonly) BOOL hasSections;
 @property (strong, nonatomic) RZChangeSet *changeSet;
 
 @end
 
-@implementation RZFRCAssemblage
+@implementation RZFRCTree
 
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
 {
@@ -108,7 +108,7 @@
     RZTree *node = nil;
     if ( self.hasSections ) {
         id<NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[index];
-        node = [[RZStaticArrayAssemblage alloc] initWithArray:sectionInfo.objects representingObject:sectionInfo];
+        node = [[RZStaticArrayTree alloc] initWithChildren:sectionInfo.objects representingObject:sectionInfo];
     }
     return node;
 }

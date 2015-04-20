@@ -1,5 +1,5 @@
 //
-//  RZArrayAssemblage.h
+//  RZArrayTree.h
 //  RZTree
 //
 //  Created by Brian King on 3/21/15.
@@ -8,11 +8,11 @@
 
 #import "RZTree.h"
 
-@interface RZArrayAssemblage : RZTree
+@interface RZArrayBackedTree : RZTree
 
-- (instancetype)initWithArray:(NSArray *)array;
+- (instancetype)initWithChildren:(NSArray *)array;
 
-- (instancetype)initWithArray:(NSArray *)array representingObject:(id)representingObject;
+- (instancetype)initWithChildren:(NSArray *)array representingObject:(id)representingObject;
 
 @property (strong, nonatomic) id representedObject;
 
@@ -20,6 +20,6 @@
 
 @end
 
-@interface RZStaticArrayAssemblage : RZArrayAssemblage
+@interface RZStaticArrayTree : RZArrayBackedTree
 
 @end

@@ -1,12 +1,12 @@
 //
-//  RZProxyAssemblage.m
+//  RZProxyTree.m
 //  RZTree
 //
 //  Created by Brian King on 3/19/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZProxyAssemblage.h"
+#import "RZProxyTree.h"
 #import "RZChangeSet.h"
 #import "RZTree+Private.h"
 #import "RZIndexPathSet.h"
@@ -14,14 +14,14 @@
 
 static void *const RZProxyKeyPathContext = (void *)&RZProxyKeyPathContext;
 
-@interface RZProxyAssemblage ()
+@interface RZProxyTree ()
 
 @property (copy, nonatomic, readonly) NSString *keypath;
 @property (copy, nonatomic, readonly) NSArray *nextKeyPaths;
 
 @end
 
-@implementation RZProxyAssemblage
+@implementation RZProxyTree
 
 - (instancetype)initWithObject:(id)object keypath:(NSString *)keypath
 {
@@ -51,7 +51,7 @@ static void *const RZProxyKeyPathContext = (void *)&RZProxyKeyPathContext;
                 context:RZProxyKeyPathContext];
 
     NSMutableArray *proxy = [object mutableArrayValueForKeyPath:keypath];
-    self = [self initWithArray:proxy representingObject:object];
+    self = [self initWithChildren:proxy representingObject:object];
     if ( self ) {
         _keypath = keypath;
         _nextKeyPaths = keypaths;
@@ -105,7 +105,7 @@ static void *const RZProxyKeyPathContext = (void *)&RZProxyKeyPathContext;
     if ( node == nil && self.isRepeatingKeyPath ) {
         id object = [self objectInElementsAtIndex:index];
         [self removeMonitorsForObject:object];
-        node = [[RZProxyAssemblage alloc] initWithObject:object childKey:self.keypath];
+        node = [[RZProxyTree alloc] initWithObject:object childKey:self.keypath];
         [self addMonitorsForObject:node];
         [self disableObservation];
         [self.childrenStorage replaceObjectAtIndex:index withObject:node];
@@ -114,7 +114,7 @@ static void *const RZProxyKeyPathContext = (void *)&RZProxyKeyPathContext;
     else if ( node == nil && self.nextKeyPaths.count > 0 ) {
         id object = [self objectInElementsAtIndex:index];
         [self removeMonitorsForObject:object];
-        node = [[RZProxyAssemblage alloc] initWithObject:object keypaths:self.nextKeyPaths];
+        node = [[RZProxyTree alloc] initWithObject:object keypaths:self.nextKeyPaths];
         [self addMonitorsForObject:node];
         [self disableObservation];
         [self.childrenStorage replaceObjectAtIndex:index withObject:node];

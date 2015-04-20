@@ -1,5 +1,5 @@
 //
-//  RZAssemblage.h
+//  RZTree.h
 //  RZAssemblage
 //
 //  Created by Brian King on 4/20/15.
@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RZAssemblageChangeSet.h"
+#import "RZChangeSet.h"
 #import "RZTree.h"
 #import "RZFilterTree.h"

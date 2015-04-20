@@ -1,25 +1,25 @@
 //
-//  RZArrayAssemblage.m
+//  RZArrayTree.m
 //  RZTree
 //
 //  Created by Brian King on 3/21/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZArrayAssemblage.h"
+#import "RZArrayBackedTree.h"
 #import "RZTree+Private.h"
 
-NSString *const RZAssemblageUpdateKey = @"RZAssemblageUpdateKey";
-static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContext;
+NSString *const RZTreeUpdateKey = @"RZTreeUpdateKey";
+static void *const RZTreeUpdateContext = (void *)&RZTreeUpdateContext;
 
-@implementation RZArrayAssemblage
+@implementation RZArrayBackedTree
 
 + (BOOL)shouldObserveContents
 {
     return YES;
 }
 
-- (instancetype)initWithArray:(NSArray *)array representingObject:(id)representingObject;
+- (instancetype)initWithChildren:(NSArray *)array representingObject:(id)representingObject;
 {
     self = [super init];
     if ( self ) {
@@ -34,9 +34,9 @@ static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContex
     return self;
 }
 
-- (instancetype)initWithArray:(NSArray *)array
+- (instancetype)initWithChildren:(NSArray *)array
 {
-    return [self initWithArray:array representingObject:nil];
+    return [self initWithChildren:array representingObject:nil];
 }
 
 - (void)dealloc
@@ -112,12 +112,12 @@ static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContex
 {
     [super addMonitorsForObject:anObject];
     if ( self.class.shouldObserveContents &&
-        [[anObject class] keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
+        [[anObject class] keyPathsForValuesAffectingValueForKey:RZTreeUpdateKey].count ) {
         RZAssemblageLog(@"%@ adding observer %@", self, anObject);
         [anObject addObserver:self
-                   forKeyPath:RZAssemblageUpdateKey
+                   forKeyPath:RZTreeUpdateKey
                       options:NSKeyValueObservingOptionNew
-                      context:RZAssemblageUpdateContext];
+                      context:RZTreeUpdateContext];
     }
 }
 
@@ -125,17 +125,17 @@ static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContex
 {
     [super removeMonitorsForObject:anObject];
     if ( self.class.shouldObserveContents &&
-        [[anObject class] keyPathsForValuesAffectingValueForKey:RZAssemblageUpdateKey].count ) {
+        [[anObject class] keyPathsForValuesAffectingValueForKey:RZTreeUpdateKey].count ) {
         RZAssemblageLog(@"%@ removing observer %@", self, anObject);
         [anObject removeObserver:self
-                      forKeyPath:RZAssemblageUpdateKey
-                         context:RZAssemblageUpdateContext];
+                      forKeyPath:RZTreeUpdateKey
+                         context:RZTreeUpdateContext];
     }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ( context == RZAssemblageUpdateContext ) {
+    if ( context == RZTreeUpdateContext ) {
         [self openBatchUpdate];
         if ( object == self.representedObject ) {
             [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndexes:NULL length:0]];
@@ -153,7 +153,7 @@ static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContex
 
 @end
 
-@implementation RZStaticArrayAssemblage
+@implementation RZStaticArrayTree
 
 + (BOOL)shouldObserveContents
 {
@@ -164,7 +164,7 @@ static void *const RZAssemblageUpdateContext = (void *)&RZAssemblageUpdateContex
 
 @implementation NSObject (RZAssemblageUpdateKey)
 
-- (id)RZAssemblageUpdateKey { return  nil; }
-- (void)setRZAssemblageUpdateKey:(id)RZAssemblageUpdateKey {}
+- (id)RZTreeUpdateKey { return  nil; }
+- (void)setRZTreeUpdateKey:(id)RZTreeUpdateKey {}
 
 @end

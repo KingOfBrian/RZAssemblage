@@ -1,24 +1,24 @@
 //
-//  RZPropertyAssemblage.m
+//  RZPropertyTree.m
 //  RZTree
 //
 //  Created by Brian King on 3/21/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import "RZPropertyAssemblage.h"
+#import "RZPropertyTree.h"
 #import "RZTree+Private.h"
 
 static void *const RZPropertyContext = (void *)&RZPropertyContext;
 
-@interface RZPropertyAssemblage ()
+@interface RZPropertyTree ()
 
 @property (strong, nonatomic) id representedObject;
 @property (strong, nonatomic) NSMutableArray *keypaths;
 
 @end
 
-@implementation RZPropertyAssemblage
+@implementation RZPropertyTree
 
 - (instancetype)initWithObject:(id)object keypaths:(NSArray *)keypaths;
 {

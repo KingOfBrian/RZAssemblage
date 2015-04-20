@@ -1,5 +1,5 @@
     //
-//  RZModifiedAssemblage.m
+//  RZModifiedTree.m
 //  RZTree
 //
 //  Created by Brian King on 1/31/15.
@@ -7,7 +7,7 @@
 //
 
 #import "RZFilterTree.h"
-#import "RZFilteredAssemblage.h"
+#import "RZFilteredTree.h"
 #import "RZTree+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZAssemblageDefines.h"
@@ -16,7 +16,7 @@
 
 @interface RZFilterTree()
 
-@property (strong, nonatomic) RZFilteredAssemblage *filteredAssemblage;
+@property (strong, nonatomic) RZFilteredTree *filteredAssemblage;
 @property (strong, nonatomic) RZTree *unfilteredAssemblage;
 @property (strong, nonatomic) RZMutableIndexPathSet *filteredIndexPaths;
 
@@ -29,7 +29,7 @@
     self = [super init];
     if ( self ) {
         _filteredIndexPaths = [RZMutableIndexPathSet set];
-        _filteredAssemblage = [[RZFilteredAssemblage alloc] initWithAssemblage:node filteredIndexPaths:_filteredIndexPaths];
+        _filteredAssemblage = [[RZFilteredTree alloc] initWithNode:node filteredIndexPaths:_filteredIndexPaths];
         _unfilteredAssemblage = node;
         [_unfilteredAssemblage addObserver:self];
     }

@@ -39,18 +39,18 @@
 		ABD2E1F31ADF49AD0029E98D /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1EE1ADF49AD0029E98D /* Team.m */; };
 		ABD2E1F81ADF4A7F0029E98D /* RZAssemblageTestData.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1F71ADF4A7F0029E98D /* RZAssemblageTestData.m */; };
 		ABD2E1FA1ADF4AA10029E98D /* RZAssemblageTestData.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1F91ADF4AA10029E98D /* RZAssemblageTestData.h */; };
-		ABD2E2081ADF52500029E98D /* RZArrayAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1FC1ADF52500029E98D /* RZArrayAssemblage.h */; };
-		ABD2E2091ADF52500029E98D /* RZArrayAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1FD1ADF52500029E98D /* RZArrayAssemblage.m */; };
-		ABD2E20A1ADF52500029E98D /* RZFilteredAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1FE1ADF52500029E98D /* RZFilteredAssemblage.h */; };
-		ABD2E20B1ADF52500029E98D /* RZFilteredAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1FF1ADF52500029E98D /* RZFilteredAssemblage.m */; };
-		ABD2E20C1ADF52500029E98D /* RZFRCAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2001ADF52500029E98D /* RZFRCAssemblage.h */; };
-		ABD2E20D1ADF52500029E98D /* RZFRCAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2011ADF52500029E98D /* RZFRCAssemblage.m */; };
-		ABD2E20E1ADF52500029E98D /* RZJoinAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2021ADF52500029E98D /* RZJoinAssemblage.h */; };
-		ABD2E20F1ADF52500029E98D /* RZJoinAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2031ADF52500029E98D /* RZJoinAssemblage.m */; };
-		ABD2E2101ADF52500029E98D /* RZPropertyAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2041ADF52500029E98D /* RZPropertyAssemblage.h */; };
-		ABD2E2111ADF52500029E98D /* RZPropertyAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2051ADF52500029E98D /* RZPropertyAssemblage.m */; };
-		ABD2E2121ADF52500029E98D /* RZProxyAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2061ADF52500029E98D /* RZProxyAssemblage.h */; };
-		ABD2E2131ADF52500029E98D /* RZProxyAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2071ADF52500029E98D /* RZProxyAssemblage.m */; };
+		ABD2E2081ADF52500029E98D /* RZArrayBackedTree.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1FC1ADF52500029E98D /* RZArrayBackedTree.h */; };
+		ABD2E2091ADF52500029E98D /* RZArrayBackedTree.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1FD1ADF52500029E98D /* RZArrayBackedTree.m */; };
+		ABD2E20A1ADF52500029E98D /* RZFilteredTree.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1FE1ADF52500029E98D /* RZFilteredTree.h */; };
+		ABD2E20B1ADF52500029E98D /* RZFilteredTree.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E1FF1ADF52500029E98D /* RZFilteredTree.m */; };
+		ABD2E20C1ADF52500029E98D /* RZFRCTree.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2001ADF52500029E98D /* RZFRCTree.h */; };
+		ABD2E20D1ADF52500029E98D /* RZFRCTree.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2011ADF52500029E98D /* RZFRCTree.m */; };
+		ABD2E20E1ADF52500029E98D /* RZJoinedTree.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2021ADF52500029E98D /* RZJoinedTree.h */; };
+		ABD2E20F1ADF52500029E98D /* RZJoinedTree.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2031ADF52500029E98D /* RZJoinedTree.m */; };
+		ABD2E2101ADF52500029E98D /* RZPropertyTree.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2041ADF52500029E98D /* RZPropertyTree.h */; };
+		ABD2E2111ADF52500029E98D /* RZPropertyTree.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2051ADF52500029E98D /* RZPropertyTree.m */; };
+		ABD2E2121ADF52500029E98D /* RZProxyTree.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2061ADF52500029E98D /* RZProxyTree.h */; };
+		ABD2E2131ADF52500029E98D /* RZProxyTree.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2071ADF52500029E98D /* RZProxyTree.m */; };
 		ABD2E2161ADF52990029E98D /* NSIndexPath+RZAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2141ADF52990029E98D /* NSIndexPath+RZAssemblage.h */; };
 		ABD2E2171ADF52990029E98D /* NSIndexPath+RZAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2151ADF52990029E98D /* NSIndexPath+RZAssemblage.m */; };
 		ABD2E2191ADF52BD0029E98D /* RZAssemblageDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2181ADF52BD0029E98D /* RZAssemblageDefines.h */; };
@@ -181,18 +181,18 @@
 		ABD2E1EE1ADF49AD0029E98D /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
 		ABD2E1F71ADF4A7F0029E98D /* RZAssemblageTestData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTestData.m; sourceTree = "<group>"; };
 		ABD2E1F91ADF4AA10029E98D /* RZAssemblageTestData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTestData.h; sourceTree = "<group>"; };
-		ABD2E1FC1ADF52500029E98D /* RZArrayAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZArrayAssemblage.h; sourceTree = "<group>"; };
-		ABD2E1FD1ADF52500029E98D /* RZArrayAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZArrayAssemblage.m; sourceTree = "<group>"; };
-		ABD2E1FE1ADF52500029E98D /* RZFilteredAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFilteredAssemblage.h; sourceTree = "<group>"; };
-		ABD2E1FF1ADF52500029E98D /* RZFilteredAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFilteredAssemblage.m; sourceTree = "<group>"; };
-		ABD2E2001ADF52500029E98D /* RZFRCAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFRCAssemblage.h; sourceTree = "<group>"; };
-		ABD2E2011ADF52500029E98D /* RZFRCAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFRCAssemblage.m; sourceTree = "<group>"; };
-		ABD2E2021ADF52500029E98D /* RZJoinAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZJoinAssemblage.h; sourceTree = "<group>"; };
-		ABD2E2031ADF52500029E98D /* RZJoinAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZJoinAssemblage.m; sourceTree = "<group>"; };
-		ABD2E2041ADF52500029E98D /* RZPropertyAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZPropertyAssemblage.h; sourceTree = "<group>"; };
-		ABD2E2051ADF52500029E98D /* RZPropertyAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZPropertyAssemblage.m; sourceTree = "<group>"; };
-		ABD2E2061ADF52500029E98D /* RZProxyAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZProxyAssemblage.h; sourceTree = "<group>"; };
-		ABD2E2071ADF52500029E98D /* RZProxyAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZProxyAssemblage.m; sourceTree = "<group>"; };
+		ABD2E1FC1ADF52500029E98D /* RZArrayBackedTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZArrayBackedTree.h; sourceTree = "<group>"; };
+		ABD2E1FD1ADF52500029E98D /* RZArrayBackedTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZArrayBackedTree.m; sourceTree = "<group>"; };
+		ABD2E1FE1ADF52500029E98D /* RZFilteredTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFilteredTree.h; sourceTree = "<group>"; };
+		ABD2E1FF1ADF52500029E98D /* RZFilteredTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFilteredTree.m; sourceTree = "<group>"; };
+		ABD2E2001ADF52500029E98D /* RZFRCTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZFRCTree.h; sourceTree = "<group>"; };
+		ABD2E2011ADF52500029E98D /* RZFRCTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFRCTree.m; sourceTree = "<group>"; };
+		ABD2E2021ADF52500029E98D /* RZJoinedTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZJoinedTree.h; sourceTree = "<group>"; };
+		ABD2E2031ADF52500029E98D /* RZJoinedTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZJoinedTree.m; sourceTree = "<group>"; };
+		ABD2E2041ADF52500029E98D /* RZPropertyTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZPropertyTree.h; sourceTree = "<group>"; };
+		ABD2E2051ADF52500029E98D /* RZPropertyTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZPropertyTree.m; sourceTree = "<group>"; };
+		ABD2E2061ADF52500029E98D /* RZProxyTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZProxyTree.h; sourceTree = "<group>"; };
+		ABD2E2071ADF52500029E98D /* RZProxyTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZProxyTree.m; sourceTree = "<group>"; };
 		ABD2E2141ADF52990029E98D /* NSIndexPath+RZAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+RZAssemblage.h"; sourceTree = "<group>"; };
 		ABD2E2151ADF52990029E98D /* NSIndexPath+RZAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+RZAssemblage.m"; sourceTree = "<group>"; };
 		ABD2E2181ADF52BD0029E98D /* RZAssemblageDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageDefines.h; sourceTree = "<group>"; };
@@ -416,18 +416,18 @@
 				ABD2E2151ADF52990029E98D /* NSIndexPath+RZAssemblage.m */,
 				ABD2E2761AE04A400029E98D /* NSIndexSet+RZAssemblage.h */,
 				ABD2E2771AE04A400029E98D /* NSIndexSet+RZAssemblage.m */,
-				ABD2E1FC1ADF52500029E98D /* RZArrayAssemblage.h */,
-				ABD2E1FD1ADF52500029E98D /* RZArrayAssemblage.m */,
-				ABD2E1FE1ADF52500029E98D /* RZFilteredAssemblage.h */,
-				ABD2E1FF1ADF52500029E98D /* RZFilteredAssemblage.m */,
-				ABD2E2001ADF52500029E98D /* RZFRCAssemblage.h */,
-				ABD2E2011ADF52500029E98D /* RZFRCAssemblage.m */,
-				ABD2E2021ADF52500029E98D /* RZJoinAssemblage.h */,
-				ABD2E2031ADF52500029E98D /* RZJoinAssemblage.m */,
-				ABD2E2041ADF52500029E98D /* RZPropertyAssemblage.h */,
-				ABD2E2051ADF52500029E98D /* RZPropertyAssemblage.m */,
-				ABD2E2061ADF52500029E98D /* RZProxyAssemblage.h */,
-				ABD2E2071ADF52500029E98D /* RZProxyAssemblage.m */,
+				ABD2E1FC1ADF52500029E98D /* RZArrayBackedTree.h */,
+				ABD2E1FD1ADF52500029E98D /* RZArrayBackedTree.m */,
+				ABD2E1FE1ADF52500029E98D /* RZFilteredTree.h */,
+				ABD2E1FF1ADF52500029E98D /* RZFilteredTree.m */,
+				ABD2E2001ADF52500029E98D /* RZFRCTree.h */,
+				ABD2E2011ADF52500029E98D /* RZFRCTree.m */,
+				ABD2E2021ADF52500029E98D /* RZJoinedTree.h */,
+				ABD2E2031ADF52500029E98D /* RZJoinedTree.m */,
+				ABD2E2041ADF52500029E98D /* RZPropertyTree.h */,
+				ABD2E2051ADF52500029E98D /* RZPropertyTree.m */,
+				ABD2E2061ADF52500029E98D /* RZProxyTree.h */,
+				ABD2E2071ADF52500029E98D /* RZProxyTree.m */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -467,22 +467,22 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABD2E2081ADF52500029E98D /* RZArrayAssemblage.h in Headers */,
-				ABD2E20C1ADF52500029E98D /* RZFRCAssemblage.h in Headers */,
+				ABD2E2081ADF52500029E98D /* RZArrayBackedTree.h in Headers */,
+				ABD2E20C1ADF52500029E98D /* RZFRCTree.h in Headers */,
 				AB9B31B61A8679FB00C39876 /* RZChangeSet.h in Headers */,
 				ABD2E2191ADF52BD0029E98D /* RZAssemblageDefines.h in Headers */,
 				AB04BABE1AE57F7E00B71448 /* RZAssemblage.h in Headers */,
 				ABD2E2781AE04A400029E98D /* NSIndexSet+RZAssemblage.h in Headers */,
-				ABD2E2121ADF52500029E98D /* RZProxyAssemblage.h in Headers */,
+				ABD2E2121ADF52500029E98D /* RZProxyTree.h in Headers */,
 				ABD2E21D1ADF538B0029E98D /* RZChangeSet+Private.h in Headers */,
 				ABAC82DA1A7CA8A5001CDC27 /* RZFilterTree.h in Headers */,
 				ABADD3681A776EE100397031 /* RZTree.h in Headers */,
-				ABD2E20E1ADF52500029E98D /* RZJoinAssemblage.h in Headers */,
+				ABD2E20E1ADF52500029E98D /* RZJoinedTree.h in Headers */,
 				ABD2E2161ADF52990029E98D /* NSIndexPath+RZAssemblage.h in Headers */,
-				ABD2E20A1ADF52500029E98D /* RZFilteredAssemblage.h in Headers */,
+				ABD2E20A1ADF52500029E98D /* RZFilteredTree.h in Headers */,
 				ABD2E2201ADF54100029E98D /* RZIndexPathSet.h in Headers */,
 				ABD2E21C1ADF538B0029E98D /* RZTree+Private.h in Headers */,
-				ABD2E2101ADF52500029E98D /* RZPropertyAssemblage.h in Headers */,
+				ABD2E2101ADF52500029E98D /* RZPropertyTree.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,18 +727,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABD2E2131ADF52500029E98D /* RZProxyAssemblage.m in Sources */,
+				ABD2E2131ADF52500029E98D /* RZProxyTree.m in Sources */,
 				ABAC82DB1A7CA8A5001CDC27 /* RZFilterTree.m in Sources */,
-				ABD2E20F1ADF52500029E98D /* RZJoinAssemblage.m in Sources */,
+				ABD2E20F1ADF52500029E98D /* RZJoinedTree.m in Sources */,
 				ABD2E2171ADF52990029E98D /* NSIndexPath+RZAssemblage.m in Sources */,
 				ABD2E2791AE04A400029E98D /* NSIndexSet+RZAssemblage.m in Sources */,
-				ABD2E2111ADF52500029E98D /* RZPropertyAssemblage.m in Sources */,
+				ABD2E2111ADF52500029E98D /* RZPropertyTree.m in Sources */,
 				ABD2E2211ADF54100029E98D /* RZIndexPathSet.m in Sources */,
 				ABADD3691A776EE100397031 /* RZTree.m in Sources */,
-				ABD2E20D1ADF52500029E98D /* RZFRCAssemblage.m in Sources */,
+				ABD2E20D1ADF52500029E98D /* RZFRCTree.m in Sources */,
 				AB9B31B71A8679FB00C39876 /* RZChangeSet.m in Sources */,
-				ABD2E20B1ADF52500029E98D /* RZFilteredAssemblage.m in Sources */,
-				ABD2E2091ADF52500029E98D /* RZArrayAssemblage.m in Sources */,
+				ABD2E20B1ADF52500029E98D /* RZFilteredTree.m in Sources */,
+				ABD2E2091ADF52500029E98D /* RZArrayBackedTree.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

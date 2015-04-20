@@ -7,7 +7,7 @@
 //
 
 @import UIKit;
-#import "RZProxyAssemblage.h"
+#import "RZProxyTree.h"
 #import "RZFilterTree.h"
 
 #import "RZTree+Private.h"
@@ -48,7 +48,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     Artist *pf = [Artist pinkFloyd];
 
-    RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypath:@"songs"];
+    RZProxyTree *a = [[RZProxyTree alloc] initWithObject:pf keypath:@"songs"];
     Artist *rPF = [a objectAtIndexPath:nil];
     XCTAssertNotNil(rPF);
     Song *s = [a objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
@@ -61,7 +61,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     Artist *pf = [Artist pinkFloyd];
 
-    RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
+    RZProxyTree *a = [[RZProxyTree alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
     Albumn *darkSide = [a objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
     XCTAssertNotNil(darkSide);
     XCTAssertEqual(darkSide, [a objectAtIndexPath:[NSIndexPath indexPathWithIndex:0]]);
@@ -76,7 +76,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 - (void)testEqualAssemblageExpansion
 {
     Artist *pf = [Artist pinkFloyd];
-    RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs"]];
+    RZProxyTree *a = [[RZProxyTree alloc] initWithObject:pf keypaths:@[@"albumns", @"songs"]];
     XCTAssertTrue([[a nodeAtIndex:0] isKindOfClass:[RZTree class]]);
     XCTAssertEqual([a nodeAtIndex:0], [a nodeAtIndex:0]);
 }
@@ -84,7 +84,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 - (void)testExternalProxy
 {
     self.testProxyArray = [NSMutableArray array];
-    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
+    RZProxyTree *pa = [[RZProxyTree alloc] initWithObject:self keypath:@"testProxyArray"];
     [pa addObserver:self];
     NSMutableArray *externalProxy = [self mutableArrayValueForKey:@"testProxyArray"];
     // This only causes the observer change event
@@ -99,7 +99,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 - (void)testInternalProxy
 {
     self.testProxyArray = [NSArray array];
-    RZProxyAssemblage *pa = [[RZProxyAssemblage alloc] initWithObject:self keypath:@"testProxyArray"];
+    RZProxyTree *pa = [[RZProxyTree alloc] initWithObject:self keypath:@"testProxyArray"];
     [pa addObserver:self];
     NSMutableArray *proxyArray = [pa mutableChildren];
     [pa openBatchUpdate];
@@ -141,7 +141,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 {
     NSIndexPath *top = [NSIndexPath indexPathWithIndexes:topSongPath length:2];
     Artist *pf = [Artist pinkFloyd];
-    RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
+    RZProxyTree *a = [[RZProxyTree alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
     [a addObserver:self];
 
     pf.name = @"Pink-ish Floyd";
@@ -164,7 +164,7 @@ NSUInteger firstWriterPath[3] = {0,0,0};
 - (void)testTreeFiltering
 {
     Artist *pf = [Artist pinkFloyd];
-    RZProxyAssemblage *a = [[RZProxyAssemblage alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
+    RZProxyTree *a = [[RZProxyTree alloc] initWithObject:pf keypaths:@[@"albumns", @"songs", @"writers"]];
     RZFilterTree *f = [[RZFilterTree alloc] initWithAssemblage:a];
     [f addObserver:self];
 

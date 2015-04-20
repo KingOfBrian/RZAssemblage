@@ -10,7 +10,7 @@
 
 @import CoreData;
 
-@interface RZFRCAssemblage : RZTree
+@interface RZFRCTree : RZTree
 
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
 
