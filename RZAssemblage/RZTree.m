@@ -18,7 +18,7 @@
 #import "RZPropertyTree.h"
 #import "RZFRCTree.h"
 
-static NSString *RZAssemblageElementsKey = @"elements";
+static NSString *RZTreeElementsKey = @"elements";
 
 @implementation RZTree
 
@@ -59,7 +59,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 + (nonnull RZTree<RZFilterableTree> *)filterableNodeWithNode:(nonnull RZTree *)node;
 {
-    return [[RZFilterTree alloc] initWithAssemblage:node];
+    return [[RZFilterTree alloc] initWithNode:node];
 }
 
 - (nullable id)representedObject
@@ -72,13 +72,13 @@ static NSString *RZAssemblageElementsKey = @"elements";
 - (nonnull RZTree *)nodeAtIndexPath:(nonnull NSIndexPath *)indexPath
 {
     NSUInteger length = [indexPath length];
-    RZTree *assemblage = self;
+    RZTree *node = self;
 
     if ( length > 0 ) {
-        assemblage = [self nodeAtIndex:[indexPath indexAtPosition:0]];
-        assemblage = [assemblage nodeAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
+        node = [self nodeAtIndex:[indexPath indexAtPosition:0]];
+        node = [node nodeAtIndexPath:[indexPath rz_indexPathByRemovingFirstIndex]];
     }
-    return assemblage;
+    return node;
 }
 
 - (nullable id)objectAtIndexPath:(nullable NSIndexPath *)indexPath
@@ -114,10 +114,10 @@ static NSString *RZAssemblageElementsKey = @"elements";
     if ( stop == NO ) {
         for ( NSUInteger index = 0; index < self.children.count; index++ ) {
             NSIndexPath *childIndexPath = [indexPath indexPathByAddingIndex:index];
-            RZTree *assemblage = [self nodeAtIndex:index];
-            if ( assemblage ) {
+            RZTree *node = [self nodeAtIndex:index];
+            if ( node ) {
                 if ( breadthFirst == NO ) {
-                    stop = [assemblage enumerateObjectsWithOptions:options forIndexPath:childIndexPath usingBlock:block];
+                    stop = [node enumerateObjectsWithOptions:options forIndexPath:childIndexPath usingBlock:block];
                 }
             }
             else {
@@ -134,8 +134,8 @@ static NSString *RZAssemblageElementsKey = @"elements";
         if ( breadthFirst && stop == NO ) {
             for ( NSUInteger index = 0; index < self.children.count; index++ ) {
                 NSIndexPath *childIndexPath = [indexPath indexPathByAddingIndex:index];
-                RZTree *assemblage = [self nodeAtIndex:index];
-                if ( [assemblage enumerateObjectsWithOptions:options forIndexPath:childIndexPath usingBlock:block] ) {
+                RZTree *node = [self nodeAtIndex:index];
+                if ( [node enumerateObjectsWithOptions:options forIndexPath:childIndexPath usingBlock:block] ) {
                     stop = YES;
                     break;
                 }
@@ -157,12 +157,12 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 - (nullable NSMutableArray *)mutableChildren
 {
-    return [self mutableArrayValueForKey:RZAssemblageElementsKey];
+    return [self mutableArrayValueForKey:RZTreeElementsKey];
 }
 
 - (nonnull NSArray *)children
 {
-    return [self valueForKey:RZAssemblageElementsKey];
+    return [self valueForKey:RZTreeElementsKey];
 }
 
 #pragma mark - Batching
@@ -192,7 +192,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
     }
 }
 
-#pragma mark - RZAssemblageDelegate
+#pragma mark - RZTreeObserver
 
 @synthesize observers = _observers;
 
@@ -237,7 +237,7 @@ static NSString *RZAssemblageElementsKey = @"elements";
     NSParameterAssert(anObject);
     NSUInteger index = [self elementsIndexOfObject:anObject];
     RZAssemblageLog(@"%p:Update %@ at %zd", self, anObject, index);
-    NSAssert(index != NSNotFound, @"Object is not part of assemblage");
+    NSAssert(index != NSNotFound, @"Object is not part of node");
     [self openBatchUpdate];
     [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:index]];
     [self closeBatchUpdate];
@@ -245,10 +245,10 @@ static NSString *RZAssemblageElementsKey = @"elements";
 
 - (void)node:(nonnull RZTree *)node didEndUpdatesWithChangeSet:(nonnull RZChangeSet *)changeSet
 {
-    RZRaize(self.changeSet != nil, @"Must begin an update on the parent assemblage before mutating a child assemblage");
-    NSUInteger assemblageIndex = [self indexOfNode:node];
+    RZRaize(self.changeSet != nil, @"Must begin an update on the parent node before mutating a child node");
+    NSUInteger nodeIndex = [self indexOfNode:node];
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
-        return [indexPath rz_indexPathByPrependingIndex:assemblageIndex];
+        return [indexPath rz_indexPathByPrependingIndex:nodeIndex];
     }];
     [self closeBatchUpdate];
 }
@@ -300,8 +300,8 @@ static NSString *RZAssemblageElementsKey = @"elements";
 {
     NSUInteger index = NSNotFound;
     for ( NSUInteger i = 0; i < [self countOfElements]; i++ ) {
-        RZTree *childAssemblage = [self nodeAtIndex:i];
-        if ( childAssemblage == node ) {
+        RZTree *childNode = [self nodeAtIndex:i];
+        if ( childNode == node ) {
             index = i;
             break;
         }

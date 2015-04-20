@@ -10,7 +10,7 @@
 
 @interface RZFilterTree : RZTree <RZFilterableTree>
 
-- (instancetype)initWithAssemblage:(RZTree *)node;
+- (instancetype)initWithNode:(RZTree *)node;
 
 @property (strong, nonatomic) NSPredicate *filter;
 

@@ -102,7 +102,7 @@ static void *const RZPropertyContext = (void *)&RZPropertyContext;
 
 - (void)insertObject:(NSString *)keypath inElementsAtIndex:(NSUInteger)index
 {
-    RZRaize([keypath isKindOfClass:[NSString class]], @"Can only insert valid keypaths into a property assemblage");
+    RZRaize([keypath isKindOfClass:[NSString class]], @"Can only insert valid keypaths into a property tree");
     [self openBatchUpdate];
     [self.representedObject addObserver:self
                              forKeyPath:keypath

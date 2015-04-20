@@ -121,7 +121,7 @@
     }
 }
 
-- (NSArray *)objectsForIndexPaths:(NSArray *)indexPaths inAssemblage:(RZTree *)node
+- (NSArray *)objectsForIndexPaths:(NSArray *)indexPaths inNode:(RZTree *)node
 {
     NSMutableArray *objects = [NSMutableArray array];
     for ( NSIndexPath *indexPath in indexPaths ) {
@@ -134,7 +134,7 @@
 {
     NSArray *insertedIndexPaths = self.insertedIndexPaths;
 
-    NSArray *insertedObjects = [self objectsForIndexPaths:insertedIndexPaths inAssemblage:node];
+    NSArray *insertedObjects = [self objectsForIndexPaths:insertedIndexPaths inNode:node];
 
     NSMutableDictionary *moveFromToIndexPathMap = [NSMutableDictionary dictionary];
     [insertedObjects enumerateObjectsUsingBlock:^(id insertedObject, NSUInteger insertedIndex, BOOL *stop) {
@@ -170,7 +170,7 @@
     self.moveFromToIndexPathMap[index1] = index2;
 }
 
-- (void)mergeChangeSet:(RZChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform
+- (void)mergeChangeSet:(RZChangeSet *)changeSet withIndexPathTransform:(RZChangeSetIndexPathTransform)transform
 {
     NSParameterAssert(transform);
 

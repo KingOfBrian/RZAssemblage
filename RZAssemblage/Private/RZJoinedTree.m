@@ -34,8 +34,8 @@
 - (NSUInteger)countOfElements
 {
     NSUInteger count = 0;
-    for ( RZTree *assemblage in self.nodes ) {
-        count += [assemblage countOfElements];
+    for ( RZTree *node in self.nodes ) {
+        count += [node countOfElements];
     }
     return count;
 }
@@ -102,12 +102,12 @@
     }
 }
 
-#pragma mark - RZAssemblageDelegate
+#pragma mark - RZTreeObserver
 
 - (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet
 {
     [self.changeSet mergeChangeSet:changeSet withIndexPathTransform:^NSIndexPath *(NSIndexPath *indexPath) {
-        NSUInteger offset = [self indexOffsetForAssemblage:node];
+        NSUInteger offset = [self indexOffsetForNode:node];
         return [indexPath rz_indexPathWithLastIndexShiftedBy:offset];
     }];
     [self closeBatchUpdate];
@@ -115,11 +115,11 @@
 
 #pragma mark - Private
 
-- (NSUInteger)indexOffsetForAssemblage:(RZTree *)childAssemblage
+- (NSUInteger)indexOffsetForNode:(RZTree *)childNode
 {
     NSUInteger count = 0;
     for ( RZTree *node in self.nodes ) {
-        if ( node == childAssemblage ) {
+        if ( node == childNode ) {
             break;
         }
         count += [node countOfElements];

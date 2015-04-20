@@ -10,7 +10,7 @@
 #import "RZChangeSet.h"
 #import "RZIndexPathSet.h"
 
-typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *indexPath);
+typedef NSIndexPath *(^RZChangeSetIndexPathTransform)(NSIndexPath *indexPath);
 
 @interface RZChangeSet ()
 
@@ -26,6 +26,6 @@ typedef NSIndexPath *(^RZAssemblageChangeSetIndexPathTransform)(NSIndexPath *ind
 - (void)removeObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 - (void)moveAtIndexPath:(NSIndexPath *)index1 toIndexPath:(NSIndexPath *)index2;
 
-- (void)mergeChangeSet:(RZChangeSet *)changeSet withIndexPathTransform:(RZAssemblageChangeSetIndexPathTransform)transform;
+- (void)mergeChangeSet:(RZChangeSet *)changeSet withIndexPathTransform:(RZChangeSetIndexPathTransform)transform;
 
 @end

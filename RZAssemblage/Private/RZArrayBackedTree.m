@@ -162,7 +162,7 @@ static void *const RZTreeUpdateContext = (void *)&RZTreeUpdateContext;
 
 @end
 
-@implementation NSObject (RZAssemblageUpdateKey)
+@implementation NSObject (RZTreeUpdateKey)
 
 - (id)RZTreeUpdateKey { return  nil; }
 - (void)setRZTreeUpdateKey:(id)RZTreeUpdateKey {}

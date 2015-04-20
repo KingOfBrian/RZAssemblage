@@ -16,71 +16,71 @@
 
 @interface RZFilterTree()
 
-@property (strong, nonatomic) RZFilteredTree *filteredAssemblage;
-@property (strong, nonatomic) RZTree *unfilteredAssemblage;
+@property (strong, nonatomic) RZFilteredTree *filteredTree;
+@property (strong, nonatomic) RZTree *unfilteredTree;
 @property (strong, nonatomic) RZMutableIndexPathSet *filteredIndexPaths;
 
 @end
 
 @implementation RZFilterTree
 
-- (instancetype)initWithAssemblage:(RZTree *)node
+- (instancetype)initWithNode:(RZTree *)node
 {
     self = [super init];
     if ( self ) {
         _filteredIndexPaths = [RZMutableIndexPathSet set];
-        _filteredAssemblage = [[RZFilteredTree alloc] initWithNode:node filteredIndexPaths:_filteredIndexPaths];
-        _unfilteredAssemblage = node;
-        [_unfilteredAssemblage addObserver:self];
+        _filteredTree = [[RZFilteredTree alloc] initWithNode:node filteredIndexPaths:_filteredIndexPaths];
+        _unfilteredTree = node;
+        [_unfilteredTree addObserver:self];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [_unfilteredAssemblage removeObserver:self];
+    [_unfilteredTree removeObserver:self];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p %@ filter %@", self.class, self, self.filter, self.filteredAssemblage];
+    return [NSString stringWithFormat:@"<%@: %p %@ filter %@", self.class, self, self.filter, self.filteredTree];
 }
 
 #pragma mark - RZTree
 
 - (NSUInteger)countOfElements
 {
-    return [self.filteredAssemblage countOfElements];
+    return [self.filteredTree countOfElements];
 }
 
 - (nullable id)objectInElementsAtIndex:(NSUInteger)index
 {
-    return [self.filteredAssemblage objectInElementsAtIndex:index];
+    return [self.filteredTree objectInElementsAtIndex:index];
 }
 
 - (id)nodeAtIndex:(NSUInteger)index;
 {
-    return [self.filteredAssemblage nodeAtIndex:index];
+    return [self.filteredTree nodeAtIndex:index];
 }
 
 - (NSUInteger)indexOfNode:(RZTree *)node
 {
-    return [self.filteredAssemblage indexOfNode:node];
+    return [self.filteredTree indexOfNode:node];
 }
 
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
 {
-    [self.filteredAssemblage removeObjectFromElementsAtIndex:index];
+    [self.filteredTree removeObjectFromElementsAtIndex:index];
 }
 
 - (void)insertObject:(NSObject *)object inElementsAtIndex:(NSUInteger)index
 {
-    [self.filteredAssemblage insertObject:object inElementsAtIndex:index];
+    [self.filteredTree insertObject:object inElementsAtIndex:index];
 }
 
 - (RZTree *)nodeAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.filteredAssemblage nodeAtIndexPath:indexPath];
+    return [self.filteredTree nodeAtIndexPath:indexPath];
 }
 
 #pragma mark - Filter Mutation
@@ -99,7 +99,7 @@
     RZMutableIndexPathSet *insertedIndexPaths = [RZMutableIndexPathSet set];
     RZMutableIndexPathSet *removedIndexPaths = [RZMutableIndexPathSet set];
     __block NSUInteger maxTreeDepth = 0;
-    [self.unfilteredAssemblage enumerateObjectsWithOptions:options usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
+    [self.unfilteredTree enumerateObjectsWithOptions:options usingBlock:^(id object, NSIndexPath *indexPath, BOOL *stop) {
         BOOL objectIsFiltered = [self isObjectFiltered:object];
         BOOL indexIsFiltered = [self.filteredIndexPaths containsIndexPath:indexPath];
         if ( objectIsFiltered && indexIsFiltered == NO) {
@@ -122,7 +122,7 @@
                 [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
                     NSIndexPath *indexPath = [parentPath indexPathByAddingIndex:idx];
                     NSIndexPath *exposedIndexPath = [self exposedIndexPathFromIndexPath:indexPath];
-                    id object = [self.unfilteredAssemblage objectAtIndexPath:indexPath];
+                    id object = [self.unfilteredTree objectAtIndexPath:indexPath];
                     [self.changeSet removeObject:object atIndexPath:exposedIndexPath];
                 }];
             }
@@ -152,7 +152,7 @@
     [self closeBatchUpdate];
 }
 
-#pragma mark - RZAssemblageDelegate
+#pragma mark - RZTreeObserver
 
 - (void)node:(RZTree *)node didEndUpdatesWithChangeSet:(RZChangeSet *)changeSet
 {

@@ -73,12 +73,12 @@
 - (id)nodeAtIndex:(NSUInteger)index;
 {
     NSUInteger exposedIndex = [self indexFromExposedIndex:index];
-    RZTree *assemblage = [self.node nodeAtIndex:exposedIndex];
-    if ( assemblage ) {
+    RZTree *node = [self.node nodeAtIndex:exposedIndex];
+    if ( node ) {
         RZMutableIndexPathSet *childIndexPathSet = [self.filteredIndexPaths indexPathSetAtIndexPath:[NSIndexPath indexPathWithIndex:exposedIndex]];
-        assemblage = [[RZFilteredTree alloc] initWithNode:assemblage filteredIndexPaths:childIndexPathSet];
+        node = [[RZFilteredTree alloc] initWithNode:node filteredIndexPaths:childIndexPathSet];
     }
-    return assemblage;
+    return node;
 }
 
 - (void)removeObjectFromElementsAtIndex:(NSUInteger)index
@@ -95,12 +95,12 @@
 
 - (void)addObserver:(nonnull id<RZTreeObserver>)observer
 {
-    RZRaize(NO, @"Do not observe filtered assemblages %@", self);
+    RZRaize(NO, @"Do not observe filtered nodes %@", self);
 }
 
 - (void)willBeginUpdatesForNode:(RZTree *)node
 {
-    RZRaize(NO, @"Internal filter %@ should never recieve updates for assemblage %@", self, node);
+    RZRaize(NO, @"Internal filter %@ should never recieve updates (%@)", self, node);
 }
 
 @end

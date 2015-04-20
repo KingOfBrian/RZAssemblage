@@ -92,7 +92,7 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 + (nonnull RZTree<RZFilterableTree> *)filterableNodeWithNode:(nonnull RZTree *)node;
 
 /**
- *  Return the object that this assemblage represents.
+ *  Return the object that this node represents.
  */
 - (nullable id)representedObject;
 
@@ -125,7 +125,7 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 - (nullable id)objectAtIndexPath:(nullable NSIndexPath *)indexPath;
 
 /**
- * Enumerate all nodes of the assemblage.  This does a depth first enumeration of all nodes, but it
+ * Enumerate all nodes of the tree.  This does a depth first enumeration of all nodes, but it
  * will skip nodes with no representedObject.
  */
 - (void)enumerateObjectsUsingBlock:(nonnull void (^)(id __nullable obj, NSIndexPath * __nonnull indexPath, BOOL * __nonnull stop))block;
@@ -144,7 +144,7 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 - (nullable id)objectForKeyedSubscript:(nonnull NSIndexPath *)indexPath;
 
 /**
- *  Register an observer to be notified of changes to the tree.
+ *  Register an observer to be notified of changes to the tree. The observer will be
  */
 - (void)addObserver:(nonnull id<RZTreeObserver>)observer;
 
@@ -170,7 +170,7 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 - (void)closeBatchUpdate;
 
 /**
- *  Insert an object into the assemblage tree at the index path.
+ *  Insert an object into the tree at the index path.
  */
 - (void)insertObject:(nonnull id)object atIndexPath:(nullable NSIndexPath *)indexPath;
 
@@ -189,7 +189,7 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 @end
 
 /**
- *  This protocol informs the delegate of changes to the assemblage.
+ *  This protocol informs the delegate of changes to the tree.
  */
 @protocol RZTreeObserver <NSObject>
 
@@ -200,6 +200,9 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 
 @end
 
+/**
+ *  This protocol allows filtering of trees.
+ */
 @protocol RZFilterableTree <NSObject>
 
 - (void)setFilter:(nullable NSPredicate *)filter;
