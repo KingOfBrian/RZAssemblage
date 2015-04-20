@@ -1,5 +1,5 @@
 # RZArborist - Composable UIKit Data Sources
-RZArborist simplifies the creation of UI data sources by composing data into simple, observable trees which are connected to a UITableView or UICollectionView. It enables NSFetchedResultControllerDelegate style observation on regular array properties and further simplifies data source creation to eliminate the usual boring and error prone data source implementations.
+RZArborist (Formerly RZAssemblage) simplifies the creation of UI data sources by composing data into observable trees which are connected to a UITableView or UICollectionView. It enables NSFetchedResultControllerDelegate style observation on regular array properties and further simplifies data source creation to eliminate the usual boring and error prone data source implementations.
 
 What does that mean for you?
 
@@ -37,6 +37,20 @@ filtered.filter = [NSPredicate predicateWithFormat:@"..."];
 *Want to do lots of integer and NSIndexPath comparison?*
 ```obj-c
 // No you don't.
+- (void)viewDidLoad 
+{
+    [cellFactory configureCellForClass:[Person class] reuseIdentifier:@"Cell" block:^(UITableViewCell *cell, Person *person, NSIndexPath *indexPath) {
+        cell.imageView.image = person.avatar;
+        cell.textLabel.text = person.firstName;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    id object = [self.data objectAtIndexPath:indexPath];
+    if ( [object isKindOfClass:[Person class]] ) {
+    ...
 ```
 
 ## Cocoa Integration
@@ -54,6 +68,6 @@ RZTree provides a cell factory and a data source for both UITableView and UIColl
 Due to the API design of UITableView, and how both the delegate and dataSource properties provide views, there's a UITableView subclass to simplify binding. It will internally intercept both the delegate and dataSource API's and respond to API methods that provide views, and relay all other messages back to the delegate and dataSource properties that are externally configured. This subclass is not required to use RZTree, but simplifies wiring things up.
 
 ## History
-RZTree conceptually originated from RZCollectionList. The RZCollectionList API was a bit confusing, especially around names (RZCollectionListCollectionViewDataSourceDelegate!), and sections. The name RZArborist was chosen to emphasize it's key like nature, after a more confusing name of RZAssemblage.
+RZTree conceptually originated from RZCollectionList. The RZCollectionList API was a bit confusing, especially around names (RZCollectionListCollectionViewDataSourceDelegate!), and sections. The name RZArborist was chosen to emphasize it's tree like nature, after a more confusing name of RZAssemblage.
 
 

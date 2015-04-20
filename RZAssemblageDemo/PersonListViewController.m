@@ -18,7 +18,7 @@
 
 @interface PersonListViewController () <UITableViewDelegate, UITableViewDataSource>
 
-@property (strong, nonatomic) RZTree *assemblage;
+@property (strong, nonatomic) RZTree *data;
 
 @end
 
@@ -52,8 +52,8 @@
     NSError *error = nil;
     [frc performFetch:&error];
     NSAssert(error == nil, @"");
-    self.assemblage = content;
-    self.tableView.assemblage = self.assemblage;
+    self.data = content;
+    self.tableView.assemblage = self.data;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
@@ -67,13 +67,13 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    Team *t = [self.assemblage objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
+    Team *t = [self.data objectAtIndexPath:[NSIndexPath indexPathWithIndex:section]];
     return t.name;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Person *p = [self.assemblage objectAtIndexPath:indexPath];
+    Person *p = [self.data objectAtIndexPath:indexPath];
     PersonViewController *pvc = [[PersonViewController alloc] initWithPerson:p];
     [self.navigationController pushViewController:pvc animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

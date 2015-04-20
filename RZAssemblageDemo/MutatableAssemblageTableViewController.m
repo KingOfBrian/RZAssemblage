@@ -19,10 +19,10 @@ _Pragma("clang diagnostic pop")                                         \
 
 @interface MutatableAssemblageTableViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) RZTree *assemblage;
+@property (strong, nonatomic) RZTree *data;
 
 @property (assign, nonatomic) NSUInteger index;
-@property (strong, nonatomic) NSArray *mutableAssemblages;
+@property (strong, nonatomic) NSArray *mutableNodes;
 
 @end
 
@@ -55,7 +55,7 @@ _Pragma("clang diagnostic pop")                                         \
     RZTree *m3 = [RZTree nodeWithChildren:@[@"7", @"8", @"9",]];
     RZTree *m4 = [RZTree nodeWithChildren:@[@"10", @"11", @"12",]];
     self.index = 12;
-    self.mutableAssemblages = @[m1, m2, m3, m4];
+    self.mutableNodes = @[m1, m2, m3, m4];
 
     RZTree *f1 = [RZTree nodeWithJoinedNodes:@[m3, m4]];
 
@@ -63,9 +63,9 @@ _Pragma("clang diagnostic pop")                                         \
     filtered.filter = [NSPredicate predicateWithBlock:^BOOL(NSString *numberString, NSDictionary *bindings) {
         return [numberString integerValue] % 2;
     }];
-    self.assemblage = [RZTree nodeWithChildren:@[m1, m2, filtered]];
+    self.data = [RZTree nodeWithChildren:@[m1, m2, filtered]];
 
-    self.tableView.assemblage = self.assemblage;
+    self.tableView.assemblage = self.data;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
@@ -106,7 +106,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.assemblage removeObjectAtIndexPath:indexPath];
+        [self.data removeObjectAtIndexPath:indexPath];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
 
     }
@@ -116,7 +116,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 {
     // Pause the delegate during the move, as the views have already moved.   The data just needs to be kept in sync.
     self.tableView.ignoreAssemblageChanges = YES;
-    [self.assemblage moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
+    [self.data moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
     self.tableView.ignoreAssemblageChanges = NO;
 }
 
@@ -133,23 +133,24 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (NSMutableArray *)randomSection
 {
-    NSMutableArray *sections = [self.assemblage mutableChildren];
-    return sections[arc4random() % [sections count]];
+    NSUInteger index = arc4random() % [[self.data children] count];
+    return [self.data[index] mutableChildren];
 }
 
 - (NSIndexPath *)randomExistingIndexPath
 {
-    NSMutableArray *sections = [self.assemblage mutableChildren];
+    NSMutableArray *sections = [self.data mutableChildren];
 
     NSIndexPath *indexPath = nil;
     // Find an indexPath.  If the section we point to has no items, pick another section.
     while ( indexPath == nil ) {
         NSUInteger randomSectionIndex = [self randomPopulatedIndexForArray:sections];
-        NSIndexPath *sectionIndexPath = randomSectionIndex == NSNotFound ? nil : [NSIndexPath indexPathWithIndex:randomSectionIndex];
-        NSMutableArray *section = [[self.assemblage nodeAtIndexPath:sectionIndexPath] mutableChildren];
+        if ( randomSectionIndex != NSNotFound ) {
+            NSMutableArray *section = [self.data[randomSectionIndex] mutableChildren];
+            NSUInteger row = [self randomPopulatedIndexForArray:section];
+            indexPath = row == NSNotFound ? nil : [NSIndexPath indexPathForRow:row inSection:randomSectionIndex];
+        }
 
-        NSUInteger row = [self randomPopulatedIndexForArray:section];
-        indexPath = row == NSNotFound ? nil : [NSIndexPath indexPathForRow:row inSection:randomSectionIndex];
     }
 
     return indexPath;
@@ -159,19 +160,19 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 {
     NSIndexPath *fromIndexPath = [self randomExistingIndexPath];
     NSIndexPath *toIndexPath = [self randomExistingIndexPath];
-    [self.assemblage moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
+    [self.data moveObjectAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
 }
 
 - (void)testHowDoesItWorkMove
 {
     // This move actually works, but a move from 0:1 -> 0:1 doesn't appear like it should work.
-    NSMutableArray *m1 = [self.mutableAssemblages[0] mutableChildren];
-    [self.mutableAssemblages[0] openBatchUpdate];
+    NSMutableArray *m1 = [self.mutableNodes[0] mutableChildren];
+    [self.mutableNodes[0] openBatchUpdate];
     [m1 removeObjectAtIndex:0];
     [m1 removeObjectAtIndex:0];
     [m1 addObject:@"2"];
     [m1 removeObjectAtIndex:0];
-    [self.mutableAssemblages[0] closeBatchUpdate];
+    [self.mutableNodes[0] closeBatchUpdate];
 }
 
 - (void)addRow
@@ -182,7 +183,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (void)removeRow
 {
     NSIndexPath *indexPath = [self randomExistingIndexPath];
-    [self.assemblage removeObjectAtIndexPath:indexPath];
+    [self.data removeObjectAtIndexPath:indexPath];
 }
 
 - (void)random
@@ -190,6 +191,10 @@ RZAssemblageTableViewDataSourceIsControllingCells()
     NSArray *actions = @[
 //                         [NSValue valueWithPointer:@selector(testHowDoesItWorkMove)],
                          [NSValue valueWithPointer:@selector(move)],
+                         [NSValue valueWithPointer:@selector(addRow)],
+                         [NSValue valueWithPointer:@selector(addRow)],
+                         [NSValue valueWithPointer:@selector(addRow)],
+                         [NSValue valueWithPointer:@selector(addRow)],
                          [NSValue valueWithPointer:@selector(addRow)],
                          [NSValue valueWithPointer:@selector(removeRow)],
                          ];
@@ -203,9 +208,9 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (void)clear
 {
-    [self.assemblage openBatchUpdate];
-    for ( RZTree *assemblage in self.mutableAssemblages ) {
-        NSMutableArray *proxy = [assemblage mutableChildren];
+    [self.data openBatchUpdate];
+    for ( RZTree *node in self.mutableNodes ) {
+        NSMutableArray *proxy = [node mutableChildren];
         while ( [proxy count] > 2 ) {
             [proxy removeLastObject];
         }
@@ -213,7 +218,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
             [proxy addObject:[self nextValue]];
         }
     }
-    [self.assemblage closeBatchUpdate];
+    [self.data closeBatchUpdate];
 }
 
 @end

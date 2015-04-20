@@ -17,7 +17,7 @@
 
 @interface MasterViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) RZTree *assemblage;
+@property (strong, nonatomic) RZTree *data;
 
 @end
 
@@ -41,9 +41,9 @@
     PersonListViewController *persons = [[PersonListViewController alloc] init];
     RZTree *section1 = [RZTree nodeWithChildren:@[persons, mutable, filtered]];
     RZTree *section2 = [RZTree nodeWithChildren:@[@"String Value A", @"String Value B"]];
-    self.assemblage = [RZTree nodeWithChildren:@[section1, section2]];
+    self.data = [RZTree nodeWithChildren:@[section1, section2]];
 
-    self.tableView.assemblage = self.assemblage;
+    self.tableView.assemblage = self.data;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
 

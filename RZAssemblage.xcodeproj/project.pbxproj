@@ -405,17 +405,17 @@
 		ABD2E1FB1ADF52500029E98D /* Private */ = {
 			isa = PBXGroup;
 			children = (
-				AB04BABF1AE5916700B71448 /* RZFilterTree.h */,
-				AB04BAC01AE5916700B71448 /* RZFilterTree.m */,
 				ABD2E21E1ADF54100029E98D /* RZIndexPathSet.h */,
 				ABD2E21F1ADF54100029E98D /* RZIndexPathSet.m */,
+				ABD2E2181ADF52BD0029E98D /* RZAssemblageDefines.h */,
 				ABD2E21A1ADF538B0029E98D /* RZTree+Private.h */,
 				ABD2E21B1ADF538B0029E98D /* RZChangeSet+Private.h */,
-				ABD2E2181ADF52BD0029E98D /* RZAssemblageDefines.h */,
 				ABD2E2141ADF52990029E98D /* NSIndexPath+RZAssemblage.h */,
 				ABD2E2151ADF52990029E98D /* NSIndexPath+RZAssemblage.m */,
 				ABD2E2761AE04A400029E98D /* NSIndexSet+RZAssemblage.h */,
 				ABD2E2771AE04A400029E98D /* NSIndexSet+RZAssemblage.m */,
+				AB04BABF1AE5916700B71448 /* RZFilterTree.h */,
+				AB04BAC01AE5916700B71448 /* RZFilterTree.m */,
 				ABD2E1FC1ADF52500029E98D /* RZArrayBackedTree.h */,
 				ABD2E1FD1ADF52500029E98D /* RZArrayBackedTree.m */,
 				ABD2E1FE1ADF52500029E98D /* RZFilteredTree.h */,

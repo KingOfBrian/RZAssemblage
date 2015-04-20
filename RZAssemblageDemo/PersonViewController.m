@@ -15,7 +15,7 @@
 @interface PersonViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (strong, nonatomic) Person *person;
-@property (strong, nonatomic) RZTree *assemblage;
+@property (strong, nonatomic) RZTree *data;
 
 @end
 
@@ -58,8 +58,8 @@
     NSArray *keypaths = @[@"team.name", @"firstName", @"lastName"];
     RZTree *info = [RZTree nodeWithObject:self.person leafKeypaths:keypaths];
 
-    self.assemblage = [RZTree nodeWithChildren:@[info, friends, enemies]];
-    self.tableView.assemblage = self.assemblage;
+    self.data = [RZTree nodeWithChildren:@[info, friends, enemies]];
+    self.tableView.assemblage = self.data;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell-Person"];
@@ -117,16 +117,16 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Person *p = [self.assemblage objectAtIndexPath:indexPath];
-    if ( [p isKindOfClass:[Person class]] ) {
-        PersonViewController *pvc = [[PersonViewController alloc] initWithPerson:p];
+    id object = [self.data objectAtIndexPath:indexPath];
+    if ( [object isKindOfClass:[Person class]] ) {
+        PersonViewController *pvc = [[PersonViewController alloc] initWithPerson:object];
         [self.navigationController pushViewController:pvc animated:YES];
     }
     else {
         NSString *title = [@"Edit " stringByAppendingString:[self typeForIndexPath:indexPath]];
         UIAlertView *editAlert = [[UIAlertView alloc] initWithTitle:title message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
         editAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
-        [editAlert textFieldAtIndex:0].text = [self.assemblage objectAtIndexPath:indexPath];
+        [editAlert textFieldAtIndex:0].text = [self.data objectAtIndexPath:indexPath];
         editAlert.tag = [indexPath indexAtPosition:indexPath.length - 1];
         [editAlert show];
     }
@@ -136,7 +136,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ( buttonIndex != alertView.cancelButtonIndex ) {
         NSString *name = [alertView textFieldAtIndex:0].text;
-        NSMutableArray *a = [[self.assemblage nodeAtIndexPath:[NSIndexPath indexPathWithIndex:0]] mutableChildren];
+        NSMutableArray *a = [[self.data nodeAtIndexPath:[NSIndexPath indexPathWithIndex:0]] mutableChildren];
         [a replaceObjectAtIndex:alertView.tag withObject:name];
     }
 }
@@ -144,13 +144,13 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:[indexPath indexAtPosition:0]];
-    return [[self.assemblage nodeAtIndexPath:sectionIndexPath] mutableChildren] != nil;
+    return [[self.data nodeAtIndexPath:sectionIndexPath] mutableChildren] != nil;
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ( editingStyle == UITableViewCellEditingStyleDelete ) {
-        [self.assemblage removeObjectAtIndexPath:indexPath];
+        [self.data removeObjectAtIndexPath:indexPath];
     }
 }
 
