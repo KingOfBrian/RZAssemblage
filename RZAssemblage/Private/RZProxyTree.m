@@ -148,8 +148,16 @@ static void *const RZProxyKeyPathContext = (void *)&RZProxyKeyPathContext;
             [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
                 [self.changeSet updateAtIndexPath:[NSIndexPath indexPathWithIndex:idx]];
             }];
-        } else {
-            RZRaize(changeType != NSKeyValueChangeSetting, @"Have to implement setting");
+        }
+        else  if ( changeType == NSKeyValueChangeSetting ) {
+            NSArray *oldValues = change[NSKeyValueChangeOldKey];
+            NSArray *newValues = change[NSKeyValueChangeNewKey];
+            for ( id oldValue in oldValues ) {
+                [self.changeSet removeObject:oldValue atIndexPath:[NSIndexPath indexPathWithIndex:0]];
+            }
+            for ( NSUInteger i = 0; i < newValues.count; i++ ) {
+                [self.changeSet insertAtIndexPath:[NSIndexPath indexPathWithIndex:i]];
+            }
         }
         [self closeBatchUpdate];
     }

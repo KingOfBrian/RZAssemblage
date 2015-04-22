@@ -11,6 +11,7 @@
 #import "RZFilterTree.h"
 
 #import "RZTree+Private.h"
+#import "NSIndexPath+RZAssemblage.h"
 #import "TestModels.h"
 #import <XCTest/XCTest.h>
 
@@ -110,6 +111,43 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     [proxyArray removeObjectAtIndex:0];
     [pa closeBatchUpdate];
     XCTAssertEqual(proxyArray.count, self.testProxyArray.count);
+}
+
+- (void)testDirectConfigurationMidChange
+{
+    self.testProxyArray = [NSArray array];
+    RZProxyTree *pa = [[RZProxyTree alloc] initWithObject:self keypath:@"testProxyArray"];
+    [pa addObserver:self];
+    NSMutableArray *proxyArray = [pa mutableChildren];
+    [pa openBatchUpdate];
+    // This causes double change events (setter + observer)
+    [proxyArray addObject:@"0"];
+    [proxyArray addObject:@"1"];
+    self.testProxyArray = @[@"2", @"3"];
+    [pa closeBatchUpdate];
+    XCTAssert(proxyArray.count == self.testProxyArray.count && proxyArray.count == 2);
+    XCTAssert(self.changeSet.insertedIndexPaths.count == 2);
+    XCTAssert([(NSIndexPath *)self.changeSet.insertedIndexPaths[0] rz_lastIndex] == 0);
+    XCTAssert([(NSIndexPath *)self.changeSet.insertedIndexPaths[1] rz_lastIndex] == 1);
+    XCTAssert(self.changeSet.removedIndexPaths.count == 0);
+}
+
+- (void)testDirectConfiguration
+{
+    self.testProxyArray = @[@"1", @"2"];
+    RZProxyTree *pa = [[RZProxyTree alloc] initWithObject:self keypath:@"testProxyArray"];
+    [pa addObserver:self];
+    NSMutableArray *proxyArray = [pa mutableChildren];
+    [pa openBatchUpdate];
+    self.testProxyArray = @[@"2", @"3"];
+    [pa closeBatchUpdate];
+    XCTAssert(proxyArray.count == self.testProxyArray.count && proxyArray.count == 2);
+    XCTAssert(self.changeSet.insertedIndexPaths.count == 2);
+    XCTAssert([(NSIndexPath *)self.changeSet.insertedIndexPaths[0] rz_lastIndex] == 0);
+    XCTAssert([(NSIndexPath *)self.changeSet.insertedIndexPaths[1] rz_lastIndex] == 1);
+    XCTAssert(self.changeSet.removedIndexPaths.count == 2);
+    XCTAssert([(NSIndexPath *)self.changeSet.removedIndexPaths[0] rz_lastIndex] == 0);
+    XCTAssert([(NSIndexPath *)self.changeSet.removedIndexPaths[1] rz_lastIndex] == 1);
 }
 
 #define ITERATION_TEST_COUNT 1000//00
