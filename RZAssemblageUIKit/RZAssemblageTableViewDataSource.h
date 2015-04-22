@@ -16,7 +16,7 @@
             forTableView:(UITableView *)tableView
              cellFactory:(RZAssemblageTableViewCellFactory *)cellFactory;
 
-@property (strong, nonatomic, readonly) RZTree *assemblage;
+@property (strong, nonatomic, readonly) RZTree *tree;
 
 @property (strong, nonatomic, readonly) RZAssemblageTableViewCellFactory *cellFactory;
 

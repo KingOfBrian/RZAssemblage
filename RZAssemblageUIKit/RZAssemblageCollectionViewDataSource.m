@@ -20,17 +20,22 @@
 
 - (id)initWithAssemblage:(RZTree *)node
        forCollectionView:(UICollectionView *)collectionView
-             cellFactory:(RZAssemblageCollectionViewCellFactory *)cellFactory;
+{
+    return [self initWithAssemblage:node forCollectionView:collectionView cellFactory:nil];
+}
+
+- (id)initWithAssemblage:(RZTree *)node
+       forCollectionView:(UICollectionView *)collectionView
+             cellFactory:(RZAssemblageCollectionViewCellFactory *)cellFactory
 {
     NSParameterAssert(node);
     NSParameterAssert(collectionView);
-    NSParameterAssert(cellFactory);
     self = [super init];
     if ( self ) {
-        _assemblage = node;
+        _tree = node;
         _collectionView = collectionView;
         _collectionView.dataSource = self;
-        _cellFactory = cellFactory;
+        _cellFactory = cellFactory != nil ? cellFactory : [[RZAssemblageCollectionViewCellFactory alloc] init];
     }
     return self;
 }
@@ -39,21 +44,21 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    NSUInteger count = [[self.assemblage children] count];
+    NSUInteger count = [[self.tree children] count];
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSUInteger count = [[self.assemblage nodeAtIndexPath:[NSIndexPath indexPathWithIndex:section]] children].count;
+    NSUInteger count = [[self.tree[section] children] count];
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.assemblage objectAtIndexPath:indexPath];
+    id object = [self.tree objectAtIndexPath:indexPath];
     UICollectionViewCell *cell = [self.cellFactory cellForObject:object
                                                      atIndexPath:indexPath
                                               fromCollectionView:self.collectionView];
@@ -62,7 +67,7 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.assemblage objectAtIndexPath:indexPath];
+    id object = [self.tree objectAtIndexPath:indexPath];
 
     UICollectionReusableView *view = [self.cellFactory reusableViewOfKind:kind
                                                                 forObject:object

@@ -44,12 +44,17 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 
 /**
  *  Create a new node representing object, and have the children be represented by the array specified
- *  in the first keypath of keypaths. Any mutation to the children of this node will also cause mutation
- *  of the backing array. Any mutation of the children array made with KVC compliant operations will also
- *  update the children of the node.
+ *  in keypath. Any mutation to the children of this node will also cause mutation of the specified property
+ *  and any mutation of the property will update the children of this node, and generate a change event.
+ */
++ (nonnull RZTree *)nodeWithObject:(nonnull id)object descendKeypath:(nonnull NSString *)keypath;
+
+/**
+ *  Create a new node representing object, and have the children be represented by the first object in keypaths.
+ *  The represented children will recurse this tree with the next object in keypaths.
  *
- *  The children nodes will be created recursively, with the first keypath poped off of the keypaths array.
- *  Every specified keypath should specify an array.
+ *  Any mutation to the children of this node will also cause mutation of the specified property
+ *  and any mutation of the property will update the children of this node, and generate a change event.
  */
 + (nonnull RZTree *)nodeWithObject:(nonnull id)object descendingKeypaths:(nonnull NSArray *)keypaths;
 
@@ -72,13 +77,16 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
 + (nonnull RZTree *)nodeWithObject:(nonnull id)object leafKeypaths:(nonnull NSArray *)keypaths;
 
 /**
- *  Create a new node backed by the NSFetchedResultsController. If the NSFetchedResultsController specifies a 
- *  `sectionNameKeyPath`, the node will have a depth of 2.
- *
- *  If the NSFetchedResultsController does not specify sectionNameKeyPath all indexing will be stripped of the
- *  section, allowing for better composibility (IE: 1 NSFRC for section 1, and 1 NSFRC for section 2)
+ *  Create a new node backed by the NSFetchedResultsController. The tree will have a depth of 2,
+ *  1 for sections, and 1 with the objects.
  */
-+ (nonnull RZTree *)nodeBackedByFetchedResultsController:(nonnull NSFetchedResultsController *)frc;
++ (nonnull RZTree *)nodeForFetchedResultsController:(nonnull NSFetchedResultsController *)frc;
+
+/**
+ *  Create a new node backed by the NSFetchedResultsController without sectionKeyPath configured. 
+ *  The tree will have a depth of 1, with no sections.
+ */
++ (nonnull RZTree *)nodeForFlatFetchedResultsController:(nonnull NSFetchedResultsController *)frc;
 
 /**
  *  Create a new node that joins the index space of all the joined nodes.  This means that indexing into the second

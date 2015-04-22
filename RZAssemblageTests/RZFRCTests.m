@@ -74,7 +74,7 @@
 - (void)testStartupInsertIsSequential
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZTree *content = [RZTree nodeForFetchedResultsController:frc];
     [content addObserver:self];
     NSError *error = nil;
     [frc performFetch:&error];
@@ -91,7 +91,7 @@
 - (void)testStartupInsertFilter
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZTree *content = [RZTree nodeForFetchedResultsController:frc];
     RZTree<RZFilterableTree> *filter = [RZTree filterableNodeWithNode:content];
     [filter addObserver:self];
     filter.filter = [NSPredicate predicateWithBlock:^BOOL(Person *person, NSDictionary *bindings) {
@@ -117,7 +117,7 @@
 - (void)testFRCSectionJoin
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZTree *content = [RZTree nodeForFetchedResultsController:frc];
     RZTree *staticSection = [RZTree nodeWithObject:@"static"
                                           children:@[@"This is a static row"]];
     RZTree *combinded = [RZTree nodeWithJoinedNodes:@[content, staticSection]];
@@ -137,7 +137,7 @@
 - (void)testFRCJoinFilter
 {
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZTree *content = [RZTree nodeForFetchedResultsController:frc];
     RZTree *staticRows = [RZTree nodeWithObject:@"J Static Section"
                                        children:@[@"J is not filtered",
                                                   @"This is filtered"]];

@@ -48,12 +48,12 @@
     [super viewDidLoad];
     // This assemblage is a normal FRC with sections.
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForPersonsByTeam];
-    RZTree *content = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZTree *content = [RZTree nodeForFetchedResultsController:frc];
     NSError *error = nil;
     [frc performFetch:&error];
     NSAssert(error == nil, @"");
     self.data = content;
-    self.tableView.assemblage = self.data;
+    self.tableView.tree = self.data;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];

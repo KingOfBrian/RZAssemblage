@@ -40,7 +40,7 @@
 
 - (BOOL)hasSections
 {
-    return self.fetchedResultsController.sectionNameKeyPath != nil;
+    return self.fetchedResultsController.sectionNameKeyPath != nil || self.flatten == NO;
 }
 
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath

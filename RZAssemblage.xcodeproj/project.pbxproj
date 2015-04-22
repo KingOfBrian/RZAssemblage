@@ -172,6 +172,7 @@
 		ABADD3B41A787F1900397031 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
 		ABADD3BC1A787F1900397031 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		ABADD3BF1A787F1900397031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		ABC7BD3A1AE700D400CBE603 /* RZAssemblage.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = RZAssemblage.podspec; sourceTree = "<group>"; };
 		ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RZAssemblageTestData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABD2E1CC1ADF49310029E98D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ABD2E1E91ADF49AD0029E98D /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
@@ -280,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				ABADD3721A77DF9200397031 /* README.md */,
+				ABC7BD3A1AE700D400CBE603 /* RZAssemblage.podspec */,
 				ABADD3441A776C7C00397031 /* RZAssemblage */,
 				ABADD3511A776C7C00397031 /* RZAssemblageTests */,
 				ABD2E24C1ADFE75E0029E98D /* RZAssemblageUIKit */,

@@ -46,7 +46,7 @@
     [super viewDidLoad];
     // Create a flat FRC on person with a predicate that restricts the results to friends of this person
     NSFetchedResultsController *frc = [[RZAssemblageTestData shared] frcForFriendsOfPerson:self.person];
-    RZTree *friends = [RZTree nodeBackedByFetchedResultsController:frc];
+    RZTree *friends = [RZTree nodeForFetchedResultsController:frc];
     NSError *error = nil;
     [frc performFetch:&error];
     NSAssert(error == nil, @"");
@@ -59,7 +59,7 @@
     RZTree *info = [RZTree nodeWithObject:self.person leafKeypaths:keypaths];
 
     self.data = [RZTree nodeWithChildren:@[info, friends, enemies]];
-    self.tableView.assemblage = self.data;
+    self.tableView.tree = self.data;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell-Person"];

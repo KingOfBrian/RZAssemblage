@@ -43,7 +43,7 @@
     RZTree *section2 = [RZTree nodeWithChildren:@[@"String Value A", @"String Value B"]];
     self.data = [RZTree nodeWithChildren:@[section1, section2]];
 
-    self.tableView.assemblage = self.data;
+    self.tableView.tree = self.data;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
 
@@ -74,7 +74,7 @@ RZAssemblageTableViewDataSourceIsControllingCells()
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.tableView.assemblage objectAtIndexPath:indexPath];
+    id object = [self.tableView.tree objectAtIndexPath:indexPath];
     if ( [object isKindOfClass:[UIViewController class]] ) {
         [self.navigationController pushViewController:object animated:YES];
     }

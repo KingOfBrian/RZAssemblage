@@ -59,7 +59,7 @@
         return YES;
     }];
 
-    self.tableView.assemblage = self.data;
+    self.tableView.tree = self.data;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];

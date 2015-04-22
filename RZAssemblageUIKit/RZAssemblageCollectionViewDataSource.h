@@ -14,10 +14,13 @@
 @interface RZAssemblageCollectionViewDataSource : NSObject <UICollectionViewDataSource>
 
 - (id)initWithAssemblage:(RZTree *)node
+       forCollectionView:(UICollectionView *)collectionView;
+
+- (id)initWithAssemblage:(RZTree *)node
        forCollectionView:(UICollectionView *)collectionView
              cellFactory:(RZAssemblageCollectionViewCellFactory *)cellFactory;
 
-@property (strong, nonatomic, readonly) RZTree *assemblage;
+@property (strong, nonatomic, readonly) RZTree *tree;
 
 @property (strong, nonatomic, readonly) RZAssemblageCollectionViewCellFactory *cellFactory;
 

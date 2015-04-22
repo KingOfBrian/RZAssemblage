@@ -29,8 +29,8 @@
 {
     self = [super init];
     if ( self ) {
-        _assemblage = node;
-        [_assemblage addObserver:self];
+        _tree = node;
+        [_tree addObserver:self];
         _cellFactory = cellFactory;
         _tableView = tableView;
         _addSectionAnimation = UITableViewRowAnimationFade;
@@ -46,21 +46,21 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSUInteger count = self.assemblage.children.count;
+    NSUInteger count = self.tree.children.count;
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSUInteger count = [self.assemblage nodeAtIndexPath:[NSIndexPath indexPathWithIndex:section]].children.count;
+    NSUInteger count = self.tree[section].children.count;
     RZDataSourceLog(@"%@", @(count));
     return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [self.assemblage objectAtIndexPath:indexPath];
+    id object = [self.tree objectAtIndexPath:indexPath];
     UITableViewCell *cell = [self.cellFactory cellForObject:object atIndexPath:indexPath fromTableView:self.tableView];
     return cell;
 }
@@ -108,7 +108,7 @@
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         // Update the cell if it is visible.
         if ( cell ) {
-            id object = [self.assemblage objectAtIndexPath:indexPath];
+            id object = [self.tree objectAtIndexPath:indexPath];
             [self.cellFactory configureCell:cell forObject:object atIndexPath:indexPath];
         }
     }

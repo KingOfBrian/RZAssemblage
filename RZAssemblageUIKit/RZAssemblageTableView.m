@@ -22,12 +22,12 @@
 @synthesize cellFactory = _cellFactory;
 @synthesize internalDataSource = _internalDataSource;
 
-- (void)setAssemblage:(RZTree *)node
+- (void)setTree:(RZTree *)node
 {
-    _assemblage = node;
+    _tree = node;
 
-    if ( _assemblage ) {
-        _internalDataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:_assemblage
+    if ( _tree ) {
+        _internalDataSource = [[RZAssemblageTableViewDataSource alloc] initWithAssemblage:_tree
                                                                              forTableView:self
                                                                               cellFactory:self.cellFactory];
         _internalDataSource.dataSource = (id)super.dataSource;
@@ -61,10 +61,10 @@
 {
     _ignoreAssemblageChanges = ignoreAssemblageChanges;
     if ( ignoreAssemblageChanges ) {
-        [self.assemblage removeObserver:(id)self.internalDataSource];
+        [self.tree removeObserver:(id)self.internalDataSource];
     }
     else {
-        [self.assemblage addObserver:(id)self.internalDataSource];
+        [self.tree addObserver:(id)self.internalDataSource];
     }
 }
 

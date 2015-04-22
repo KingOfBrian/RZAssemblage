@@ -14,7 +14,7 @@
 
 @property (strong, nonatomic) RZAssemblageTableViewCellFactory *cellFactory;
 
-@property (weak, nonatomic) RZTree *assemblage;
+@property (weak, nonatomic) RZTree *tree;
 
 /**
  * Ignore assemblage delegate events while set to YES.  This should be enabled

@@ -15,5 +15,6 @@
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
 
 @property (strong, nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+@property (assign, nonatomic) BOOL flatten;
 
 @end

@@ -32,14 +32,27 @@ static NSString *RZTreeElementsKey = @"elements";
     return [[RZArrayBackedTree alloc] initWithChildren:array representingObject:representedObject];
 }
 
-+ (nonnull RZTree *)nodeBackedByFetchedResultsController:(nonnull NSFetchedResultsController *)frc
++ (nonnull RZTree *)nodeForFetchedResultsController:(nonnull NSFetchedResultsController *)frc
 {
     return [[RZFRCTree alloc] initWithFetchedResultsController:frc];
+}
+
++ (nonnull RZTree *)nodeForFlatFetchedResultsController:(nonnull NSFetchedResultsController *)frc
+{
+    NSAssert(frc.sectionNameKeyPath == nil, @"Can not create a flat node with a sectionNameKeyPath");
+    RZFRCTree *tree = [[RZFRCTree alloc] initWithFetchedResultsController:frc];
+    tree.flatten = YES;
+    return tree;
 }
 
 + (nonnull RZTree *)nodeWithJoinedNodes:(nonnull NSArray *)joinedNodes
 {
     return [[RZJoinedTree alloc] initWithNodes:joinedNodes];
+}
+
++ (nonnull RZTree *)nodeWithObject:(nonnull id)object descendKeypath:(nonnull NSString *)keypath;
+{
+    return [[RZProxyTree alloc] initWithObject:object keypaths:@[keypath]];
 }
 
 + (nonnull RZTree *)nodeWithObject:(nonnull id)object descendingKeypaths:(nonnull NSArray *)keypaths
