@@ -22,10 +22,14 @@
        forCollectionView:(UICollectionView *)collectionView
              cellFactory:(RZAssemblageCollectionViewCellFactory *)cellFactory;
 {
+    NSParameterAssert(node);
+    NSParameterAssert(collectionView);
+    NSParameterAssert(cellFactory);
     self = [super init];
     if ( self ) {
         _assemblage = node;
         _collectionView = collectionView;
+        _collectionView.dataSource = self;
         _cellFactory = cellFactory;
     }
     return self;
