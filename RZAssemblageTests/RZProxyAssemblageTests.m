@@ -6,13 +6,12 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-@import UIKit;
 #import "RZProxyTree.h"
 #import "RZFilterTree.h"
 
 #import "RZTree+Private.h"
 #import "NSIndexPath+RZAssemblage.h"
-#import "TestModels.h"
+#import "RZTestHelpers.h"
 #import <XCTest/XCTest.h>
 
 NSUInteger topSongPath[2] = {0,0};
@@ -150,6 +149,21 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     XCTAssert([(NSIndexPath *)self.changeSet.removedIndexPaths[1] rz_lastIndex] == 1);
 }
 
+- (void)testDirectMutation
+{
+    NSMutableArray *array = [NSMutableArray array];
+    self.testProxyArray = array;
+    RZProxyTree *pa = [[RZProxyTree alloc] initWithObject:self keypath:@"testProxyArray"];
+    [pa addObserver:self];
+
+    [pa openBatchUpdate];
+    [array addObject:@(0)];
+    [array addObject:@(1)];
+    [array removeObjectAtIndex:0];
+    [array removeObjectAtIndex:0];
+    [pa closeBatchUpdate];
+}
+
 #define ITERATION_TEST_COUNT 1000//00
 - (void)testArrayProxyPerformance
 {
@@ -163,8 +177,22 @@ NSUInteger firstWriterPath[3] = {0,0,0};
     }];
 }
 
+/*
+- (void)insertObject:(NSObject *)object inTestProxyArrayAtIndex:(NSUInteger)index
+{
+    [(NSMutableArray *)self.testProxyArray insertObject:object atIndex:index];
+}
+
+- (void)removeObjectFromTestProxyArrayAtIndex:(NSUInteger)index
+{
+    [(NSMutableArray *)self.testProxyArray removeObjectAtIndex:index];
+}
+ */
 - (void)testMutableArrayProxyPerformance
 {
+    // performance here is the same, until the above code is un-commented.
+    // This should be fixed, but was mostly just to explore performance considerations, not to
+    // test it.
     self.testProxyArray = [NSMutableArray array];
 
     [self measureBlock:^{

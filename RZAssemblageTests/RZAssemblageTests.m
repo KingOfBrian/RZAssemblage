@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-@import UIKit;
 #import <XCTest/XCTest.h>
 #import "RZTree.h"
 #import "RZJoinedTree.h"
@@ -15,6 +14,7 @@
 #import "RZIndexPathSet.h"
 #import "NSIndexPath+RZAssemblage.h"
 #import "RZProxyTree.h"
+#import "RZTestHelpers.h"
 
 #define TRACE_DELEGATE_EVENT \
 RZAssemblageDelegateEvent *event = [[RZAssemblageDelegateEvent alloc] init]; \

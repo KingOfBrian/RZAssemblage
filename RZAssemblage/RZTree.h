@@ -76,6 +76,7 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
  */
 + (nonnull RZTree *)nodeWithObject:(nonnull id)object leafKeypaths:(nonnull NSArray *)keypaths;
 
+#if TARGET_OS_IPHONE
 /**
  *  Create a new node backed by the NSFetchedResultsController. The tree will have a depth of 2,
  *  1 for sections, and 1 with the objects.
@@ -87,6 +88,7 @@ typedef NS_OPTIONS(NSUInteger, RZTreeEnumerationOptions) {
  *  The tree will have a depth of 1, with no sections.
  */
 + (nonnull RZTree *)nodeForFlatFetchedResultsController:(nonnull NSFetchedResultsController *)frc;
+#endif
 
 /**
  *  Create a new node that joins the index space of all the joined nodes.  This means that indexing into the second

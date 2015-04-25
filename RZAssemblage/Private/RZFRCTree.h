@@ -10,6 +10,8 @@
 
 @import CoreData;
 
+#if TARGET_OS_IPHONE
+
 @interface RZFRCTree : RZTree
 
 - (instancetype)initWithFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController;
@@ -18,3 +20,5 @@
 @property (assign, nonatomic) BOOL flatten;
 
 @end
+
+#endif

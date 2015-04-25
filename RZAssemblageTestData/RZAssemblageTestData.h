@@ -32,8 +32,11 @@ FOUNDATION_EXPORT const unsigned char RZAssemblageTestDataVersionString[];
 - (NSURL *)applicationDocumentsDirectory;
 - (void)createFakeData;
 
+#if TARGET_OS_IPHONE
+
 - (NSFetchedResultsController *)frcForPersonsByTeam;
 - (NSFetchedResultsController *)frcForFriendsOfPerson:(Person *)person;
 
+#endif
 
 @end

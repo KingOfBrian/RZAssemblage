@@ -32,6 +32,7 @@ static NSString *RZTreeElementsKey = @"elements";
     return [[RZArrayBackedTree alloc] initWithChildren:array representingObject:representedObject];
 }
 
+#if TARGET_OS_IPHONE
 + (nonnull RZTree *)nodeForFetchedResultsController:(nonnull NSFetchedResultsController *)frc
 {
     return [[RZFRCTree alloc] initWithFetchedResultsController:frc];
@@ -44,6 +45,7 @@ static NSString *RZTreeElementsKey = @"elements";
     tree.flatten = YES;
     return tree;
 }
+#endif
 
 + (nonnull RZTree *)nodeWithJoinedNodes:(nonnull NSArray *)joinedNodes
 {

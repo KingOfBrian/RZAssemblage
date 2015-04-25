@@ -100,6 +100,8 @@
     return _managedObjectContext;
 }
 
+#if TARGET_OS_IPHONE
+
 - (NSFetchedResultsController *)frcForPersonsByTeam
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
@@ -118,6 +120,7 @@
     return fetchedResultsController;
 }
 
+#endif
 
 #pragma mark - Core Data Saving support
 

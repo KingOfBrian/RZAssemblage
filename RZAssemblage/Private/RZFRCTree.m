@@ -17,6 +17,8 @@
 #define RZAssertContainerIndexPath(indexPath) RZAssertIndexPathLength(indexPath, -1)
 #define RZAssertItemIndexPath(indexPath) RZAssertIndexPathLength(indexPath, 0)
 
+#if TARGET_OS_IPHONE
+
 @interface RZFRCTree() <NSFetchedResultsControllerDelegate>
 
 @property (assign, nonatomic, readonly) BOOL hasSections;
@@ -188,3 +190,5 @@
 }
 
 @end
+
+#endif

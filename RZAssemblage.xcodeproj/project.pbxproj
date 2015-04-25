@@ -13,6 +13,7 @@
 		AB04BAC21AE5916700B71448 /* RZFilterTree.m in Sources */ = {isa = PBXBuildFile; fileRef = AB04BAC01AE5916700B71448 /* RZFilterTree.m */; };
 		AB559B451AC3735F00DFB024 /* PersonListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B441AC3735F00DFB024 /* PersonListViewController.m */; };
 		AB559B521AC383B600DFB024 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB559B511AC383B600DFB024 /* PersonViewController.m */; };
+		AB73C3231AEBD52E006D5E8B /* RZTestHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = AB73C3221AEBD52E006D5E8B /* RZTestHelpers.m */; };
 		AB9B31B61A8679FB00C39876 /* RZChangeSet.h in Headers */ = {isa = PBXBuildFile; fileRef = AB9B31B41A8679FB00C39876 /* RZChangeSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AB9B31B71A8679FB00C39876 /* RZChangeSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AB9B31B51A8679FB00C39876 /* RZChangeSet.m */; };
 		ABA348BB1AE2BAD100892E17 /* RZFRCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA348BA1AE2BAD100892E17 /* RZFRCTests.m */; };
@@ -29,7 +30,6 @@
 		ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BC1A787F1900397031 /* Images.xcassets */; };
 		ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
 		ABC020A81AE2C39C005DE831 /* RZAssemblageTestData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; };
-		ABC020A91AE2C40B005DE831 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFE4D241A80A17700A73BA3 /* UIKit.framework */; };
 		ABD2E1E01ADF49310029E98D /* RZAssemblageTestData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; };
 		ABD2E1E11ADF49310029E98D /* RZAssemblageTestData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		ABD2E1EF1ADF49AD0029E98D /* Person.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E1E91ADF49AD0029E98D /* Person.h */; };
@@ -147,6 +147,8 @@
 		AB559B441AC3735F00DFB024 /* PersonListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonListViewController.m; sourceTree = "<group>"; };
 		AB559B501AC383B600DFB024 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
 		AB559B511AC383B600DFB024 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
+		AB73C3211AEBD52E006D5E8B /* RZTestHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZTestHelpers.h; sourceTree = "<group>"; };
+		AB73C3221AEBD52E006D5E8B /* RZTestHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZTestHelpers.m; sourceTree = "<group>"; };
 		AB9B31B41A8679FB00C39876 /* RZChangeSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZChangeSet.h; sourceTree = "<group>"; };
 		AB9B31B51A8679FB00C39876 /* RZChangeSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZChangeSet.m; sourceTree = "<group>"; };
 		ABA348BA1AE2BAD100892E17 /* RZFRCTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZFRCTests.m; sourceTree = "<group>"; };
@@ -235,7 +237,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABC020A91AE2C40B005DE831 /* UIKit.framework in Frameworks */,
 				ABC020A81AE2C39C005DE831 /* RZAssemblageTestData.framework in Frameworks */,
 				ABADD34E1A776C7C00397031 /* RZAssemblage.framework in Frameworks */,
 			);
@@ -333,6 +334,8 @@
 			children = (
 				ABA6EC0C1ABCA71500201944 /* TestModels.h */,
 				ABA6EC0D1ABCA71500201944 /* TestModels.m */,
+				AB73C3211AEBD52E006D5E8B /* RZTestHelpers.h */,
+				AB73C3221AEBD52E006D5E8B /* RZTestHelpers.m */,
 				ABA6EC0A1ABCA6CC00201944 /* RZProxyAssemblageTests.m */,
 				ABADD3541A776C7C00397031 /* RZAssemblageTests.m */,
 				ABA348BA1AE2BAD100892E17 /* RZFRCTests.m */,
@@ -751,6 +754,7 @@
 				ABA348BB1AE2BAD100892E17 /* RZFRCTests.m in Sources */,
 				ABADD3551A776C7C00397031 /* RZAssemblageTests.m in Sources */,
 				ABE1FA501A86ED700069B37F /* RZMutableIndexPathSetTests.m in Sources */,
+				AB73C3231AEBD52E006D5E8B /* RZTestHelpers.m in Sources */,
 				ABA6EC0B1ABCA6CC00201944 /* RZProxyAssemblageTests.m in Sources */,
 				ABA6EC0E1ABCA71500201944 /* TestModels.m in Sources */,
 			);
@@ -887,7 +891,9 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -925,8 +931,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -968,13 +976,14 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
+					"$(SDKROOT)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = RZAssemblageTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/../Frameworks @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -985,9 +994,10 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
+					"$(SDKROOT)",
 				);
 				INFOPLIST_FILE = RZAssemblageTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/../Frameworks @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1003,6 +1013,7 @@
 				INFOPLIST_FILE = RZAssemblageDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -1013,6 +1024,7 @@
 				INFOPLIST_FILE = RZAssemblageDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};
@@ -1066,6 +1078,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -1081,6 +1094,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};

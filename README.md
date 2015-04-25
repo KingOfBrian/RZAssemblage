@@ -7,8 +7,8 @@ What does that mean for you?
 Below will create a 2 section tree, based off of two array properties. Using KVO, these arrays will generate change notifications similar to NSFetchedResultsController
 
 ```obj-c
-RZTree *friends = [RZTree nodeWithObject:self.person descendingKeypaths:@[@"friends"]];
-RZTree *enemies = [RZTree nodeWithObject:self.person descendingKeypaths:@[@"enemies"]];
+RZTree *friends = [RZTree nodeWithObject:self.person descendKeypath:@"friends"];
+RZTree *enemies = [RZTree nodeWithObject:self.person descendKeypath:@"enemies"];
 RZTree *data = [RZTree nodeWithChildren:@[friends, enemies]];
 ```
 
@@ -64,8 +64,7 @@ With uniform data lookup, cell creation is easy.
 RZTree's can be built from a number of native Cocoa sources, like an array, a Key Value Coding compliant array property, or an NSFetchedResultsController. There are also a few 'transform' nodes that just transform indexes, and do not represent data. Both `[RZTree nodeWithJoinedNodes:@[]]` and `[RZTree filterableNodeWithNode:node]` are examples of this. To simplify integration further, every RZTree has a `children` and `mutableChildren` property that will return a proxy array that will access or mutate the tree through a more familiar array interface.
 
 ## Update Notification
-Update notifications can occur from any object in the RZTree. For an object to notify change events, the object must implement `+ (NSSet *)keyPathsForValuesAffectingRZTreeUpdateKey` and return the keypaths that should trigger an update. Core Data Objects using NSFetchedResultsController do not need to implement this method.
-
+Update notifications can occur from any object in the RZTree. For an object to notify change events, the object must implement `+ (NSSet *)keyPathsForValuesAffectingRZTreeUpdateKey` and return the keypaths that should trigger an update. Core Data Objects using NSFetchedResultsController do not need to implement this method, however if the other nodes are being used, it should be implemented.
 
 ## UIKit
 RZTree provides a cell factory and a data source for both UITableView and UICollectionView. The cell factory provides blocks to bind objects to cells, and the data source loads data from the tree, and monitors changes to the tree for updating.

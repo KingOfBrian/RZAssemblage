@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RZTestHelpers.h"
 #import <XCTest/XCTest.h>
 
 @import RZAssemblage;
+#if TARGET_OS_IPHONE
 
 #import "RZAssemblageTestData.h"
 #import "NSIndexPath+RZAssemblage.h"
@@ -174,3 +175,5 @@
 }
 
 @end
+
+#endif

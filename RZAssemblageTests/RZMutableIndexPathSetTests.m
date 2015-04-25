@@ -6,18 +6,9 @@
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RZTestHelpers.h"
 #import <XCTest/XCTest.h>
 #import "RZIndexPathSet.h"
-
-@implementation RZMutableIndexPathSet(Test)
-
-- (BOOL)containsIndex:(NSUInteger)index
-{
-    return [self containsIndexPath:[NSIndexPath indexPathWithIndex:index]];
-}
-
-@end
 
 @interface RZMutableIndexPathSetTests : XCTestCase
 
