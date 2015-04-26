@@ -1,19 +1,23 @@
 //
-//  RZAssemblage.h
+//  RZTree.h
 //  RZAssemblage
 //
-//  Created by Brian King on 1/27/15.
+//  Created by Brian King on 4/20/15.
 //  Copyright (c) 2015 Raizlabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-//! Project version number for RZAssemblage.
-FOUNDATION_EXPORT double RZAssemblageVersionNumber;
+#import "RZChangeSet.h"
+#import "RZTree.h"
 
-//! Project version string for RZAssemblage.
-FOUNDATION_EXPORT const unsigned char RZAssemblageVersionString[];
+#if TARGET_OS_IPHONE
 
-// In this header, you should import all the public headers of your framework using statements like #import <RZAssemblage/PublicHeader.h>
+#import "RZAssemblageTableView.h"
+#import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblageTableViewCellFactory.h"
+#import "RZAssemblageCollectionViewDataSource.h"
+#import "RZAssemblageCollectionViewCellFactory.h"
+#else
 
-
+#endif

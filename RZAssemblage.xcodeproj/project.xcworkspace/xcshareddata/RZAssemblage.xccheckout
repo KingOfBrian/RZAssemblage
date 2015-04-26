@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>D80FCF1D-BC4D-4797-A0A0-AA8451A32CC5</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>F03E1B0BFE8F988C0C81DE9DE8D6544DF54F1F3A</key>
+		<string>https://github.com/KingOfBrian/RZAssemblage.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>RZAssemblage.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>F03E1B0BFE8F988C0C81DE9DE8D6544DF54F1F3A</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/KingOfBrian/RZAssemblage.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>F03E1B0BFE8F988C0C81DE9DE8D6544DF54F1F3A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>F03E1B0BFE8F988C0C81DE9DE8D6544DF54F1F3A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>RZAssemblage</string>
+		</dict>
+	</array>
+</dict>
+</plist>
