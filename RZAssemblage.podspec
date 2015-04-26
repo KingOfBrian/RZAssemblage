@@ -8,6 +8,7 @@ Pod::Spec.new do |s|
   s.source = { :git => "https://github.com/KingOfBrian/RZAssemblage.git", :tag => s.version.to_s }
   s.requires_arc = true
   s.platform = :ios, '6.0'
+  s.platform = :osx, '10.10'
 
   s.default_subspec = 'Core'
 
