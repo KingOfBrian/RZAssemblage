@@ -10,3 +10,14 @@
 
 #import "RZChangeSet.h"
 #import "RZTree.h"
+
+#if TARGET_OS_IPHONE
+
+#import "RZAssemblageTableView.h"
+#import "RZAssemblageTableViewDataSource.h"
+#import "RZAssemblageTableViewCellFactory.h"
+#import "RZAssemblageCollectionViewDataSource.h"
+#import "RZAssemblageCollectionViewCellFactory.h"
+#else
+
+#endif

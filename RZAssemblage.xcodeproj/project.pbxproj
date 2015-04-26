@@ -29,6 +29,16 @@
 		ABADD3B51A787F1900397031 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABADD3B41A787F1900397031 /* MasterViewController.m */; };
 		ABADD3BD1A787F1900397031 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABADD3BC1A787F1900397031 /* Images.xcassets */; };
 		ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
+		ABB4EBCB1AED21C600671EB4 /* RZAssemblageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2511ADFE78D0029E98D /* RZAssemblageTableView.m */; };
+		ABB4EBCC1AED21C600671EB4 /* RZAssemblageTableViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E25A1ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.m */; };
+		ABB4EBCD1AED21C600671EB4 /* RZAssemblageTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2531ADFE78D0029E98D /* RZAssemblageTableViewDataSource.m */; };
+		ABB4EBCE1AED21C600671EB4 /* RZAssemblageCollectionViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2571ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.m */; };
+		ABB4EBCF1AED21C600671EB4 /* RZAssemblageCollectionViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2581ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.m */; };
+		ABB4EBD01AED223900671EB4 /* RZAssemblageTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2521ADFE78D0029E98D /* RZAssemblageTableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB4EBD11AED223900671EB4 /* RZAssemblageTableViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2591ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB4EBD21AED223900671EB4 /* RZAssemblageTableViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2541ADFE78D0029E98D /* RZAssemblageTableViewDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB4EBD31AED223900671EB4 /* RZAssemblageCollectionViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2561ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB4EBD41AED223900671EB4 /* RZAssemblageCollectionViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2551ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABC020A81AE2C39C005DE831 /* RZAssemblageTestData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; };
 		ABD2E1E01ADF49310029E98D /* RZAssemblageTestData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; };
 		ABD2E1E11ADF49310029E98D /* RZAssemblageTestData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -58,21 +68,6 @@
 		ABD2E21D1ADF538B0029E98D /* RZChangeSet+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E21B1ADF538B0029E98D /* RZChangeSet+Private.h */; };
 		ABD2E2201ADF54100029E98D /* RZIndexPathSet.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E21E1ADF54100029E98D /* RZIndexPathSet.h */; };
 		ABD2E2211ADF54100029E98D /* RZIndexPathSet.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E21F1ADF54100029E98D /* RZIndexPathSet.m */; };
-		ABD2E2321ADFE62E0029E98D /* RZAssemblageUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E2271ADFE62D0029E98D /* RZAssemblageUIKit.framework */; };
-		ABD2E2501ADFE75E0029E98D /* RZAssemblageUIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E24E1ADFE75E0029E98D /* RZAssemblageUIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ABD2E25B1ADFE78D0029E98D /* RZAssemblageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2511ADFE78D0029E98D /* RZAssemblageTableView.m */; };
-		ABD2E25C1ADFE78D0029E98D /* RZAssemblageTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2521ADFE78D0029E98D /* RZAssemblageTableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ABD2E25D1ADFE78D0029E98D /* RZAssemblageTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2531ADFE78D0029E98D /* RZAssemblageTableViewDataSource.m */; };
-		ABD2E25E1ADFE78D0029E98D /* RZAssemblageTableViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2541ADFE78D0029E98D /* RZAssemblageTableViewDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ABD2E25F1ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2551ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ABD2E2601ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2561ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ABD2E2611ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2571ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.m */; };
-		ABD2E2621ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2581ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.m */; };
-		ABD2E2631ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2591ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ABD2E2641ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E25A1ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.m */; };
-		ABD2E2651ADFE7DC0029E98D /* RZAssemblage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABADD3421A776C7C00397031 /* RZAssemblage.framework */; };
-		ABD2E26A1ADFE8260029E98D /* RZAssemblage_UIKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2681ADFE8260029E98D /* RZAssemblage_UIKitTests.m */; };
-		ABD2E26D1ADFE8950029E98D /* RZAssemblageUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD2E2271ADFE62D0029E98D /* RZAssemblageUIKit.framework */; };
 		ABD2E2781AE04A400029E98D /* NSIndexSet+RZAssemblage.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD2E2761AE04A400029E98D /* NSIndexSet+RZAssemblage.h */; };
 		ABD2E2791AE04A400029E98D /* NSIndexSet+RZAssemblage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD2E2771AE04A400029E98D /* NSIndexSet+RZAssemblage.m */; };
 		ABE1FA501A86ED700069B37F /* RZMutableIndexPathSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */; };
@@ -106,20 +101,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = ABD2E1C81ADF49310029E98D;
 			remoteInfo = RZAssemblageTestData;
-		};
-		ABD2E2331ADFE62E0029E98D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABADD3391A776C7C00397031 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = ABD2E2261ADFE62D0029E98D;
-			remoteInfo = "RZAssemblage+UIKit";
-		};
-		ABD2E26E1ADFE8B20029E98D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABADD3391A776C7C00397031 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = ABD2E2261ADFE62D0029E98D;
-			remoteInfo = RZAssemblageUIKit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -203,10 +184,6 @@
 		ABD2E21B1ADF538B0029E98D /* RZChangeSet+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RZChangeSet+Private.h"; sourceTree = "<group>"; };
 		ABD2E21E1ADF54100029E98D /* RZIndexPathSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZIndexPathSet.h; sourceTree = "<group>"; };
 		ABD2E21F1ADF54100029E98D /* RZIndexPathSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZIndexPathSet.m; sourceTree = "<group>"; };
-		ABD2E2271ADFE62D0029E98D /* RZAssemblageUIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RZAssemblageUIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		ABD2E2311ADFE62D0029E98D /* RZAssemblageUIKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RZAssemblageUIKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		ABD2E24D1ADFE75E0029E98D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ABD2E24E1ADFE75E0029E98D /* RZAssemblageUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageUIKit.h; sourceTree = "<group>"; };
 		ABD2E2511ADFE78D0029E98D /* RZAssemblageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableView.m; sourceTree = "<group>"; };
 		ABD2E2521ADFE78D0029E98D /* RZAssemblageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableView.h; sourceTree = "<group>"; };
 		ABD2E2531ADFE78D0029E98D /* RZAssemblageTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewDataSource.m; sourceTree = "<group>"; };
@@ -217,8 +194,6 @@
 		ABD2E2581ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageCollectionViewDataSource.m; sourceTree = "<group>"; };
 		ABD2E2591ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZAssemblageTableViewCellFactory.h; sourceTree = "<group>"; };
 		ABD2E25A1ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblageTableViewCellFactory.m; sourceTree = "<group>"; };
-		ABD2E2671ADFE8260029E98D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ABD2E2681ADFE8260029E98D /* RZAssemblage_UIKitTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZAssemblage_UIKitTests.m; sourceTree = "<group>"; };
 		ABD2E2761AE04A400029E98D /* NSIndexSet+RZAssemblage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+RZAssemblage.h"; sourceTree = "<group>"; };
 		ABD2E2771AE04A400029E98D /* NSIndexSet+RZAssemblage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+RZAssemblage.m"; sourceTree = "<group>"; };
 		ABE1FA4F1A86ED700069B37F /* RZMutableIndexPathSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZMutableIndexPathSetTests.m; sourceTree = "<group>"; };
@@ -246,7 +221,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABD2E26D1ADFE8950029E98D /* RZAssemblageUIKit.framework in Frameworks */,
 				ABD2E1E01ADF49310029E98D /* RZAssemblageTestData.framework in Frameworks */,
 				ABADD3D51A7890E600397031 /* RZAssemblage.framework in Frameworks */,
 			);
@@ -256,22 +230,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		ABD2E2231ADFE62D0029E98D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				ABD2E2651ADFE7DC0029E98D /* RZAssemblage.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		ABD2E22E1ADFE62D0029E98D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				ABD2E2321ADFE62E0029E98D /* RZAssemblageUIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,7 +244,6 @@
 				ABADD3441A776C7C00397031 /* RZAssemblage */,
 				ABADD3511A776C7C00397031 /* RZAssemblageTests */,
 				ABD2E24C1ADFE75E0029E98D /* RZAssemblageUIKit */,
-				ABD2E2661ADFE8260029E98D /* RZAssemblageUIKitTests */,
 				ABADD3A81A787F1900397031 /* RZAssemblageDemo */,
 				ABD2E1CA1ADF49310029E98D /* RZAssemblageTestData */,
 				ABADD3431A776C7C00397031 /* Products */,
@@ -300,8 +257,6 @@
 				ABADD34D1A776C7C00397031 /* RZAssemblageTests.xctest */,
 				ABADD3A71A787F1900397031 /* RZAssemblageDemo.app */,
 				ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */,
-				ABD2E2271ADFE62D0029E98D /* RZAssemblageUIKit.framework */,
-				ABD2E2311ADFE62D0029E98D /* RZAssemblageUIKitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -440,7 +395,6 @@
 		ABD2E24C1ADFE75E0029E98D /* RZAssemblageUIKit */ = {
 			isa = PBXGroup;
 			children = (
-				ABD2E24E1ADFE75E0029E98D /* RZAssemblageUIKit.h */,
 				ABD2E2521ADFE78D0029E98D /* RZAssemblageTableView.h */,
 				ABD2E2511ADFE78D0029E98D /* RZAssemblageTableView.m */,
 				ABD2E2591ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.h */,
@@ -451,18 +405,8 @@
 				ABD2E2571ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.m */,
 				ABD2E2551ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.h */,
 				ABD2E2581ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.m */,
-				ABD2E24D1ADFE75E0029E98D /* Info.plist */,
 			);
 			path = RZAssemblageUIKit;
-			sourceTree = "<group>";
-		};
-		ABD2E2661ADFE8260029E98D /* RZAssemblageUIKitTests */ = {
-			isa = PBXGroup;
-			children = (
-				ABD2E2671ADFE8260029E98D /* Info.plist */,
-				ABD2E2681ADFE8260029E98D /* RZAssemblage_UIKitTests.m */,
-			);
-			path = RZAssemblageUIKitTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -472,10 +416,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABB4EBD31AED223900671EB4 /* RZAssemblageCollectionViewCellFactory.h in Headers */,
 				ABD2E2081ADF52500029E98D /* RZArrayBackedTree.h in Headers */,
 				ABD2E20C1ADF52500029E98D /* RZFRCTree.h in Headers */,
 				AB9B31B61A8679FB00C39876 /* RZChangeSet.h in Headers */,
 				ABD2E2191ADF52BD0029E98D /* RZAssemblageDefines.h in Headers */,
+				ABB4EBD21AED223900671EB4 /* RZAssemblageTableViewDataSource.h in Headers */,
 				AB04BABE1AE57F7E00B71448 /* RZAssemblage.h in Headers */,
 				ABD2E2781AE04A400029E98D /* NSIndexSet+RZAssemblage.h in Headers */,
 				AB04BAC11AE5916700B71448 /* RZFilterTree.h in Headers */,
@@ -483,9 +429,12 @@
 				ABD2E21D1ADF538B0029E98D /* RZChangeSet+Private.h in Headers */,
 				ABADD3681A776EE100397031 /* RZTree.h in Headers */,
 				ABD2E20E1ADF52500029E98D /* RZJoinedTree.h in Headers */,
+				ABB4EBD01AED223900671EB4 /* RZAssemblageTableView.h in Headers */,
+				ABB4EBD41AED223900671EB4 /* RZAssemblageCollectionViewDataSource.h in Headers */,
 				ABD2E2161ADF52990029E98D /* NSIndexPath+RZAssemblage.h in Headers */,
 				ABD2E20A1ADF52500029E98D /* RZFilteredTree.h in Headers */,
 				ABD2E2201ADF54100029E98D /* RZIndexPathSet.h in Headers */,
+				ABB4EBD11AED223900671EB4 /* RZAssemblageTableViewCellFactory.h in Headers */,
 				ABD2E21C1ADF538B0029E98D /* RZTree+Private.h in Headers */,
 				ABD2E2101ADF52500029E98D /* RZPropertyTree.h in Headers */,
 			);
@@ -498,19 +447,6 @@
 				ABD2E1EF1ADF49AD0029E98D /* Person.h in Headers */,
 				ABD2E1F21ADF49AD0029E98D /* Team.h in Headers */,
 				ABD2E1FA1ADF4AA10029E98D /* RZAssemblageTestData.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		ABD2E2241ADFE62D0029E98D /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				ABD2E2601ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.h in Headers */,
-				ABD2E25E1ADFE78D0029E98D /* RZAssemblageTableViewDataSource.h in Headers */,
-				ABD2E25C1ADFE78D0029E98D /* RZAssemblageTableView.h in Headers */,
-				ABD2E2631ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.h in Headers */,
-				ABD2E25F1ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.h in Headers */,
-				ABD2E2501ADFE75E0029E98D /* RZAssemblageUIKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,7 +502,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				ABD2E26F1ADFE8B20029E98D /* PBXTargetDependency */,
 				ABADD3D41A7890DF00397031 /* PBXTargetDependency */,
 				ABD2E1DF1ADF49310029E98D /* PBXTargetDependency */,
 			);
@@ -593,42 +528,6 @@
 			productReference = ABD2E1C91ADF49310029E98D /* RZAssemblageTestData.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		ABD2E2261ADFE62D0029E98D /* RZAssemblageUIKit */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = ABD2E23A1ADFE62E0029E98D /* Build configuration list for PBXNativeTarget "RZAssemblageUIKit" */;
-			buildPhases = (
-				ABD2E2221ADFE62D0029E98D /* Sources */,
-				ABD2E2231ADFE62D0029E98D /* Frameworks */,
-				ABD2E2241ADFE62D0029E98D /* Headers */,
-				ABD2E2251ADFE62D0029E98D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = RZAssemblageUIKit;
-			productName = "RZAssemblage+UIKit";
-			productReference = ABD2E2271ADFE62D0029E98D /* RZAssemblageUIKit.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		ABD2E2301ADFE62D0029E98D /* RZAssemblageUIKitTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = ABD2E23D1ADFE62E0029E98D /* Build configuration list for PBXNativeTarget "RZAssemblageUIKitTests" */;
-			buildPhases = (
-				ABD2E22D1ADFE62D0029E98D /* Sources */,
-				ABD2E22E1ADFE62D0029E98D /* Frameworks */,
-				ABD2E22F1ADFE62D0029E98D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				ABD2E2341ADFE62E0029E98D /* PBXTargetDependency */,
-			);
-			name = RZAssemblageUIKitTests;
-			productName = "RZAssemblage+UIKitTests";
-			productReference = ABD2E2311ADFE62D0029E98D /* RZAssemblageUIKitTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -650,12 +549,6 @@
 					ABD2E1C81ADF49310029E98D = {
 						CreatedOnToolsVersion = 6.1.1;
 					};
-					ABD2E2261ADFE62D0029E98D = {
-						CreatedOnToolsVersion = 6.1.1;
-					};
-					ABD2E2301ADFE62D0029E98D = {
-						CreatedOnToolsVersion = 6.1.1;
-					};
 				};
 			};
 			buildConfigurationList = ABADD33C1A776C7C00397031 /* Build configuration list for PBXProject "RZAssemblage" */;
@@ -673,8 +566,6 @@
 			targets = (
 				ABADD3411A776C7C00397031 /* RZAssemblage */,
 				ABADD34C1A776C7C00397031 /* RZAssemblageTests */,
-				ABD2E2261ADFE62D0029E98D /* RZAssemblageUIKit */,
-				ABD2E2301ADFE62D0029E98D /* RZAssemblageUIKitTests */,
 				ABADD3A61A787F1900397031 /* RZAssemblageDemo */,
 				ABD2E1C81ADF49310029E98D /* RZAssemblageTestData */,
 			);
@@ -711,20 +602,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		ABD2E2251ADFE62D0029E98D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		ABD2E22F1ADFE62D0029E98D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -732,8 +609,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABB4EBCD1AED21C600671EB4 /* RZAssemblageTableViewDataSource.m in Sources */,
+				ABB4EBCE1AED21C600671EB4 /* RZAssemblageCollectionViewCellFactory.m in Sources */,
 				ABD2E2131ADF52500029E98D /* RZProxyTree.m in Sources */,
 				ABD2E20F1ADF52500029E98D /* RZJoinedTree.m in Sources */,
+				ABB4EBCC1AED21C600671EB4 /* RZAssemblageTableViewCellFactory.m in Sources */,
+				ABB4EBCF1AED21C600671EB4 /* RZAssemblageCollectionViewDataSource.m in Sources */,
+				ABB4EBCB1AED21C600671EB4 /* RZAssemblageTableView.m in Sources */,
 				ABD2E2171ADF52990029E98D /* NSIndexPath+RZAssemblage.m in Sources */,
 				AB04BAC21AE5916700B71448 /* RZFilterTree.m in Sources */,
 				ABD2E2791AE04A400029E98D /* NSIndexSet+RZAssemblage.m in Sources */,
@@ -785,26 +667,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		ABD2E2221ADFE62D0029E98D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				ABD2E25D1ADFE78D0029E98D /* RZAssemblageTableViewDataSource.m in Sources */,
-				ABD2E2611ADFE78D0029E98D /* RZAssemblageCollectionViewCellFactory.m in Sources */,
-				ABD2E25B1ADFE78D0029E98D /* RZAssemblageTableView.m in Sources */,
-				ABD2E2641ADFE78D0029E98D /* RZAssemblageTableViewCellFactory.m in Sources */,
-				ABD2E2621ADFE78D0029E98D /* RZAssemblageCollectionViewDataSource.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		ABD2E22D1ADFE62D0029E98D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				ABD2E26A1ADFE8260029E98D /* RZAssemblage_UIKitTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -827,16 +689,6 @@
 			isa = PBXTargetDependency;
 			target = ABD2E1C81ADF49310029E98D /* RZAssemblageTestData */;
 			targetProxy = ABD2E1DE1ADF49310029E98D /* PBXContainerItemProxy */;
-		};
-		ABD2E2341ADFE62E0029E98D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = ABD2E2261ADFE62D0029E98D /* RZAssemblageUIKit */;
-			targetProxy = ABD2E2331ADFE62E0029E98D /* PBXContainerItemProxy */;
-		};
-		ABD2E26F1ADFE8B20029E98D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = ABD2E2261ADFE62D0029E98D /* RZAssemblageUIKit */;
-			targetProxy = ABD2E26E1ADFE8B20029E98D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1062,72 +914,6 @@
 			};
 			name = Release;
 		};
-		ABD2E23B1ADFE62E0029E98D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = RZAssemblageUIKit/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
-			};
-			name = Debug;
-		};
-		ABD2E23C1ADFE62E0029E98D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = RZAssemblageUIKit/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
-			};
-			name = Release;
-		};
-		ABD2E23E1ADFE62E0029E98D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = RZAssemblageUIKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		ABD2E23F1ADFE62E0029E98D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = RZAssemblageUIKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1172,24 +958,6 @@
 			buildConfigurations = (
 				ABD2E1E31ADF49310029E98D /* Debug */,
 				ABD2E1E41ADF49310029E98D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		ABD2E23A1ADFE62E0029E98D /* Build configuration list for PBXNativeTarget "RZAssemblageUIKit" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				ABD2E23B1ADFE62E0029E98D /* Debug */,
-				ABD2E23C1ADFE62E0029E98D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		ABD2E23D1ADFE62E0029E98D /* Build configuration list for PBXNativeTarget "RZAssemblageUIKitTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				ABD2E23E1ADFE62E0029E98D /* Debug */,
-				ABD2E23F1ADFE62E0029E98D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
